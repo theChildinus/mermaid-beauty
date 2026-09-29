@@ -12,6 +12,8 @@ export class BeautyRenderer {
   private pending: Promise<unknown> = Promise.resolve();
   private disposed = false;
 
+  constructor(private readonly createHost: () => HTMLDivElement) {}
+
   render(id: string, source: string, settings: BeautySettings, container?: HTMLElement): Promise<RenderResult> {
     const task = this.pending.then(async () => {
       if (this.disposed) throw new Error('Mermaid Beauty has been unloaded.');
@@ -29,8 +31,8 @@ export class BeautyRenderer {
       const doc = container?.ownerDocument ?? document;
       const dark = doc.body.classList.contains('theme-dark');
       // Mermaid measures text in the main document, even for a pop-out window.
-      // Keep the renderer usable in a browser without Obsidian's DOM extensions.
-      const host = document.createElement('div');
+      // The host supplies its DOM factory; standalone previews use browser APIs.
+      const host = this.createHost();
       host.className = 'mermaid-beauty-measure';
       host.style.width = `${Math.max(320, container?.clientWidth ?? 800)}px`;
       document.body.appendChild(host);
@@ -82,6 +84,7 @@ export class BeautyRenderer {
         // Mermaid's info renderer has fixed dimensions but omits its viewBox.
         if (type === 'info' && !svg.hasAttribute('viewBox')) svg.setAttribute('viewBox', '0 0 400 100');
         if (!appearance.fitWidth) {
+          (svg as unknown as SVGSVGElement).style.removeProperty('max-width');
           const bounds = svg.getAttribute('viewBox')?.split(/[\s,]+/).map(Number);
           if (bounds?.length === 4 && bounds[2]! > 0 && bounds[3]! > 0) {
             const scale = type === 'zenuml' ? appearance.fontSize / 16 : 1;

@@ -37,7 +37,7 @@ export function styleZenUml(svg: Element, config: MermaidConfig, appearance: App
   apply('.frame-border-outer', { fill: border });
   apply('.frame-border-inner, .frame-header-bg, .group-title-bg', { fill: background });
   apply('.occurrence, .fragment-header, .divider-bg', { fill: value('secondaryColor', surface), stroke: border });
-  apply(CONNECTORS.zenuml!, { stroke: line, 'stroke-width': `${appearance.lineWidth || 1.25}px` });
+  apply(CONNECTORS.zenuml!, { stroke: line, 'stroke-width': `${appearance.lineWidth}px` });
   apply('.fragment-border, .fragment-separator, .frame-header-line, .group-outline, .divider-line', { stroke: line, 'stroke-width': '1.25px' });
   apply('.arrow-head path', { fill: line, stroke: line, 'stroke-width': '1.25px' });
   apply('.participant-icon, .return-icon', { color: text, fill: text });

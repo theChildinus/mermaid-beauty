@@ -24,7 +24,7 @@ export interface Appearance {
   colors?: CustomColors;
   /** False keeps custom colors saved while displaying the selected preset. */
   useCustomColors?: boolean;
-  /** Zero preserves the existing diagram-specific widths. */
+  /** Connector width in pixels, from 0.5 to 6. */
   lineWidth: number;
   fontSize: number;
   radius: number;
@@ -46,7 +46,7 @@ export interface BeautySettings {
 export const DEFAULT_SETTINGS: BeautySettings = {
   enabled: true,
   language: 'auto',
-  defaults: { lineWidth: 0, palette: 'mint', fontSize: 15, radius: 14, spacing: 48, layout: 'auto', fitWidth: true },
+  defaults: { lineWidth: 1.1, palette: 'mint', fontSize: 15, radius: 14, spacing: 48, layout: 'auto', fitWidth: true },
   types: {},
 };
 
@@ -73,7 +73,7 @@ function appearance(value: unknown): Partial<Appearance> {
     }
     if (Object.keys(colors).length) result.colors = colors;
   }
-  if (bounded(value.lineWidth, 0, 6)) result.lineWidth = value.lineWidth;
+  if (bounded(value.lineWidth, 0.5, 6)) result.lineWidth = value.lineWidth;
   if (bounded(value.fontSize, 10, 28)) result.fontSize = value.fontSize;
   if (bounded(value.radius, 0, 24)) result.radius = value.radius;
   if (bounded(value.spacing, 20, 120)) result.spacing = value.spacing;

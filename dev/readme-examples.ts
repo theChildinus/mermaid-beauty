@@ -13,8 +13,8 @@ interface NativeResult {
 async function nativeExamples(): Promise<NativeResult> {
   const frame = document.createElement('iframe');
   frame.setAttribute('title', 'Unmodified native Mermaid');
-  frame.style.cssText = 'position:absolute;left:-10000px;width:1136px;height:800px;visibility:hidden';
-  let timer: ReturnType<typeof setTimeout>;
+  frame.className = 'preview-native-frame';
+  let timer: number;
   let receive: (event: MessageEvent<NativeResult>) => void;
   try {
     return await new Promise<NativeResult>((resolve, reject) => {
@@ -24,12 +24,12 @@ async function nativeExamples(): Promise<NativeResult> {
         else resolve(event.data);
       };
       window.addEventListener('message', receive);
-      timer = setTimeout(() => reject(new Error('Native Mermaid rendering timed out.')), 30_000);
+      timer = window.setTimeout(() => reject(new Error('Native Mermaid rendering timed out.')), 30_000);
       frame.src = '/native.html';
       document.body.append(frame);
     });
   } finally {
-    clearTimeout(timer!); window.removeEventListener('message', receive!); frame.remove();
+    window.clearTimeout(timer!); window.removeEventListener('message', receive!); frame.remove();
   }
 }
 
@@ -49,7 +49,7 @@ function panel(source: string, y: number, height: number, title: string, subtitl
 export async function exportReadmeExamples(container: HTMLElement): Promise<void> {
   container.replaceChildren();
   const native = await nativeExamples();
-  const renderer = new BeautyRenderer();
+  const renderer = new BeautyRenderer(() => document.createElement('div'));
   const assets = [];
   const wasDark = document.body.classList.contains('theme-dark');
   document.body.classList.remove('theme-dark');
@@ -69,11 +69,11 @@ export async function exportReadmeExamples(container: HTMLElement): Promise<void
       </svg>`;
       const article = document.createElement('article');
       article.id = `readme-${example.type}`;
-      article.style.cssText = 'width:1200px;max-width:100%;margin-bottom:24px';
+      article.className = 'preview-readme-article';
       const parsed = new DOMParser().parseFromString(svg, 'image/svg+xml');
       if (parsed.querySelector('parsererror')) throw new Error('Invalid comparison SVG.');
       const drawing = document.importNode(parsed.documentElement, true) as unknown as SVGSVGElement;
-      drawing.style.cssText = 'display:block;width:100%;height:auto';
+      drawing.classList.add('preview-readme-svg');
       article.append(drawing); container.append(article);
       assets.push({ name: example.type, svg, baseline: native.baseline });
     }

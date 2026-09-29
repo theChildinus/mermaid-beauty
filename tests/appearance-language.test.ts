@@ -4,21 +4,28 @@ import { loadSettings, parseCustomConfig, resolveAppearance } from '../src/setti
 import { connectorWidthCss } from '../src/line-width';
 
 describe('connector width settings', () => {
-  it('preserves existing widths and appearance when migrating old settings', () => {
+  it('uses a positive default without changing unrelated appearance when migrating old settings', () => {
     const settings = loadSettings({ defaults: { palette: 'slate', fontSize: 16, radius: 11, spacing: 48 }, types: {} });
-    expect(settings.defaults).toMatchObject({ lineWidth: 0, palette: 'slate', fontSize: 16, radius: 11, spacing: 48 });
-    expect(connectorWidthCss('flowchart', settings.defaults.lineWidth)).toBe('');
+    expect(settings.defaults).toMatchObject({ lineWidth: 1.1, palette: 'slate', fontSize: 16, radius: 11, spacing: 48 });
+    expect(connectorWidthCss('flowchart', settings.defaults.lineWidth)).toContain('stroke-width: 1.1px');
+  });
+  it('migrates legacy zero to the positive default and inherits per-type zero', () => {
+    const settings = loadSettings({ defaults: { lineWidth: 0 }, types: { sequence: { mode: 'beauty', lineWidth: 0 } } });
+    expect(resolveAppearance(settings, 'sequence').lineWidth).toBe(1.1);
+    const saved = loadSettings({ defaults: { lineWidth: 1.5 }, types: { sequence: { lineWidth: 0 } } });
+    expect(saved.defaults.lineWidth).toBe(1.5);
+    expect(resolveAppearance(saved, 'sequence').lineWidth).toBe(1.5);
   });
   it('inherits global widths and retains independent per-type overrides after reloading', () => {
-    const saved = loadSettings({ defaults: { lineWidth: 2.4 }, types: { sequence: { mode: 'beauty', lineWidth: 0 }, class: { mode: 'beauty', lineWidth: 4 } } });
+    const saved = loadSettings({ defaults: { lineWidth: 2.4 }, types: { sequence: { mode: 'beauty', lineWidth: 0.5 }, class: { mode: 'beauty', lineWidth: 4 } } });
     const settings = loadSettings(JSON.parse(JSON.stringify(saved)));
     expect(resolveAppearance(settings, 'flowchart').lineWidth).toBe(2.4);
-    expect(resolveAppearance(settings, 'sequence').lineWidth).toBe(0);
+    expect(resolveAppearance(settings, 'sequence').lineWidth).toBe(0.5);
     expect(resolveAppearance(settings, 'class').lineWidth).toBe(4);
   });
-  it.each([-1, 6.1, NaN, Infinity, '3', null])('rejects invalid saved widths: %s', lineWidth => {
+  it.each([-1, 0, 0.1, 0.49, 6.1, NaN, Infinity, '3', null])('rejects invalid saved widths: %s', lineWidth => {
     const settings = loadSettings({ defaults: { lineWidth }, types: { sequence: { lineWidth } } });
-    expect(settings.defaults.lineWidth).toBe(0);
+    expect(settings.defaults.lineWidth).toBe(1.1);
     expect(settings.types.sequence?.lineWidth).toBeUndefined();
   });
 });

@@ -16,10 +16,18 @@ The Mermaid version is pinned because the flowchart adapter uses its bundled ELK
 
 Use the repository `theChildinus/mermaid-beauty`. Publish the source with README, manifest, MIT license, third-party notices, and build instructions on the default branch. Create the tag `1.2.0`, without a `v` prefix, for the reviewed commit.
 
-Attach `dist/1.2.0/main.js`, `manifest.json`, `styles.css`, and `SHA256SUMS` to the release. The JavaScript includes bundled third-party notices. Read back the branch/tag and download asset hashes before marking the release delivered.
+Attach `dist/1.2.0/main.js`, `manifest.json`, `styles.css` to the release. Keep `SHA256SUMS` for local verification; it is not a supported plugin release asset. The JavaScript includes bundled third-party notices. Read back the branch/tag and download asset hashes before marking the release delivered.
 
 ## Community directory
 
 Follow the [official submission guide](https://docs.obsidian.md/plugins/releasing/submit-plugin) and [account setup guide](https://docs.obsidian.md/community-directory/set-up-and-claim).
 
 Sign in at [Obsidian Community](https://community.obsidian.md/), link the GitHub owner profile, and add the public repository URL. Review the [developer policies](https://docs.obsidian.md/community-directory/developer-policies) and [plugin requirements](https://docs.obsidian.md/community-directory/submission-requirements-for-plugins) before accepting terms and submitting. Address review findings in a new release. Mark the plugin listed only after its published directory entry is visible.
+
+## Review fixes and provenance
+
+The build adapter in `scripts/zenuml-svg-build.mjs` compiles the original SVG entry from the source maps included in the locked `@zenuml/core` 3.50.1 npm package. It uses the upstream parser, layout, SVG components, and icons unchanged. This excludes the React editor's script creation, remote CSS loader, and storage access. The adapter fails on an unreviewed version or missing source; no runtime network load is introduced. The production build checks for script creation, storage access, and React editor dependencies.
+
+Run **Attest release build** on the approved release ref in GitHub Actions. Download its three release files, compare their hashes with the locally verified build, and use those exact files for the release. This records GitHub build provenance for the artifact hashes. Adding the workflow alone does not create attestations.
+
+Publish only after reviewing the test results and remaining warnings in [validation.md](validation.md). A successful local check does not confirm marketplace acceptance. Check the new commit's review result in the community dashboard after submission.

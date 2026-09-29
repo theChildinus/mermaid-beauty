@@ -214,6 +214,23 @@ export const fixtures: Fixture[] = [
     Reader->Library.borrowBook() {
       return book
     }` },
+  { name: 'ZenUML fragments', type: 'zenuml', source: `zenuml
+    title Checkout
+    @Actor Customer
+    @Database Inventory
+    Customer->Shop.checkout() {
+      if (inStock) {
+        Shop->Inventory.reserve() {
+          return receipt
+        }
+      } else {
+        Shop.notify()
+      }
+      while (pending) {
+        Shop.poll()
+      }
+      return confirmation
+    }` },
   { name: 'Info', type: 'info', source: 'info' },
   { name: 'Shapes and styles', type: 'flowchart', source: `flowchart LR
     A{选择?} -->|是| B[(数据库)]

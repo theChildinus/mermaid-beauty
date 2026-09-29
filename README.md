@@ -66,9 +66,9 @@ Choose **Custom** to open the light and dark color editors, then use the color p
 | Font size | Text size in pixels. |
 | Corner radius | Rounding of supported rectangular nodes; diamonds and database shapes retain their meaning. |
 | Graph spacing | Space between nodes and ranks, where the layout supports it. |
-| Line width | Connector thickness: 0 keeps existing defaults; 0.1–6 sets a width in pixels. |
+| Line width | Connector thickness in pixels. Default: 1.1 px; range: 0.5–6 px. |
 
-**Line width** can be set globally or per type. It applies to connections in flowcharts, sequences, class/state/ER/requirement diagrams, mind maps, user journeys, Git, C4, block/architecture diagrams, railroad/tree/swimlane/use-case/agent-flow diagrams, event modeling, fishbone/Wardley diagrams, and ZenUML. Node borders, chart axes, timeline axes, and Sankey bands retain their widths. Thick edges remain twice the selected width, invisible and dashed edges retain their meaning, and explicit inline edge styles take precedence. A type without adjustable connections does not show this control.
+**Line width** can be set globally or per type. Saved zero or invalid values now use the positive default; a zero per-type override inherits the global width. Valid saved widths are retained. It applies to connections in flowcharts, sequences, class/state/ER/requirement diagrams, mind maps, user journeys, Git, C4, block/architecture diagrams, railroad/tree/swimlane/use-case/agent-flow diagrams, event modeling, fishbone/Wardley diagrams, and ZenUML. Node borders, chart axes, timeline axes, and Sankey bands retain their widths. Thick edges remain twice the selected width, invisible and dashed edges retain their meaning, and explicit inline edge styles take precedence. A type without adjustable connections does not show this control.
 
 The defaults apply to all diagram types. Under **Diagram types**, choose a type and a renderer:
 

@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 export async function thirdPartyNotices(inputs) {
   const roots = new Set();
   for (const input of inputs) {
-    const match = input.match(/^(.*node_modules\/(?:@[^/]+\/)?[^/]+)\//);
+    const match = input.replace(/^zenuml-svg:/, '').match(/^(.*node_modules\/(?:@[^/]+\/)?[^/]+)\//);
     if (match) roots.add(match[1]);
   }
   const entries = [];
@@ -16,6 +16,7 @@ export async function thirdPartyNotices(inputs) {
     for (const file of files.sort()) {
       try { parts.push(await readFile(join(root, file), 'utf8')); } catch (error) { if (error.code !== 'EISDIR') throw error; }
     }
+    if (pkg.name === 'antlr4') parts.push(await readFile('licenses/antlr4-LICENSE', 'utf8'));
     if (pkg.name === 'mermaid') parts.push(await readFile('licenses/mermaid-LICENSE', 'utf8'));
     if (!parts.length) console.warn(`No separate license file packaged for ${pkg.name}; see its source repository and retained bundle notices.`);
     entries.push({ name: pkg.name, text: `## ${pkg.name} ${pkg.version}\n\nLicense: ${pkg.license ?? 'See source'}. Source: ${repository.replace(/^git\+/, '') || 'See package-lock.json'}.\n\n${parts.map(text => '```text\n' + text.trim() + '\n```').join('\n\n')}` });

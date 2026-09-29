@@ -57,7 +57,7 @@ const chinese = {
   'Round the corners of supported rectangular nodes, in pixels. Semantic shapes stay unchanged.': '适用矩形节点的圆角大小，单位为像素。保留菱形、圆柱等语义形状。',
   'Space between nodes and ranks, where supported by the layout. Larger values spread the diagram out.': '调节支持此设置的节点与层级间距。数值越大，布局越疏朗。',
   'Line width': '连线粗细',
-  'Pixels. 0 keeps the current default widths. Applies to connectors; node borders and data-scaled chart bands keep their own widths.': '单位为像素，0 表示保留原有默认粗细。仅调节连线，节点边框和按数据比例绘制的图带保持原样。',
+  'Connector thickness in pixels (0.5–6). Default: 1.1 px. Node borders and data-scaled chart bands keep their own widths.': '连线粗细，范围为 0.5–6 像素，默认 1.1 像素。节点边框和按数据比例绘制的图带保持原样。',
   'Graph layout': '图形布局',
   'Automatic uses ELK for supported relationship diagrams. Other types retain their specialized layout.': '自动模式对支持的关系图使用 ELK，其他图类型保留各自的专用布局。',
   'Automatic': '自动',

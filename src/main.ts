@@ -7,7 +7,7 @@ import { BeautySettingTab } from './settings-tab';
 
 export default class MermaidBeautyPlugin extends Plugin {
   settings: BeautySettings = loadSettings(DEFAULT_SETTINGS);
-  private renderer = new BeautyRenderer();
+  private renderer = new BeautyRenderer(() => createDiv());
   private detach?: () => void;
   private stopped = false;
   private fallbackReported = false;
@@ -62,6 +62,7 @@ export default class MermaidBeautyPlugin extends Plugin {
   }
 
   async save(settings: BeautySettings): Promise<void> {
+    settings = loadSettings(settings);
     this.settings = settings;
     this.updateCommands();
     const write = this.pendingSave.then(() => this.saveData(settings));

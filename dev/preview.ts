@@ -11,14 +11,15 @@ const output = document.querySelector('#results')!;
 const status = document.querySelector('#status')!;
 const run = document.querySelector<HTMLButtonElement>('#run')!;
 const exportButton = document.querySelector<HTMLButtonElement>('#export-readme')!;
-exportButton.addEventListener('click', async () => {
+exportButton.addEventListener('click', () => { void exportExamples(); });
+async function exportExamples(): Promise<void> {
   exportButton.disabled = true; run.disabled = true;
   try {
     await exportReadmeExamples(document.querySelector('#readme-comparisons')!);
     status.textContent = 'Saved 3 comparison SVGs. Capture the rendered panels as JPEGs for the README.';
   } catch (error) { status.textContent = String(error); }
   finally { exportButton.disabled = false; run.disabled = false; }
-});
+}
 const compact = document.querySelector<HTMLInputElement>('#compact')!;
 const dark = document.querySelector<HTMLInputElement>('#dark')!;
 const filter = document.querySelector<HTMLSelectElement>('#filter')!;
@@ -35,10 +36,11 @@ dark.addEventListener('change', () => document.body.classList.toggle('theme-dark
 const sample = document.querySelector<HTMLTextAreaElement>('#sample')!;
 sample.value = fixtures[0]!.source;
 let comparisonId = 0;
-document.querySelector('#compare')!.addEventListener('click', async () => {
+document.querySelector('#compare')!.addEventListener('click', () => { void compareLayouts().catch(showFailure); });
+async function compareLayouts(): Promise<void> {
   const container = document.querySelector('#comparisons')!;
   container.replaceChildren();
-  const renderer = new BeautyRenderer();
+  const renderer = new BeautyRenderer(() => document.createElement('div'));
   for (const alignment of ['LEFTUP', 'NONE', 'BALANCED', 'RIGHTDOWN']) {
     const card = document.createElement('article'); card.className = 'card light-card';
     const title = document.createElement('h2'); title.textContent = alignment; card.append(title);
@@ -50,7 +52,7 @@ document.querySelector('#compare')!.addEventListener('click', async () => {
     } catch (error) { card.append(String(error)); }
   }
   renderer.dispose();
-});
+}
 
 function mount(parent: Element, source: string): SVGSVGElement {
   const parsed = new DOMParser().parseFromString(source, 'image/svg+xml');
@@ -61,10 +63,14 @@ function mount(parent: Element, source: string): SVGSVGElement {
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
 }
-run.addEventListener('click', async () => {
+function showFailure(error: unknown): void {
+  status.textContent = String(error); run.disabled = false; exportButton.disabled = false;
+}
+run.addEventListener('click', () => { void runChecks().catch(showFailure); });
+async function runChecks(): Promise<void> {
   run.disabled = true; exportButton.disabled = true;
   output.replaceChildren();
-  const renderer = new BeautyRenderer();
+  const renderer = new BeautyRenderer(() => document.createElement('div'));
   const results: { name: string; passed: boolean; error?: string }[] = [];
   const checks: { name: string; passed: boolean; error?: string }[] = [];
   let serial = 0;
@@ -122,7 +128,7 @@ run.addEventListener('click', async () => {
         card.dataset.passed = 'false';
       }
       // Let the preview report progress while large fixture suites run.
-      await new Promise(resolve => requestAnimationFrame(resolve));
+      await new Promise(resolve => window.requestAnimationFrame(resolve));
     }
   }
   document.body.classList.remove('theme-dark');
@@ -239,7 +245,7 @@ run.addEventListener('click', async () => {
     try {
       for (const [type, selector] of [['flowchart', '.node rect'], ['sankey', '.link path'], ['xy', 'path, line']] as const) {
         const widths: string[][] = [];
-        for (const lineWidth of [0, 4]) {
+        for (const lineWidth of [1.1, 4]) {
           container.replaceChildren();
           const result = await renderer.render(`width-boundary-${++serial}`, fixtures.find(item => item.type === type)!.source,
             loadSettings({ defaults: { lineWidth } }), container);
@@ -250,8 +256,8 @@ run.addEventListener('click', async () => {
       }
     } finally { container.remove(); }
   });
-  await test('Per-type widths and zero defaults remain isolated', async () => {
-    const settings = loadSettings({ defaults: { lineWidth: 2.4 }, types: { sequence: { mode: 'beauty', lineWidth: 0 } } });
+  await test('Per-type widths remain isolated', async () => {
+    const settings = loadSettings({ defaults: { lineWidth: 2.4 }, types: { sequence: { mode: 'beauty', lineWidth: 0.5 } } });
     const container = document.createElement('div'); output.append(container);
     try {
       for (const type of ['flowchart', 'sequence', 'flowchart'] as const) {
@@ -259,12 +265,12 @@ run.addEventListener('click', async () => {
         const result = await renderer.render(`width-isolation-${++serial}`, fixtures.find(item => item.type === type)!.source, settings, container);
         const svg = mount(container, result.svg);
         const selector = type === 'flowchart' ? '.flowchart-link' : '.messageLine0';
-        assert(getComputedStyle(svg.querySelector(selector)!).strokeWidth === (type === 'flowchart' ? '2.4px' : '1.1px'), `${type} width leaked`);
+        assert(getComputedStyle(svg.querySelector(selector)!).strokeWidth === (type === 'flowchart' ? '2.4px' : '0.5px'), `${type} width leaked`);
       }
     } finally { container.remove(); }
   });
   await test('Line width comparison renders at normal and narrow widths', async () => {
-    for (const lineWidth of [0, 3, 6]) {
+    for (const lineWidth of [1.1, 3, 6]) {
       const card = document.createElement('article'); card.className = 'card light-card';
       const title = document.createElement('h2'); title.textContent = `Line width ${lineWidth} / light`; card.append(title);
       const container = document.createElement('div'); container.className = 'mermaid'; card.append(container); output.append(card);
@@ -308,7 +314,7 @@ run.addEventListener('click', async () => {
     document.body.classList.remove('compact');
   });
   await test('Unscaled diagrams retain their natural width and scroll', async () => {
-    const container = document.createElement('div'); container.className = 'mermaid'; container.style.width = '320px'; output.append(container);
+    const container = document.createElement('div'); container.className = 'mermaid preview-narrow'; output.append(container);
     const result = await renderer.render(`natural-${++serial}`, fixtures[0]!.source, loadSettings({ defaults: { fitWidth: false } }), container);
     const svg = mount(container, result.svg);
     assert(svg.getBoundingClientRect().width > 320 && container.scrollWidth > container.clientWidth, 'Natural width was shrunk');
@@ -368,9 +374,10 @@ run.addEventListener('click', async () => {
   status.textContent = `${results.length - results.filter(r => !r.passed).length}/${results.length} renders passed; ${checks.filter(r => r.passed).length}/${checks.length} behavior checks passed.`;
   const report = document.createElement('pre');
   report.id = 'report';
-  const examples = Array.from(output.querySelectorAll('.card')).filter(card => ['Flowchart / light', 'Sequence / light', 'Mind map / dark'].includes(card.querySelector('h2')?.textContent ?? '')).map(card => ({ name: card.querySelector('h2')!.textContent!, svg: card.querySelector('svg')?.outerHTML ?? '' }));
+  const examples = Array.from(output.querySelectorAll('.card')).filter(card => ['Flowchart / light', 'Sequence / light', 'Mind map / dark'].includes(card.querySelector('h2')?.textContent ?? '')).map(card => ({ name: card.querySelector('h2')!.textContent, svg: card.querySelector('svg')?.outerHTML ?? '' }));
   report.textContent = JSON.stringify({ buildHash: BUILD_HASH, results, checks, failed }, null, 2);
   output.append(report);
-  await fetch('/report', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ buildHash: BUILD_HASH, results, checks, failed, examples }) });
+  const response = await fetch('/report', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ buildHash: BUILD_HASH, results, checks, failed, examples }) });
+  if (!response.ok) throw new Error('Could not save the browser report.');
   run.disabled = false; exportButton.disabled = false;
-});
+}
