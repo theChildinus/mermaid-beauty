@@ -31,7 +31,8 @@ A library has books, and members borrow them. The class diagram keeps the same f
 ## Features
 
 - Custom colors for background, nodes, labels, text, borders, connectors, and accents, with separate light and dark settings. Mint, Slate, Sky, and Rose presets provide starting points.
-- Controls for font size, rectangular corner radius, graph spacing, layout, and fitting diagrams to the note width.
+- Controls for font size, rectangular corner radius, graph spacing, connector width, layout, and fitting diagrams to the note width.
+- Chinese and English settings, commands, and notices. The interface follows Obsidian by default; you can choose either language explicitly.
 - Per-type JSON options for Mermaid colors and diagram settings.
 - The complete Mermaid 12.0.0 engine, including ELK, plus ZenUML, bundled locally.
 - Existing `mermaid` code blocks remain editable. No conversion or special fence syntax is needed.
@@ -54,9 +55,20 @@ To build from source, run `npm ci` and `npm run build`, then copy the same three
 
 ## Configure
 
-Open **Settings → Mermaid Beauty**. Under **Color palette**, select **Mint**, **Slate**, **Sky**, or **Rose** to apply a ready-made scheme. Each option shows its colors before you select it.
+Open **Settings → Mermaid Beauty**. **Language** offers **Follow Obsidian**, **中文**, and **English**. It changes the plugin interface immediately and keeps diagram source and labels unchanged. Unsupported Obsidian languages fall back to English.
+
+Under **Color palette**, select **Mint**, **Slate**, **Sky**, or **Rose** to apply a ready-made scheme. Each option shows its colors before you select it.
 
 Choose **Custom** to open the light and dark color editors, then use the color pickers or enter hex colors such as `#26845b`. Rendering follows Obsidian's current theme. Switching to a preset keeps your custom colors saved; select **Custom** again to restore them. **Reset colors** clears saved custom colors for the current appearance and returns to its preset.
+
+| Appearance control | Meaning |
+| --- | --- |
+| Font size | Text size in pixels. |
+| Corner radius | Rounding of supported rectangular nodes; diamonds and database shapes retain their meaning. |
+| Graph spacing | Space between nodes and ranks, where the layout supports it. |
+| Line width | Connector thickness: 0 keeps existing defaults; 0.1–6 sets a width in pixels. |
+
+**Line width** can be set globally or per type. It applies to connections in flowcharts, sequences, class/state/ER/requirement diagrams, mind maps, user journeys, Git, C4, block/architecture diagrams, railroad/tree/swimlane/use-case/agent-flow diagrams, event modeling, fishbone/Wardley diagrams, and ZenUML. Node borders, chart axes, timeline axes, and Sankey bands retain their widths. Thick edges remain twice the selected width, invisible and dashed edges retain their meaning, and explicit inline edge styles take precedence. A type without adjustable connections does not show this control.
 
 The defaults apply to all diagram types. Under **Diagram types**, choose a type and a renderer:
 

@@ -1,3 +1,4 @@
+import { CONNECTORS } from './line-width';
 import type { MermaidConfig } from 'mermaid';
 import { isRecord, type Appearance } from './settings';
 
@@ -36,7 +37,8 @@ export function styleZenUml(svg: Element, config: MermaidConfig, appearance: App
   apply('.frame-border-outer', { fill: border });
   apply('.frame-border-inner, .frame-header-bg, .group-title-bg', { fill: background });
   apply('.occurrence, .fragment-header, .divider-bg', { fill: value('secondaryColor', surface), stroke: border });
-  apply('.lifeline, .message-line, .return-line, .return-arrow, .fragment-border, .fragment-separator, .frame-header-line, .group-outline, .divider-line', { stroke: line, 'stroke-width': '1.25px' });
+  apply(CONNECTORS.zenuml!, { stroke: line, 'stroke-width': `${appearance.lineWidth || 1.25}px` });
+  apply('.fragment-border, .fragment-separator, .frame-header-line, .group-outline, .divider-line', { stroke: line, 'stroke-width': '1.25px' });
   apply('.arrow-head path', { fill: line, stroke: line, 'stroke-width': '1.25px' });
   apply('.participant-icon, .return-icon', { color: text, fill: text });
   // Scale the whole measured layout: changing text alone would clip fixed-size participants.

@@ -1,3 +1,4 @@
+import { translate, type LanguageSetting, type UiLanguage } from './i18n';
 import { COLOR_FIELDS, normalizeColor, type CustomColors } from './colors';
 
 export const DIAGRAM_TYPES = {
@@ -23,6 +24,8 @@ export interface Appearance {
   colors?: CustomColors;
   /** False keeps custom colors saved while displaying the selected preset. */
   useCustomColors?: boolean;
+  /** Zero preserves the existing diagram-specific widths. */
+  lineWidth: number;
   fontSize: number;
   radius: number;
   spacing: number;
@@ -35,13 +38,15 @@ export interface TypeSettings extends Partial<Appearance> {
   config?: string;
 }
 export interface BeautySettings {
+  language: LanguageSetting;
   enabled: boolean;
   defaults: Appearance;
   types: Partial<Record<DiagramType, TypeSettings>>;
 }
 export const DEFAULT_SETTINGS: BeautySettings = {
   enabled: true,
-  defaults: { palette: 'mint', fontSize: 15, radius: 14, spacing: 48, layout: 'auto', fitWidth: true },
+  language: 'auto',
+  defaults: { lineWidth: 0, palette: 'mint', fontSize: 15, radius: 14, spacing: 48, layout: 'auto', fitWidth: true },
   types: {},
 };
 
@@ -68,6 +73,7 @@ function appearance(value: unknown): Partial<Appearance> {
     }
     if (Object.keys(colors).length) result.colors = colors;
   }
+  if (bounded(value.lineWidth, 0, 6)) result.lineWidth = value.lineWidth;
   if (bounded(value.fontSize, 10, 28)) result.fontSize = value.fontSize;
   if (bounded(value.radius, 0, 24)) result.radius = value.radius;
   if (bounded(value.spacing, 20, 120)) result.spacing = value.spacing;
@@ -76,8 +82,9 @@ function appearance(value: unknown): Partial<Appearance> {
   return result;
 }
 export function loadSettings(value: unknown): BeautySettings {
-  const result: BeautySettings = { enabled: true, defaults: { ...DEFAULT_SETTINGS.defaults }, types: {} };
+  const result: BeautySettings = { enabled: true, language: 'auto', defaults: { ...DEFAULT_SETTINGS.defaults }, types: {} };
   if (!isRecord(value)) return result;
+  if (value.language === 'en' || value.language === 'zh' || value.language === 'auto') result.language = value.language;
   result.enabled = typeof value.enabled === 'boolean' ? value.enabled : true;
   result.defaults = { ...result.defaults, ...appearance(value.defaults) };
   if (isRecord(value.types)) {
@@ -139,22 +146,25 @@ const ALLOWED_CONFIG = new Set([
   'venn', 'railroad', 'treeView', 'cynefin', 'swimlane', 'agentflow', 'usecase', 'eventmodeling', 'ishikawa', 'wardley',
 ]);
 const FORBIDDEN = new Set(['__proto__', 'constructor', 'prototype', 'securityLevel', 'secure', 'themeCSS', 'dompurifyConfig']);
-export function parseCustomConfig(text: string): Record<string, unknown> {
+export function parseCustomConfig(text: string, language: UiLanguage = 'en'): Record<string, unknown> {
   if (!text.trim()) return {};
-  if (text.length > 20_000) throw new Error('Custom settings must be shorter than 20,000 characters.');
-  const value: unknown = JSON.parse(text);
-  if (!isRecord(value)) throw new Error('Enter a JSON object.');
+  if (text.length > 20_000) throw new Error(translate(language, 'Custom settings must be shorter than 20,000 characters.'));
+  let value: unknown;
+  try { value = JSON.parse(text); } catch (cause) {
+    throw new Error(translate(language, 'Invalid JSON. Check double quotes, commas, and brackets.'), { cause });
+  }
+  if (!isRecord(value)) throw new Error(translate(language, 'Enter a JSON object.'));
   for (const key of Object.keys(value)) {
-    if (!ALLOWED_CONFIG.has(key)) throw new Error(`Unsupported option: ${key}. Use themeVariables or diagram-specific options.`);
+    if (!ALLOWED_CONFIG.has(key)) throw new Error(translate(language, 'Unsupported option: {key}. Use themeVariables or diagram-specific options.', { key }));
   }
   const inspect = (entry: unknown, depth: number): void => {
-    if (depth > 8) throw new Error('Custom settings are nested too deeply.');
+    if (depth > 8) throw new Error(translate(language, 'Custom settings are nested too deeply.'));
     if (typeof entry === 'string' && /(?:url\s*\(|@import|javascript:|<\/?(?:script|style))/i.test(entry)) {
-      throw new Error('External CSS resources and executable content are not supported.');
+      throw new Error(translate(language, 'External CSS resources and executable content are not supported.'));
     }
     if (Array.isArray(entry)) entry.forEach(item => inspect(item, depth + 1));
     if (isRecord(entry)) for (const [key, item] of Object.entries(entry)) {
-      if (FORBIDDEN.has(key)) throw new Error(`Unsupported option: ${key}.`);
+      if (FORBIDDEN.has(key)) throw new Error(translate(language, 'Unsupported option: {key}.', { key }));
       inspect(item, depth + 1);
     }
   };

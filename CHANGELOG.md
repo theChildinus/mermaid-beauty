@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0
+
+- Set connector width globally or per diagram type. Zero preserves existing widths; manual widths range from 0.1 to 6 pixels. Node borders, chart axes, and quantity-scaled bands remain unchanged.
+- Choose Chinese, English, or Follow Obsidian for settings, commands, and notices. Diagram source and labels stay unchanged.
+- Explain font size, corner radius, and graph spacing directly in the settings panel.
+
+Existing appearance and custom colors are preserved when upgrading. Checked with 44 unit tests, 78 browser renders, and 40 behavior checks. Language switching, command names, line-width changes, saved settings, and plugin reloading were verified in Obsidian 1.13.7 on macOS.
+
 ## 1.1.0
 
 - Customize background, node, label, text, border, connector, and accent colors with pickers or hex values. Light and dark modes can use different colors, globally or per diagram type.

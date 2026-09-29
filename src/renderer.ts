@@ -2,6 +2,7 @@ import type { Mermaid, RenderResult } from 'mermaid';
 import { diagramType, isRecord, parseCustomConfig, resolveAppearance, type BeautySettings } from './settings';
 import { mergeConfig, themeConfig } from './theme';
 import { styleZenUml } from './zenuml-style';
+import { styleConnectorWidth } from './line-width';
 import { flowchartLayout } from './flowchart-layout';
 import { softenOrthogonalPath } from './rounded-path';
 
@@ -55,6 +56,7 @@ export class BeautyRenderer {
         const svg = parsed.documentElement;
         if (svg.localName !== 'svg' || parsed.querySelector('parsererror')) throw new Error('Mermaid returned invalid SVG.');
         if (type === 'zenuml') styleZenUml(svg, config, appearance);
+        styleConnectorWidth(svg, type, appearance.lineWidth);
         // Most Mermaid renderers leave the canvas transparent. Honor the selected
         // background as well as chart renderers that draw their own background.
         const variables: unknown = config.themeVariables;

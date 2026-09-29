@@ -13,7 +13,7 @@ export default [
     },
   },
   {
-    files: ['src/renderer.ts'],
+    files: ['src/renderer.ts', 'src/line-width.ts'],
     // This engine is shared with the real-browser harness, which has no Obsidian DOM extensions.
     rules: { 'obsidianmd/prefer-create-el': 'off' },
   },

@@ -1,4 +1,5 @@
-import { loadMermaid, MarkdownView, Notice, Plugin } from 'obsidian';
+import { getLanguage, loadMermaid, MarkdownView, Notice, Plugin } from 'obsidian';
+import { resolveLanguage, translate, type UiLanguage, type UiText } from './i18n';
 import { attachRenderer, type MermaidHost } from './bridge';
 import { BeautyRenderer } from './renderer';
 import { DEFAULT_SETTINGS, loadSettings, type BeautySettings } from './settings';
@@ -11,18 +12,33 @@ export default class MermaidBeautyPlugin extends Plugin {
   private stopped = false;
   private fallbackReported = false;
   private refreshTimer?: number;
+  private commandLanguage?: UiLanguage;
   private pendingSave: Promise<void> = Promise.resolve();
 
   async onload(): Promise<void> {
     this.settings = loadSettings(await this.loadData());
     this.addSettingTab(new BeautySettingTab(this.app, this));
-    this.addCommand({ id: 'refresh-diagrams', name: 'Refresh diagrams', callback: () => this.refresh() });
-    this.addCommand({
-      id: 'toggle-rendering', name: 'Toggle enhanced rendering',
-      callback: () => { void this.save({ ...this.settings, enabled: !this.settings.enabled }); },
-    });
+    this.updateCommands();
     this.registerEvent(this.app.workspace.on('css-change', () => this.refresh()));
     this.app.workspace.onLayoutReady(() => { void this.start(); });
+  }
+
+  get language(): UiLanguage { return resolveLanguage(this.settings.language, getLanguage()); }
+
+  t = (text: UiText, values?: Record<string, string>): string => translate(this.language, text, values);
+
+  private updateCommands(): void {
+    if (this.commandLanguage === this.language) return;
+    if (this.commandLanguage) {
+      this.removeCommand('refresh-diagrams');
+      this.removeCommand('toggle-rendering');
+    }
+    this.commandLanguage = this.language;
+    this.addCommand({ id: 'refresh-diagrams', name: this.t('Refresh diagrams'), callback: () => this.refresh() });
+    this.addCommand({
+      id: 'toggle-rendering', name: this.t('Toggle enhanced rendering'),
+      callback: () => { void this.save({ ...this.settings, enabled: !this.settings.enabled }); },
+    });
   }
 
   private async start(): Promise<void> {
@@ -36,17 +52,18 @@ export default class MermaidBeautyPlugin extends Plugin {
           // Do not log source or error objects: upstream parse errors can include private note text.
           if (!this.fallbackReported) {
             this.fallbackReported = true;
-            new Notice('Mermaid Beauty could not enhance a diagram. Using the existing renderer; check its syntax or custom settings.');
+            new Notice(this.t('Mermaid Beauty could not enhance a diagram. Using the existing renderer; check its syntax or custom settings.'));
           }
         });
       this.refresh();
     } catch {
-      new Notice('Mermaid Beauty could not start. Existing Mermaid rendering is unchanged.');
+      new Notice(this.t('Mermaid Beauty could not start. Existing Mermaid rendering is unchanged.'));
     }
   }
 
   async save(settings: BeautySettings): Promise<void> {
     this.settings = settings;
+    this.updateCommands();
     const write = this.pendingSave.then(() => this.saveData(settings));
     this.pendingSave = write.catch(() => undefined);
     try {
@@ -54,7 +71,7 @@ export default class MermaidBeautyPlugin extends Plugin {
       this.fallbackReported = false;
       this.refresh();
     } catch {
-      new Notice('Could not save Mermaid Beauty settings. Please try again.');
+      new Notice(this.t('Could not save Mermaid Beauty settings. Please try again.'));
     }
   }
 

@@ -1,3 +1,5 @@
+import { CONNECTORS } from '../src/line-width';
+import type { DiagramType } from '../src/settings';
 import { exportReadmeExamples } from './readme-examples';
 import { fixtures } from './fixtures';
 import { BeautyRenderer } from '../src/renderer';
@@ -199,6 +201,77 @@ run.addEventListener('click', async () => {
       const svg = mount(container, result.svg);
       assert(getComputedStyle(svg.querySelector('.node rect')!).fill === 'rgb(255, 238, 170)', 'Custom palette replaced source color');
     } finally { container.remove(); }
+  });
+  for (const [type, selector] of Object.entries(CONNECTORS) as [DiagramType, string][]) {
+    await test(`Connector width applies to ${type} in light and dark modes`, async () => {
+      const container = document.createElement('div'); output.append(container);
+      try {
+        for (const dark of [false, true]) {
+          document.body.classList.toggle('theme-dark', dark);
+          container.replaceChildren();
+          const result = await renderer.render(`line-width-${++serial}`, fixtures.find(item => item.type === type)!.source,
+            loadSettings({ defaults: { lineWidth: 3 } }), container);
+          const svg = mount(container, result.svg);
+          const connectors = [...svg.querySelectorAll(selector)];
+          assert(connectors.length > 0, `${type} has no matched connectors`);
+          for (const connector of connectors) assert(getComputedStyle(connector).strokeWidth === '3px',
+            `${type} connector has width ${getComputedStyle(connector).strokeWidth}`);
+        }
+      } finally { container.remove(); document.body.classList.remove('theme-dark'); }
+    });
+  }
+  await test('Line widths preserve explicit, dashed, thick and invisible edges', async () => {
+    const source = 'flowchart LR\nA[Browse] --> B[Order]\nB -.-> C[Pay]\nC ==> D[Ship]\nA ~~~ D\nlinkStyle 0 stroke-width:5px';
+    const container = document.createElement('div'); output.append(container);
+    try {
+      const result = await renderer.render(`edge-meaning-${++serial}`, source, loadSettings({ defaults: { lineWidth: 2 } }), container);
+      const svg = mount(container, result.svg);
+      const edges = [...svg.querySelectorAll('.flowchart-link')];
+      assert(edges.some(edge => getComputedStyle(edge).strokeWidth === '5px'), 'Explicit source width lost');
+      assert(getComputedStyle(svg.querySelector('.edge-thickness-thick')!).strokeWidth === '4px', 'Thick edge lost its emphasis');
+      const invisible = svg.querySelector('.edge-thickness-invisible');
+      assert(invisible && getComputedStyle(invisible).strokeWidth === '0px', 'Invisible edge became visible');
+      assert(getComputedStyle(svg.querySelector('.edge-pattern-dotted')!).strokeDasharray !== 'none', 'Dashed edge became solid');
+    } finally { container.remove(); }
+  });
+  await test('Line width leaves node borders, chart axes and quantity-scaled bands unchanged', async () => {
+    const container = document.createElement('div'); output.append(container);
+    try {
+      for (const [type, selector] of [['flowchart', '.node rect'], ['sankey', '.link path'], ['xy', 'path, line']] as const) {
+        const widths: string[][] = [];
+        for (const lineWidth of [0, 4]) {
+          container.replaceChildren();
+          const result = await renderer.render(`width-boundary-${++serial}`, fixtures.find(item => item.type === type)!.source,
+            loadSettings({ defaults: { lineWidth } }), container);
+          const svg = mount(container, result.svg);
+          widths.push([...svg.querySelectorAll(selector)].map(node => getComputedStyle(node).strokeWidth));
+        }
+        assert(widths[0]!.length > 0 && JSON.stringify(widths[0]) === JSON.stringify(widths[1]), `${type} non-connector widths changed`);
+      }
+    } finally { container.remove(); }
+  });
+  await test('Per-type widths and zero defaults remain isolated', async () => {
+    const settings = loadSettings({ defaults: { lineWidth: 2.4 }, types: { sequence: { mode: 'beauty', lineWidth: 0 } } });
+    const container = document.createElement('div'); output.append(container);
+    try {
+      for (const type of ['flowchart', 'sequence', 'flowchart'] as const) {
+        container.replaceChildren();
+        const result = await renderer.render(`width-isolation-${++serial}`, fixtures.find(item => item.type === type)!.source, settings, container);
+        const svg = mount(container, result.svg);
+        const selector = type === 'flowchart' ? '.flowchart-link' : '.messageLine0';
+        assert(getComputedStyle(svg.querySelector(selector)!).strokeWidth === (type === 'flowchart' ? '2.4px' : '1.1px'), `${type} width leaked`);
+      }
+    } finally { container.remove(); }
+  });
+  await test('Line width comparison renders at normal and narrow widths', async () => {
+    for (const lineWidth of [0, 3, 6]) {
+      const card = document.createElement('article'); card.className = 'card light-card';
+      const title = document.createElement('h2'); title.textContent = `Line width ${lineWidth} / light`; card.append(title);
+      const container = document.createElement('div'); container.className = 'mermaid'; card.append(container); output.append(card);
+      const result = await renderer.render(`width-preview-${++serial}`, 'flowchart LR\nA[Browse products] -->|Choose| B[Place order]\nB -->|Pay| C[Receive package]',
+        loadSettings({ defaults: { lineWidth } }), container);
+      mount(container, result.svg); card.dataset.passed = 'true';
+    }
   });
   await test('Native opt-out and unloading preserve the original renderer', async () => {
     let nativeCalls = 0;
