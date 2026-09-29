@@ -1,0 +1,369 @@
+{
+  "checkedAt": "2026-09-29T03:47:20.558Z",
+  "buildHash": "2ad670f866e0350b36ee2d838f307cedd2a1643da36d0f84fae6b3735ae11a8f",
+  "results": [
+    {
+      "name": "Flowchart / light",
+      "passed": true
+    },
+    {
+      "name": "Sequence / light",
+      "passed": true
+    },
+    {
+      "name": "Class / light",
+      "passed": true
+    },
+    {
+      "name": "State / light",
+      "passed": true
+    },
+    {
+      "name": "Entity relationship / light",
+      "passed": true
+    },
+    {
+      "name": "Gantt / light",
+      "passed": true
+    },
+    {
+      "name": "Pie / light",
+      "passed": true
+    },
+    {
+      "name": "Mind map / light",
+      "passed": true
+    },
+    {
+      "name": "Timeline / light",
+      "passed": true
+    },
+    {
+      "name": "Journey / light",
+      "passed": true
+    },
+    {
+      "name": "Git graph / light",
+      "passed": true
+    },
+    {
+      "name": "Quadrant / light",
+      "passed": true
+    },
+    {
+      "name": "Requirement / light",
+      "passed": true
+    },
+    {
+      "name": "C4 / light",
+      "passed": true
+    },
+    {
+      "name": "Sankey / light",
+      "passed": true
+    },
+    {
+      "name": "XY chart / light",
+      "passed": true
+    },
+    {
+      "name": "Block / light",
+      "passed": true
+    },
+    {
+      "name": "Packet / light",
+      "passed": true
+    },
+    {
+      "name": "Architecture / light",
+      "passed": true
+    },
+    {
+      "name": "Kanban / light",
+      "passed": true
+    },
+    {
+      "name": "Radar / light",
+      "passed": true
+    },
+    {
+      "name": "Treemap / light",
+      "passed": true
+    },
+    {
+      "name": "Venn / light",
+      "passed": true
+    },
+    {
+      "name": "Railroad / light",
+      "passed": true
+    },
+    {
+      "name": "Railroad EBNF / light",
+      "passed": true
+    },
+    {
+      "name": "Railroad ABNF / light",
+      "passed": true
+    },
+    {
+      "name": "Railroad PEG / light",
+      "passed": true
+    },
+    {
+      "name": "Tree view / light",
+      "passed": true
+    },
+    {
+      "name": "Cynefin / light",
+      "passed": true
+    },
+    {
+      "name": "Swimlane / light",
+      "passed": true
+    },
+    {
+      "name": "Use case / light",
+      "passed": true
+    },
+    {
+      "name": "Agent flow / light",
+      "passed": true
+    },
+    {
+      "name": "Event modeling / light",
+      "passed": true
+    },
+    {
+      "name": "Ishikawa / light",
+      "passed": true
+    },
+    {
+      "name": "Wardley / light",
+      "passed": true
+    },
+    {
+      "name": "ZenUML / light",
+      "passed": true
+    },
+    {
+      "name": "Info / light",
+      "passed": true
+    },
+    {
+      "name": "Shapes and styles / light",
+      "passed": true
+    },
+    {
+      "name": "Source config / light",
+      "passed": true
+    },
+    {
+      "name": "Flowchart / dark",
+      "passed": true
+    },
+    {
+      "name": "Sequence / dark",
+      "passed": true
+    },
+    {
+      "name": "Class / dark",
+      "passed": true
+    },
+    {
+      "name": "State / dark",
+      "passed": true
+    },
+    {
+      "name": "Entity relationship / dark",
+      "passed": true
+    },
+    {
+      "name": "Gantt / dark",
+      "passed": true
+    },
+    {
+      "name": "Pie / dark",
+      "passed": true
+    },
+    {
+      "name": "Mind map / dark",
+      "passed": true
+    },
+    {
+      "name": "Timeline / dark",
+      "passed": true
+    },
+    {
+      "name": "Journey / dark",
+      "passed": true
+    },
+    {
+      "name": "Git graph / dark",
+      "passed": true
+    },
+    {
+      "name": "Quadrant / dark",
+      "passed": true
+    },
+    {
+      "name": "Requirement / dark",
+      "passed": true
+    },
+    {
+      "name": "C4 / dark",
+      "passed": true
+    },
+    {
+      "name": "Sankey / dark",
+      "passed": true
+    },
+    {
+      "name": "XY chart / dark",
+      "passed": true
+    },
+    {
+      "name": "Block / dark",
+      "passed": true
+    },
+    {
+      "name": "Packet / dark",
+      "passed": true
+    },
+    {
+      "name": "Architecture / dark",
+      "passed": true
+    },
+    {
+      "name": "Kanban / dark",
+      "passed": true
+    },
+    {
+      "name": "Radar / dark",
+      "passed": true
+    },
+    {
+      "name": "Treemap / dark",
+      "passed": true
+    },
+    {
+      "name": "Venn / dark",
+      "passed": true
+    },
+    {
+      "name": "Railroad / dark",
+      "passed": true
+    },
+    {
+      "name": "Railroad EBNF / dark",
+      "passed": true
+    },
+    {
+      "name": "Railroad ABNF / dark",
+      "passed": true
+    },
+    {
+      "name": "Railroad PEG / dark",
+      "passed": true
+    },
+    {
+      "name": "Tree view / dark",
+      "passed": true
+    },
+    {
+      "name": "Cynefin / dark",
+      "passed": true
+    },
+    {
+      "name": "Swimlane / dark",
+      "passed": true
+    },
+    {
+      "name": "Use case / dark",
+      "passed": true
+    },
+    {
+      "name": "Agent flow / dark",
+      "passed": true
+    },
+    {
+      "name": "Event modeling / dark",
+      "passed": true
+    },
+    {
+      "name": "Ishikawa / dark",
+      "passed": true
+    },
+    {
+      "name": "Wardley / dark",
+      "passed": true
+    },
+    {
+      "name": "ZenUML / dark",
+      "passed": true
+    },
+    {
+      "name": "Info / dark",
+      "passed": true
+    },
+    {
+      "name": "Shapes and styles / dark",
+      "passed": true
+    },
+    {
+      "name": "Source config / dark",
+      "passed": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "Every declared diagram family has a fixture",
+      "passed": true
+    },
+    {
+      "name": "Per-type colors remain isolated during concurrent rendering",
+      "passed": true
+    },
+    {
+      "name": "Native opt-out and unloading preserve the original renderer",
+      "passed": true
+    },
+    {
+      "name": "Invalid source does not poison the queue or leak measuring elements",
+      "passed": true
+    },
+    {
+      "name": "Labels cannot introduce executable markup",
+      "passed": true
+    },
+    {
+      "name": "Fit-width diagrams stay inside a 360px container",
+      "passed": true
+    },
+    {
+      "name": "Unscaled diagrams retain their natural width and scroll",
+      "passed": true
+    },
+    {
+      "name": "Semantic shapes and explicit node styles survive",
+      "passed": true
+    },
+    {
+      "name": "ZenUML theme remains isolated between rendered diagrams",
+      "passed": true
+    },
+    {
+      "name": "Flowchart cards fit content and labels reserve capsule space",
+      "passed": true
+    },
+    {
+      "name": "Flowchart line breaks, emphasis, nested groups and loops survive",
+      "passed": true
+    },
+    {
+      "name": "Disposed renderer rejects new work",
+      "passed": true
+    }
+  ],
+  "failed": []
+}

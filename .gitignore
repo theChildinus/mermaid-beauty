@@ -1,0 +1,9 @@
+node_modules/
+main.js
+main.js.map
+dist/
+coverage/
+.preview/
+.test-vault/
+.DS_Store
+*.log

@@ -1,0 +1,34 @@
+{
+  "name": "mermaid-beauty",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A consistent Mermaid theme with per-diagram rendering controls for Obsidian.",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc --noEmit && node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "eslint src",
+    "dev:preview": "node scripts/preview.mjs",
+    "test:render": "node scripts/render-check.mjs",
+    "check": "npm run typecheck && npm test && npm run lint && npm run build",
+    "package": "npm run check && npm run test:render && node scripts/package-release.mjs"
+  },
+  "dependencies": {
+    "@mermaid-js/mermaid-zenuml": "^1.0.1",
+    "mermaid": "12.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^9.0.0",
+    "eslint-plugin-obsidianmd": "latest",
+    "globals": "^16.0.0",
+    "obsidian": "1.13.1",
+    "typescript": "^5.9.0",
+    "vitest": "^5.0.2"
+  },
+  "overrides": {
+    "lodash-es": "4.18.1"
+  }
+}
