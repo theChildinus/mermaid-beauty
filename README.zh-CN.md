@@ -1,103 +1,43 @@
 # Mermaid Beauty
 
-Mermaid Beauty 为 Obsidian 中的 Mermaid 图统一配色、字体、线条和矩形圆角。所有支持的图类型默认启用增强渲染，也可以按类型选择独立样式或恢复原有渲染器。
+为 Obsidian 中的 Mermaid 图统一配色、字体、线条和布局，让图表更易读。安装后直接用于现有的 `mermaid` 代码块，无需修改源码。
 
-默认的薄荷绿配色、胶囊边标签和流程图布局参考了 Codex 的视觉效果。插件使用公开的 Mermaid 引擎和自行编写的主题；字体、图类型和布局参数不同，结果可能与 Codex 有差异。
+[English](README.md)
 
-## 使用前后对比
+## 功能
 
-每组图片使用完全相同的英文 Mermaid 源码。**Before** 是原生 Mermaid 11.13.0（Obsidian 1.13.7 内置的版本），保留默认主题、Dagre 布局、字体和标签，在独立页面中运行，不加载插件。**After** 使用 Mermaid Beauty 的薄荷绿预设。Obsidian 主题可能改变原生配色。
-
-### 网购流程
-
-![流程图使用前后对比](docs/images/flowchart-comparison.jpg)
-
-### 咖啡点单
-
-![时序图使用前后对比](docs/images/sequence-comparison.jpg)
-
-### 图书借阅
-
-![类图使用前后对比](docs/images/class-comparison.jpg)
-
-[查看英文示例源码](tests/browser/readme-sources.ts)
-
-流程图节点按文字长度决定宽度，并保留纵向留白；胶囊标签先测量再布局，减少换行和拥挤。折线采用更舒展的圆角，箭头使用细线样式。
+- **浅色与深色配色**：提供 Mint（薄荷绿）、Slate（石板灰）、Sky（天空蓝）、Rose（玫瑰粉）四套预设，也可自定义文字、节点、轮廓和连线颜色。
+- **外观与布局调整**：支持字号、连线粗细、矩形圆角、间距和宽度适配。适用的关系图默认使用 ELK 布局，也可选择 Dagre。
+- **按图类型设置**：使用全局样式、独立样式或原有渲染器。支持流程图、时序图、类图、思维导图及多种数据图表。
+- **本地渲染**：内置 Mermaid、ELK 和 ZenUML，不上传图表、收集遥测或在线下载渲染器。图中主动引用的外部图片仍可能需要联网。
+- **中英文界面**：可跟随 Obsidian 语言，也可手动切换。
 
 ## 安装
 
-需要 Obsidian 1.12.7 或更高版本。可从[社区市场](https://community.obsidian.md/plugins/mermaid-beauty)安装，也可从 [GitHub Releases](https://github.com/theChildinus/mermaid-beauty/releases) 下载 `main.js`、`manifest.json` 和 `styles.css`，放入笔记库的 `.obsidian/plugins/mermaid-beauty/` 目录，然后重新加载 Obsidian，在第三方插件设置中启用 Mermaid Beauty。
+需要 **Obsidian 1.12.7 或更高版本**。
 
-完整的离线渲染引擎使 `main.js` 约为 5.9 MB，超过 Obsidian Sync Standard 的单文件 5 MB 限制；使用该套餐时，请在每台设备上单独安装插件。
+### 社区插件安装
 
-安装后，原有的 `mermaid` 代码块会使用增强渲染。请关闭其他会接管 Mermaid 渲染器的插件，避免设置相互覆盖。
+打开 **设置 → 第三方插件 → 浏览**，搜索 **Mermaid Beauty**，安装并启用。也可以打开[社区市场页面](https://community.obsidian.md/plugins/mermaid-beauty)。
 
-## 设置
+### 手动安装
 
-在 **设置 → Mermaid Beauty** 中，通过 **界面语言（Language）** 选择“跟随 Obsidian”“中文”或“English”。切换后立即更新插件设置、命令和提示，保留图中的原文。默认跟随 Obsidian，不支持的语言使用英文。
+1. 从 [最新 Release](https://github.com/theChildinus/mermaid-beauty/releases/latest) 下载 `main.js`、`manifest.json` 和 `styles.css`。
+2. 将三个文件放入笔记库的 `.obsidian/plugins/mermaid-beauty/` 目录。
+3. 重新加载 Obsidian，在 **设置 → 第三方插件** 中启用 **Mermaid Beauty**。
 
-默认外观支持全局配色、字号、圆角、间距、连线粗细和宽度适配。**Color palette** 提供 Mint（薄荷绿）、Slate（石板灰）、Sky（天空蓝）和 Rose（玫瑰粉）四套方案，每套都有色块预览，选中后立即应用。
+启用后，已有图表会自动应用样式。在 **设置 → Mermaid Beauty** 中选择配色、调整外观；图表源码中显式指定的样式优先。如果与其他接管 Mermaid 渲染器的插件冲突，请关闭其中一个。
 
-四套方案的浅色、深色模式都以文字为主，连线和轮廓清晰，填色较轻。时序图序号、甘特任务条内文字、饼图数值和 Git 分支标签会按底色调整文字颜色，避免深色底上的文字看不清；高级配置和图内显式指定的文字颜色仍然优先。
+**Obsidian Sync Standard 用户注意**：内置渲染器约 5.9 MB，超过该套餐的单文件 5 MB 限制，请在每台设备上单独安装。移动端仍需真机验证。
 
-选择 **Custom** 后展开自定义编辑器，可分别调整浅色和深色模式的颜色，支持取色器和 HEX 输入。切换预设会保留已填的自定义颜色，再选 **Custom** 即可恢复；**Reset colors** 会清除当前样式的自定义颜色并恢复预设。渲染跟随 Obsidian 当前主题。
+## 效果对比
 
-| 外观选项 | 含义 |
-| --- | --- |
-| 字号（Font size） | 文字大小，单位为像素。 |
-| 圆角半径（Corner radius） | 适用矩形节点的圆角大小，保留菱形、数据库圆柱等语义形状。 |
-| 图形间距（Graph spacing） | 支持此设置的节点与层级间距；数值越大，布局越疏朗。 |
-| 连线粗细（Line width） | 0 保留原有默认粗细；0.1–6 指定像素宽度。 |
+前后使用相同的 [Mermaid 源码](tests/browser/readme-sources.ts)。**Before** 为独立运行的原生 Mermaid 11.13.0，使用默认主题和布局；**After** 使用 Mermaid Beauty 的薄荷绿预设。点击图片可查看高清原图。
 
-连线粗细可全局设置，也可按图类型覆盖。支持流程、时序、类、状态、ER、需求、思维导图、用户旅程、Git、C4、块、架构、铁路、树形、泳道、用例、智能体流程、事件建模、鱼骨、Wardley 和 ZenUML 图的连线。节点边框、图表与时间线坐标轴、按数据比例绘制的桑基图带保持原样。粗线保持普通连线的两倍宽度，隐藏线和虚线保留原有含义；图中显式指定的连线样式优先。没有可调连线的图类型不显示此控件。
+### 订单处理 · 流程图
 
-需要单独调整一种图时，在 **Diagram types** 中选择类型，再选择渲染方式：
+[![流程图使用前后对比](docs/images/flowchart-comparison.png)](docs/images/flowchart-comparison.png)
 
-| 选项 | 行为 |
-| --- | --- |
-| Inherit defaults | 使用全局样式，默认启用增强渲染。 |
-| Enhanced, with custom appearance | 为这种图单独设置样式，也可填写 Mermaid 配置 JSON。 |
-| Existing renderer | 交给原有渲染器处理。 |
+---
 
-每种图可以只覆盖需要的颜色，其余继承全局设置；为该类型选择预设后，则使用独立调色盘。高级 JSON 和图内显式设置的优先级高于颜色控件。
-
-例如，时序图可以单独设置参与者颜色和间距：
-
-```json
-{
-  "themeVariables": {
-    "actorBkg": "#e1effc",
-    "actorTextColor": "#225c95"
-  },
-  "sequence": {
-    "actorMargin": 80,
-    "messageMargin": 40
-  }
-}
-```
-
-配置支持 `themeVariables` 和各图类型的 Mermaid 设置，不接受执行脚本、注入 CSS 或降低安全等级。图内 frontmatter 和节点样式对其显式指定的属性优先。
-
-流程图等关系图默认使用 ELK 布局，也可选择 Dagre。时序图、甘特图、饼图等保留自身的布局方式。圆角只调整适用的矩形，不把判断菱形、数据库圆柱等语义图形改成普通卡片。
-
-四套预设都为图表色块、坐标轴、分组轮廓和标签提供亮暗配色。节点只指定填色时，插件会选择可读的文字色；显式指定的文字色优先。圆形、椭圆等 SVG 节点在布局前根据实际文字边界居中。桑基图保留流量宽度和渐变，去掉会让深色背景下色带变黑的混合模式。
-
-看板图的列和任务卡片使用不同填色，并带有清晰边框。列标题与任务文字左侧对齐，各列等高；较长的工单号和负责人分行显示。任务卡片圆角最多 8 像素，以保留矩形轮廓。图内指定的配色、工单链接和优先级颜色仍然保留。
-
-## 支持范围
-
-插件内置完整的 Mermaid 12.0.0、ELK 和 ZenUML，覆盖流程图、时序图、类图、状态图、ER 图、甘特图、饼图、思维导图、时间线、用户旅程、Git 图、象限图、需求图、C4、Sankey、XY 图、块图、报文图、架构图、看板、雷达图、树状矩形图、Venn 图、语法铁路图、树形目录、Cynefin、泳道图、用例图、Agent flow、事件建模、鱼骨图和 Wardley 图。
-
-不同图类型支持的样式参数不同。新增的 Mermaid 图类型需要通过插件更新提供。未知类型也会尝试增强渲染，失败后交给原有渲染器；如果语法本身有错，原有渲染器也可能失败。
-
-## 使用边界
-
-- 图在本地渲染，插件不上传笔记、收集遥测或在线下载渲染器。图中主动引用的外部图片仍受资源可用性影响。
-- 源码不依赖 Node.js 或 Electron，移动端仍需真机验证。
-- 大图会消耗更多内存，目前限制为 100,000 个源码字符、1,500 条图边。
-- 插件通过 Obsidian 的 `loadMermaid().render` 接入。Obsidian 或其他渲染插件升级可能影响兼容性。
-- 增强时序图在 Mermaid Zoom 全屏中使用自然尺寸，线条随图形同比缩放。这项兼容处理仅作用于全屏副本，笔记内预览和其他图类型保持原有行为。
-
-命令面板提供刷新图表和切换增强渲染两个命令。阅读视图会立即刷新；实时预览或其他插件缓存的图，可能需要切换一次阅读/编辑视图或重新打开笔记。关闭或卸载 Mermaid Beauty 会恢复之前的渲染器。
-
-开发和验证命令见 [英文 README](README.md#development)。
+[MIT 许可证](LICENSE) · [第三方许可声明](THIRD_PARTY_LICENSES.md)

@@ -86,20 +86,20 @@ export class BeautyRenderer {
         svg.classList.add('mermaid-beauty-diagram');
         svg.setAttribute('data-mermaid-beauty-type', type);
         svg.setAttribute('data-mermaid-beauty-fit', String(appearance.fitWidth));
-        if (type === 'sequence') {
-          // Zoom clones a responsive SVG into a shrink-to-fit wrapper, but
-          // calculates its scale from viewBox. Supply that width only to the
-          // modal stylesheet; the original diagram keeps its responsive size.
-          const width = Number(svg.getAttribute('viewBox')?.split(/[\s,]+/)[2]);
-          if (Number.isFinite(width) && width > 0) {
-            (svg as unknown as SVGSVGElement).style.setProperty('--mermaid-beauty-sequence-width', `${width}px`);
-          }
-        }
         // Mermaid's info renderer has fixed dimensions but omits its viewBox.
         if (type === 'info' && !svg.hasAttribute('viewBox')) svg.setAttribute('viewBox', '0 0 400 100');
+        // Zoom measures its detached clone from viewBox, then scales a
+        // shrink-to-fit wrapper. All renderers need that same viewport in the
+        // modal, including those with percentage or font-scaled dimensions.
+        // Custom properties survive cloning without resizing the inline SVG.
+        const bounds = svg.getAttribute('viewBox')?.trim().split(/[\s,]+/).map(Number);
+        if (bounds?.length === 4 && bounds.every(Number.isFinite) && bounds[2]! > 0 && bounds[3]! > 0) {
+          const style = (svg as unknown as SVGSVGElement).style;
+          style.setProperty('--mermaid-beauty-width', `${bounds[2]}px`);
+          style.setProperty('--mermaid-beauty-height', `${bounds[3]}px`);
+        }
         if (!appearance.fitWidth) {
           (svg as unknown as SVGSVGElement).style.removeProperty('max-width');
-          const bounds = svg.getAttribute('viewBox')?.split(/[\s,]+/).map(Number);
           if (bounds?.length === 4 && bounds[2]! > 0 && bounds[3]! > 0) {
             const scale = type === 'zenuml' ? appearance.fontSize / 16 : 1;
             svg.setAttribute('width', String(bounds[2]! * scale));

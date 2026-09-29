@@ -8,6 +8,7 @@ import { attachRenderer, type MermaidHost } from '../../src/bridge';
 import { checkPaletteContrast } from './contrast-checks';
 import { checkKanban } from './kanban-checks';
 import { checkReadability } from './readability-checks';
+import { checkZoom } from './zoom-checks';
 
 declare const BUILD_HASH: string;
 const output = document.querySelector('#results')!;
@@ -19,7 +20,7 @@ async function exportExamples(): Promise<void> {
   exportButton.disabled = true; run.disabled = true;
   try {
     await exportReadmeExamples(document.querySelector('#readme-comparisons')!);
-    status.textContent = 'Saved 3 comparison SVGs. Capture the rendered panels as JPEGs for the README.';
+    status.textContent = 'Saved README comparison images at 3600px.';
   } catch (error) { status.textContent = String(error); }
   finally { exportButton.disabled = false; run.disabled = false; }
 }
@@ -365,66 +366,7 @@ async function runChecks(): Promise<void> {
       assert(!container.classList.contains('mermaid-beauty-container'), 'A late binding reactivated styling after unload');
     } finally { detach(); container.remove(); }
   });
-  await test('Zoom sequence clones use the dimensions expected by fit-to-view', async () => {
-    const source = 'sequenceDiagram\nparticipant A as Client\nparticipant B as Service\nloop Poll\nA->>B: Fetch the next available work item\nactivate B\nalt Ready\nB-->>A: Return work\nelse Waiting\nA->>A: Retry later\nend\nNote over A,B: Keep request and response order\ndeactivate B\nend';
-    const host = document.createElement('div'); output.append(host);
-    try {
-      for (const dark of [false, true]) for (const fitWidth of [false, true]) for (const width of [320, 900]) {
-        document.body.classList.toggle('theme-dark', dark);
-        host.replaceChildren(); host.style.width = `${width}px`;
-        const inline = document.createElement('div'); inline.className = 'mermaid'; host.append(inline);
-        const result = await renderer.render(`zoom-size-${++serial}`, source,
-          loadSettings({ defaults: { fitWidth, lineWidth: 1.5 } }), inline);
-        const svg = mount(inline, result.svg);
-        const inlineWidth = svg.getBoundingClientRect().width;
-        const bounds = svg.viewBox.baseVal;
-        assert(Math.abs(inlineWidth - (fitWidth ? Math.min(width, bounds.width) : bounds.width)) < 1,
-          'Sequence inline sizing changed');
-        // Reproduce Zoom 1.7's detached clone and shrink-to-fit wrapper. Its
-        // initial measurement falls back to viewBox before insertion into DOM.
-        const wrapper = document.createElement('div'); wrapper.className = 'mermaid-zoom-modal-wrapper';
-        const clone = svg.cloneNode(true) as SVGSVGElement;
-        clone.style.removeProperty('width'); clone.style.removeProperty('height');
-        clone.style.maxWidth = `${bounds.width}px`;
-        wrapper.append(clone);
-        assert(clone.getBoundingClientRect().width === 0, 'Clone should be detached before Zoom measures it');
-        host.append(wrapper);
-        assert(Math.abs(clone.getBoundingClientRect().width - bounds.width) < 1, 'Zoom clone has the 300px fallback width');
-        const line = clone.querySelector<SVGGraphicsElement>('.messageLine0')!;
-        for (const scale of [0.25, 1, 3]) {
-          wrapper.style.transform = `scale(${scale})`;
-          assert(Math.abs(clone.getBoundingClientRect().width - bounds.width * scale) < 1, 'Zoom width does not match its scale');
-          assert(Math.abs(clone.getBoundingClientRect().height - bounds.height * scale) < 1, 'Zoom height does not match its scale');
-          assert(Math.abs(line.getScreenCTM()!.a - scale) < 0.01, 'Extra SVG scaling distorts strokes and markers');
-        }
-        assert(Math.abs(svg.getBoundingClientRect().width - inlineWidth) < 1, 'Opening Zoom changed the original diagram');
-      }
-    } finally { host.remove(); document.body.classList.remove('theme-dark'); }
-  });
-  await test('Zoom stroke compatibility is limited to enhanced sequence diagrams', async () => {
-    const wrapper = document.createElement('div'); wrapper.className = 'mermaid-zoom-modal-wrapper'; output.append(wrapper);
-    try {
-      for (const original of output.querySelectorAll<SVGSVGElement>('.card .mermaid > svg')) {
-        const clone = original.cloneNode(true) as SVGSVGElement;
-        wrapper.replaceChildren(clone);
-        const sequence = original.dataset.mermaidBeautyType === 'sequence';
-        const selector = sequence ? '.messageLine0, .messageLine1, .actor-line, .loopLine, rect, marker path' : 'text';
-        for (const element of clone.querySelectorAll(selector)) {
-          assert(getComputedStyle(element).vectorEffect === (sequence ? 'none' : 'non-scaling-stroke'),
-            `Zoom stroke override has wrong scope: ${original.dataset.mermaidBeautyType}`);
-        }
-        const originalLine = original.querySelector('.messageLine0');
-        if (originalLine) {
-          assert(getComputedStyle(originalLine).vectorEffect === 'none', 'Inline sequence strokes changed');
-          assert(getComputedStyle(clone.querySelector('.messageLine0')!).strokeWidth === getComputedStyle(originalLine).strokeWidth,
-            'Configured sequence line width changed');
-          clone.classList.remove('mermaid-beauty-diagram');
-          assert(getComputedStyle(clone.querySelector('.messageLine0')!).vectorEffect === 'non-scaling-stroke',
-            'Override reached an SVG without the Beauty class');
-        }
-      }
-    } finally { wrapper.remove(); }
-  });
+  await checkZoom(renderer, output, test);
   await test('Semantic shapes and explicit node styles survive', async () => {
     const card = Array.from(output.querySelectorAll('.card')).find(card => card.querySelector('h2')?.textContent === 'Shapes and styles / light')!;
     assert(card.querySelector('.node polygon, .node path'), 'Decision or database shape lost');

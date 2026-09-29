@@ -1,38 +1,19 @@
+import type { PaletteName } from '../../src/settings';
 import type { Fixture } from './fixtures';
 
-export const readmeExamples: Fixture[] = [
-  { name: 'Online shopping', type: 'flowchart', source: `flowchart LR
-  Browse[Browse products] -->|Choose an item| Cart[Shopping cart]
-  Cart -->|Check out| Payment{Payment accepted?}
-  Payment -->|Yes| Delivery[Ship the order]
-  Payment -->|No| Retry[Try another card]
-  Delivery -->|Parcel arrives| Home[Enjoy your purchase]` },
-  { name: 'Ordering coffee', type: 'sequence', source: `sequenceDiagram
-  participant Customer
-  participant Cashier
-  participant Barista
-  Customer->>Cashier: Order a latte
-  Cashier->>Customer: Ask for payment
-  Customer->>Cashier: Pay
-  Cashier->>Barista: Make a latte
-  activate Barista
-  Note right of Barista: Brew fresh coffee
-  Barista-->>Customer: Hand over the latte
-  deactivate Barista` },
-  { name: 'Library books', type: 'class', source: `classDiagram
-  class Library {
-    +String name
-    +findBook()
-  }
-  class Book {
-    +String title
-    +Boolean available
-  }
-  class Member {
-    +String name
-    +borrowBook()
-    +returnBook()
-  }
-  Library "1" --> "many" Book : has
-  Member --> Book : borrows` },
+export interface ReadmeExample extends Fixture { palette: PaletteName; }
+
+export const readmeExamples: ReadmeExample[] = [
+  { name: 'Order fulfillment', type: 'flowchart', palette: 'mint', source: `flowchart LR
+  Order[Place an order] --> Payment{Payment approved?}
+  Payment -->|Yes| Stock{In stock?}
+  Payment -->|No| Retry[Choose another card]
+  Retry --> Payment
+  Stock -->|Available| Pack[Pack the order]
+  Stock -->|Sold out| Notify[Notify the customer]
+  Notify --> Choice{Wait or cancel?}
+  Choice -->|Wait| Stock
+  Choice -->|Cancel| Refund[Issue a refund]
+  Pack --> Ship[Ship the parcel]
+  Ship --> Done[Enjoy your purchase]` },
 ];

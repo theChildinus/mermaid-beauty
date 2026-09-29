@@ -11,10 +11,11 @@
 .mermaid-beauty-diagram[data-mermaid-beauty-fit="false"] { max-width: none; }
 /* Zoom measures its detached clone using viewBox, then scales its wrapper.
    Keep that clone at the same size and scale strokes with text and markers. */
-.mermaid-zoom-modal-wrapper svg.mermaid-beauty-diagram[data-mermaid-beauty-type="sequence"] {
-  width: var(--mermaid-beauty-sequence-width);
+.mermaid-zoom-modal-wrapper svg.mermaid-beauty-diagram {
+  width: var(--mermaid-beauty-width);
+  height: var(--mermaid-beauty-height);
 }
-.mermaid-zoom-modal-wrapper svg.mermaid-beauty-diagram[data-mermaid-beauty-type="sequence"] * {
+.mermaid-zoom-modal-wrapper svg.mermaid-beauty-diagram * {
   vector-effect: none;
 }
 .mermaid-beauty-settings .mermaid-beauty-config { width: 100%; min-height: 150px; font-family: var(--font-monospace); }

@@ -33,16 +33,29 @@ async function nativeExamples(): Promise<NativeResult> {
   }
 }
 
-function panel(source: string, y: number, height: number, title: string, subtitle: string): string {
+function panel(source: string, x: number, y: number, width: number, height: number, title: string, subtitle: string): string {
   const svg = new DOMParser().parseFromString(source, 'image/svg+xml').documentElement;
-  svg.setAttribute('x', '32'); svg.setAttribute('y', String(y + 72));
-  svg.setAttribute('width', '1136'); svg.setAttribute('height', String(height - 100));
+  svg.setAttribute('x', String(x + 24)); svg.setAttribute('y', String(y + 72));
+  svg.setAttribute('width', String(width - 48)); svg.setAttribute('height', String(height - 100));
   svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
   svg.removeAttribute('style');
-  return `<rect x="8" y="${y}" width="1184" height="${height}" rx="16" fill="#ffffff" stroke="#dce5df"/>
-    <text x="32" y="${y + 32}" font-size="20" font-weight="600" fill="#24382d">${title}</text>
-    <text x="32" y="${y + 55}" font-size="13" fill="#66736c">${subtitle}</text>
+  return `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="16" fill="#ffffff" stroke="#dce5df"/>
+    <text x="${x + 24}" y="${y + 32}" font-size="20" font-weight="600" fill="#24382d">${title}</text>
+    <text x="${x + 24}" y="${y + 55}" font-size="13" fill="#66736c">${subtitle}</text>
     ${new XMLSerializer().serializeToString(svg)}`;
+}
+
+/** Rasterize the self-contained SVG at 3× resolution, including HTML labels. */
+async function pngDataUrl(svg: string, height: number): Promise<string> {
+  const picture = new Image();
+  picture.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  await picture.decode();
+  const canvas = document.createElement('canvas');
+  canvas.width = 3600; canvas.height = height * 3;
+  const context = canvas.getContext('2d');
+  if (!context) throw new Error('Could not create the README image canvas.');
+  context.drawImage(picture, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL('image/png');
 }
 
 /** Both sides use exactly the same source and canvas width; only rendering changes. */
@@ -60,13 +73,12 @@ export async function exportReadmeExamples(container: HTMLElement): Promise<void
       if (!before || before.source !== example.source || before.svg.includes('mermaid-beauty')) {
         throw new Error('The native baseline must use the same source and contain no plugin output.');
       }
-      const after = await renderer.render(`after-${example.type}`, example.source, loadSettings({}));
-      const rowHeight = example.type === 'flowchart' ? 360 : 430;
-      const height = rowHeight * 2 + 32;
+      const after = await renderer.render(`after-${example.type}`, example.source, loadSettings({ defaults: { palette: example.palette } }));
+      const height = 780;
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="${height}" viewBox="0 0 1200 ${height}" font-family="system-ui, sans-serif" role="img" aria-label="${example.name}: before and after Mermaid Beauty">
         <rect width="1200" height="${height}" fill="#f5f7f6"/>
-        ${panel(before.svg, 8, rowHeight, 'Before', 'Native Mermaid 11.13.0 · default theme and layout')}
-        ${panel(after.svg, rowHeight + 24, rowHeight, 'After', 'Mermaid Beauty · Mint preset')}
+        ${panel(before.svg, 8, 8, 1184, 374, 'Before', 'Native Mermaid 11.13.0 · default theme and layout')}
+        ${panel(after.svg, 8, 398, 1184, 374, 'After', `Mermaid Beauty · ${example.palette.charAt(0).toUpperCase() + example.palette.slice(1)} preset`)}
       </svg>`;
       const article = document.createElement('article');
       article.id = `readme-${example.type}`;
@@ -76,7 +88,7 @@ export async function exportReadmeExamples(container: HTMLElement): Promise<void
       const drawing = document.importNode(parsed.documentElement, true) as unknown as SVGSVGElement;
       drawing.classList.add('preview-readme-svg');
       article.append(drawing); container.append(article);
-      assets.push({ name: example.type, svg, baseline: native.baseline });
+      assets.push({ name: example.type, svg, png: await pngDataUrl(svg, height), baseline: native.baseline });
     }
     const response = await fetch('/readme-assets', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(assets) });
     if (!response.ok) throw new Error('Could not save README comparison images.');
