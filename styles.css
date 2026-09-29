@@ -20,9 +20,6 @@
 }
 .mermaid-beauty-settings .mermaid-beauty-config { width: 100%; min-height: 150px; font-family: var(--font-monospace); }
 .mermaid-beauty-settings .mermaid-beauty-error { color: var(--text-error); white-space: pre-wrap; }
-.mermaid-beauty-settings .mermaid-beauty-section { margin-top: 24px; }
-.mermaid-beauty-settings .mermaid-beauty-help { color: var(--text-muted); line-height: 1.6; }
-.mermaid-beauty-settings .mermaid-beauty-colors { padding-left: 16px; border-left: 2px solid var(--background-modifier-border); }
 .mermaid-beauty-settings input.mermaid-beauty-hex { width: 104px; font-family: var(--font-monospace); }
 .mermaid-beauty-settings input.mermaid-beauty-hex.is-invalid { border-color: var(--text-error); }
 .mermaid-beauty-settings .mermaid-beauty-palettes { display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 8px; margin: 0 0 20px; }
