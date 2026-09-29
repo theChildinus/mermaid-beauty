@@ -1,4 +1,5 @@
-import { PluginSettingTab, Setting, type App } from 'obsidian';
+import { PluginSettingTab, Setting, type App, type ColorComponent, type TextComponent } from 'obsidian';
+import { COLOR_FIELDS, normalizeColor, paletteColors, type ColorMode } from './colors';
 import type MermaidBeautyPlugin from './main';
 import { DIAGRAM_TYPES, PALETTES, parseCustomConfig, resolveAppearance,
   type Appearance, type DiagramType, type LayoutName, type PaletteName, type RenderMode } from './settings';
@@ -6,6 +7,7 @@ import { supportsGraphLayout } from './theme';
 
 export class BeautySettingTab extends PluginSettingTab {
   private selected: DiagramType = 'flowchart';
+  private colorMode: ColorMode = 'light';
   constructor(app: App, private plugin: MermaidBeautyPlugin) { super(app, plugin); }
 
   display(): void {
@@ -33,7 +35,7 @@ export class BeautySettingTab extends PluginSettingTab {
       .addDropdown(dropdown => dropdown.addOptions({ inherit: 'Inherit defaults', beauty: 'Enhanced, with custom appearance', native: 'Existing renderer' })
         .setValue(override.mode ?? 'inherit').onChange(async value => {
           const mode = value as RenderMode;
-          const types = { ...this.plugin.settings.types, [type]: mode === 'inherit' ? {} : { ...override, mode } };
+          const types = { ...this.plugin.settings.types, [type]: mode === 'inherit' ? {} : { ...this.plugin.settings.types[type], mode } };
           await this.plugin.save({ ...this.plugin.settings, types });
           this.display();
         }));
@@ -73,8 +75,51 @@ export class BeautySettingTab extends PluginSettingTab {
         ? { ...current, types: { ...current.types, [type]: { ...current.types[type], ...patch } } }
         : { ...current, defaults: { ...current.defaults, ...patch } });
     };
-    new Setting(container).setName('Palette').addDropdown(dropdown => dropdown.addOptions(PALETTES)
-      .setValue(value.palette).onChange(async palette => update({ palette: palette as PaletteName })));
+    new Setting(container).setName('Color preset').setDesc('A starting point for your colors. Choosing a preset resets custom colors in both modes.')
+      .addDropdown(dropdown => dropdown.addOptions(PALETTES).setValue(value.palette).onChange(async palette => {
+        await update({ palette: palette as PaletteName, colors: undefined });
+        this.display();
+      }));
+    new Setting(container).setName('Customize colors').setDesc('Edit light and dark colors separately. Rendering follows the Obsidian theme.')
+      .addDropdown(dropdown => dropdown.addOptions({ light: 'Light mode', dark: 'Dark mode' }).setValue(this.colorMode)
+        .onChange(mode => { this.colorMode = mode as ColorMode; this.display(); }));
+    const mode = this.colorMode;
+    const colors = paletteColors(value, mode === 'dark');
+    const colorContainer = container.createDiv({ cls: 'mermaid-beauty-colors' });
+    for (const key of Object.keys(COLOR_FIELDS) as (keyof typeof COLOR_FIELDS)[]) {
+      let picker: ColorComponent;
+      let hex: TextComponent;
+      const saveColor = async (input: string): Promise<void> => {
+        const color = normalizeColor(input);
+        hex.inputEl.setCustomValidity(color ? '' : 'Enter a hex color, such as #26845b.');
+        hex.inputEl.toggleClass('is-invalid', !color);
+        hex.inputEl.setAttribute('aria-invalid', String(!color));
+        if (!color) { hex.inputEl.reportValidity(); return; }
+        picker.setValue(color);
+        hex.setValue(color);
+        const current = type ? this.plugin.settings.types[type] : this.plugin.settings.defaults;
+        await update({ colors: { ...current?.colors, [mode]: { ...current?.colors?.[mode], [key]: color } } });
+      };
+      const row = new Setting(colorContainer).setName(COLOR_FIELDS[key])
+        .addColorPicker(component => {
+          picker = component;
+          picker.setValue(colors[key]).onChange(color => { void saveColor(color); });
+        })
+        .addText(component => {
+          hex = component;
+          hex.setValue(colors[key]);
+          hex.inputEl.addClass('mermaid-beauty-hex');
+          hex.inputEl.setAttribute('aria-label', `${COLOR_FIELDS[key]} hex color`);
+          hex.inputEl.spellcheck = false;
+          hex.inputEl.addEventListener('change', () => { void saveColor(hex.getValue()); });
+        });
+      row.controlEl.querySelector('input[type="color"]')?.setAttribute('aria-label', `${COLOR_FIELDS[key]} color`);
+    }
+    new Setting(container).setName('Reset colors').setDesc('Remove custom colors for this appearance in both light and dark modes.')
+      .addButton(button => button.setButtonText('Reset colors').onClick(async () => {
+        await update({ colors: undefined });
+        this.display();
+      }));
     for (const [key, name, min, max] of [
       ['fontSize', 'Font size', 10, 28], ['radius', 'Corner radius', 0, 24], ['spacing', 'Graph spacing', 20, 120],
     ] as const) {

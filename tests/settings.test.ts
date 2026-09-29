@@ -44,3 +44,37 @@ describe('custom rendering options', () => {
     expect(() => parseCustomConfig(value)).toThrow();
   });
 });
+
+describe('custom palettes', () => {
+  it('loads old presets without changing their colors', () => {
+    const settings = loadSettings({ defaults: { palette: 'sky' } });
+    expect(themeConfig(settings.defaults, 'flowchart', false).themeVariables.primaryColor).toBe('#e1effc');
+    expect(themeConfig(settings.defaults, 'flowchart', true).themeVariables.primaryColor).toBe('#233b53');
+  });
+  it('persists valid light and dark colors and rejects unsafe values', () => {
+    const settings = loadSettings({ defaults: { colors: {
+      light: { surface: ' #ABC ', text: '#123456', line: 'red;stroke:url(x)', border: null, unknown: '#ffffff' },
+      dark: { surface: '#aabbcc', accent: 'url(https://example.com)' },
+    } } });
+    expect(settings.defaults.colors).toEqual({ light: { surface: '#aabbcc', text: '#123456' }, dark: { surface: '#aabbcc' } });
+    expect(loadSettings(JSON.parse(JSON.stringify(settings)))).toEqual(settings);
+  });
+  it('inherits colors per mode and per role without leaking type overrides', () => {
+    const settings = loadSettings({ defaults: { colors: { light: { surface: '#abcdef', text: '#112233' }, dark: { line: '#ddeeff' } } },
+      types: { sequence: { mode: 'beauty', colors: { light: { surface: '#fedcba' } } } } });
+    const sequence = resolveAppearance(settings, 'sequence');
+    expect(themeConfig(sequence, 'sequence', false).themeVariables).toMatchObject({ actorBkg: '#fedcba', actorTextColor: '#112233' });
+    expect(themeConfig(sequence, 'sequence', true).themeVariables.actorLineColor).toBe('#ddeeff');
+    expect(themeConfig(resolveAppearance(settings, 'flowchart'), 'flowchart', false).themeVariables.primaryColor).toBe('#abcdef');
+    settings.defaults.colors!.light!.text = '#445566';
+    expect(themeConfig(resolveAppearance(settings, 'sequence'), 'sequence', false).themeVariables.actorTextColor).toBe('#445566');
+  });
+  it('uses a selected per-type preset instead of global custom colors', () => {
+    const settings = loadSettings({ defaults: { colors: { light: { surface: '#abcdef' } } }, types: { sequence: { palette: 'rose' } } });
+    expect(themeConfig(resolveAppearance(settings, 'sequence'), 'sequence', false).themeVariables.actorBkg).toBe('#f8e5ed');
+  });
+  it('lets advanced Mermaid options override palette colors', () => {
+    const settings = loadSettings({ defaults: { colors: { light: { surface: '#abcdef' } } } });
+    expect(themeConfig(settings.defaults, 'sequence', false, { themeVariables: { actorBkg: '#fedcba' } }).themeVariables.actorBkg).toBe('#fedcba');
+  });
+});

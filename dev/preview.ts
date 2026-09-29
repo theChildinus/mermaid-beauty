@@ -1,3 +1,4 @@
+import { exportReadmeExamples } from './readme-examples';
 import { fixtures } from './fixtures';
 import { BeautyRenderer } from '../src/renderer';
 import { DIAGRAM_TYPES, diagramType, loadSettings } from '../src/settings';
@@ -7,6 +8,15 @@ declare const BUILD_HASH: string;
 const output = document.querySelector('#results')!;
 const status = document.querySelector('#status')!;
 const run = document.querySelector<HTMLButtonElement>('#run')!;
+const exportButton = document.querySelector<HTMLButtonElement>('#export-readme')!;
+exportButton.addEventListener('click', async () => {
+  exportButton.disabled = true; run.disabled = true;
+  try {
+    await exportReadmeExamples(document.querySelector('#readme-comparisons')!);
+    status.textContent = 'Saved 3 English before/after comparisons to docs/images.';
+  } catch (error) { status.textContent = String(error); }
+  finally { exportButton.disabled = false; run.disabled = false; }
+});
 const compact = document.querySelector<HTMLInputElement>('#compact')!;
 const dark = document.querySelector<HTMLInputElement>('#dark')!;
 const filter = document.querySelector<HTMLSelectElement>('#filter')!;
@@ -50,7 +60,7 @@ function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
 }
 run.addEventListener('click', async () => {
-  run.disabled = true;
+  run.disabled = true; exportButton.disabled = true;
   output.replaceChildren();
   const renderer = new BeautyRenderer();
   const results: { name: string; passed: boolean; error?: string }[] = [];
@@ -126,6 +136,50 @@ run.addEventListener('click', async () => {
     assert(rendered[0]!.svg.includes('#f8e5ed'), 'Custom sequence palette missing');
     assert(rendered[1]!.svg.includes('#ddf3e7'), 'Flowchart defaults missing');
     assert(!rendered[1]!.svg.includes('#f8e5ed'), 'Sequence options leaked to flowchart');
+  });
+  await test('Custom light and dark colors reach flowcharts, sequences, charts and ZenUML', async () => {
+    const colors = {
+      light: { surface: '#ffe4c4', text: '#713f12', border: '#b45309', label: '#fff7ed', line: '#78716c', accent: '#ea580c', background: '#fffbeb' },
+      dark: { surface: '#4c1d95', text: '#ede9fe', border: '#8b5cf6', label: '#2e1065', line: '#c4b5fd', accent: '#a78bfa', background: '#18181b' },
+    };
+    const settings = loadSettings({ defaults: { colors }, types: { sequence: { mode: 'beauty', colors: { light: { surface: '#aaddff' } } } } });
+    const container = document.createElement('div'); output.append(container);
+    const rgb = (hex: string): string => `rgb(${[1, 3, 5].map(index => parseInt(hex.slice(index, index + 2), 16)).join(', ')})`;
+    try {
+      for (const mode of ['light', 'dark'] as const) {
+        document.body.classList.toggle('theme-dark', mode === 'dark');
+        for (const type of ['flowchart', 'sequence', 'xy', 'zenuml'] as const) {
+          container.replaceChildren();
+          const result = await renderer.render(`custom-${++serial}`, fixtures.find(item => item.type === type)!.source, settings, container);
+          const svg = mount(container, result.svg);
+          const c = colors[mode];
+          assert(getComputedStyle(svg).backgroundColor === rgb(c.background), `${type} background missing`);
+          if (type === 'flowchart') {
+            const node = svg.querySelector('.node rect')!;
+            assert(getComputedStyle(node).fill === rgb(c.surface), 'Custom node fill missing');
+            assert(getComputedStyle(node).stroke === rgb(c.border), 'Custom border missing');
+            assert(getComputedStyle(svg.querySelector('.node text')!).fill === rgb(c.text), 'Custom text missing');
+            assert(getComputedStyle(svg.querySelector('.edgeLabel rect')!).fill === rgb(c.label), 'Custom label fill missing');
+            assert(getComputedStyle(svg.querySelector('.flowchart-link')!).stroke === rgb(c.line), 'Custom connector missing');
+          } else if (type === 'sequence') {
+            assert(getComputedStyle(svg.querySelector('rect.actor')!).fill === rgb(mode === 'light' ? '#aaddff' : c.surface), 'Per-type or dark inheritance failed');
+          } else if (type === 'zenuml') {
+            assert(getComputedStyle(svg.querySelector('.participant-box')!).fill === rgb(c.surface), 'Custom ZenUML fill missing');
+          } else {
+            assert(Array.from(svg.querySelectorAll('rect, path')).some(element => getComputedStyle(element).fill === rgb(c.accent)), 'Custom chart accent missing');
+          }
+        }
+      }
+    } finally { container.remove(); document.body.classList.remove('theme-dark'); }
+  });
+  await test('Source colors override a custom palette', async () => {
+    const result = await renderer.render(`source-custom-${++serial}`, fixtures.find(item => item.name === 'Source config')!.source,
+      loadSettings({ defaults: { colors: { light: { surface: '#fedcba' } } } }));
+    const container = document.createElement('div'); output.append(container);
+    try {
+      const svg = mount(container, result.svg);
+      assert(getComputedStyle(svg.querySelector('.node rect')!).fill === 'rgb(255, 238, 170)', 'Custom palette replaced source color');
+    } finally { container.remove(); }
   });
   await test('Native opt-out and unloading preserve the original renderer', async () => {
     let nativeCalls = 0;
@@ -226,5 +280,5 @@ run.addEventListener('click', async () => {
   report.textContent = JSON.stringify({ buildHash: BUILD_HASH, results, checks, failed }, null, 2);
   output.append(report);
   await fetch('/report', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ buildHash: BUILD_HASH, results, checks, failed, examples }) });
-  run.disabled = false;
+  run.disabled = false; exportButton.disabled = false;
 });

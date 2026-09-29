@@ -1,6 +1,5 @@
 {
-  "checkedAt": "2026-09-29T03:47:20.558Z",
-  "buildHash": "2ad670f866e0350b36ee2d838f307cedd2a1643da36d0f84fae6b3735ae11a8f",
+  "buildHash": "7da77f65b1bcbf3c98be34d090c4941471638cf150c1f993b6ec51390e8b0451",
   "results": [
     {
       "name": "Flowchart / light",
@@ -325,6 +324,14 @@
       "passed": true
     },
     {
+      "name": "Custom light and dark colors reach flowcharts, sequences, charts and ZenUML",
+      "passed": true
+    },
+    {
+      "name": "Source colors override a custom palette",
+      "passed": true
+    },
+    {
       "name": "Native opt-out and unloading preserve the original renderer",
       "passed": true
     },
@@ -365,5 +372,6 @@
       "passed": true
     }
   ],
-  "failed": []
+  "failed": [],
+  "checkedAt": "2026-09-29T04:17:59.611Z"
 }

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+
+- Customize background, node, label, text, border, connector, and accent colors with pickers or hex values. Light and dark modes can use different colors, globally or per diagram type.
+- Keep existing palette choices and use the four presets as starting points.
+- Show English before/after comparisons for flowcharts, sequence diagrams, and class diagrams in both READMEs.
+
 ## 1.0.0
 
 Initial release of Mermaid Beauty for Obsidian.

@@ -4,11 +4,33 @@ Give Mermaid diagrams in Obsidian a consistent appearance: soft colors, rounded 
 
 [中文说明](README.zh-CN.md)
 
-![Mint flowchart with rounded routes and capsule labels](docs/images/flowchart.svg)
+## Before and after
+
+Each pair uses the same English Mermaid source at the same canvas width. **Before** uses Mermaid 12's default theme and layout with SVG text labels; **After** uses Mermaid Beauty's Mint preset. Obsidian themes and Mermaid versions can change the baseline appearance.
+
+### Flowchart
+
+Rounded routes, capsule labels, and nodes sized to their content.
+
+![Flowchart before and after Mermaid Beauty](docs/images/flowchart-comparison.png)
+
+### Sequence diagram
+
+A shared palette and typography for participants, messages, and notes.
+
+![Sequence diagram before and after Mermaid Beauty](docs/images/sequence-comparison.png)
+
+### Class diagram
+
+Soft cards and consistent labels, with relationships preserved.
+
+![Class diagram before and after Mermaid Beauty](docs/images/class-comparison.png)
+
+[Example sources](dev/readme-examples.ts)
 
 ## Features
 
-- Four palettes — Mint, Slate, Sky, and Rose — with light and dark variants.
+- Custom colors for background, nodes, labels, text, borders, connectors, and accents, with separate light and dark settings. Mint, Slate, Sky, and Rose presets provide starting points.
 - Controls for font size, rectangular corner radius, graph spacing, layout, and fitting diagrams to the note width.
 - Per-type JSON options for Mermaid colors and diagram settings.
 - The complete Mermaid 12.0.0 engine, including ELK, plus ZenUML, bundled locally.
@@ -32,13 +54,17 @@ To build from source, run `npm ci` and `npm run build`, then copy the same three
 
 ## Configure
 
-Open **Settings → Mermaid Beauty**. The defaults apply to all diagram types. Under **Diagram types**, choose a type and a renderer:
+Open **Settings → Mermaid Beauty**. Under **Customize colors**, choose light or dark mode, then use the color pickers or enter hex colors such as `#26845b`. Rendering follows Obsidian's current theme. Choosing a **Color preset** resets custom colors in both modes; **Reset colors** removes overrides for the current appearance.
+
+The defaults apply to all diagram types. Under **Diagram types**, choose a type and a renderer:
 
 | Setting | Result |
 | --- | --- |
 | Inherit defaults | Use enhanced rendering with the global appearance. |
 | Enhanced, with custom appearance | Override appearance and Mermaid options for this type. |
 | Existing renderer | Leave this type to Obsidian or the preceding renderer. |
+
+A type can override individual colors while inheriting the remaining global colors. Choosing a preset for that type gives it its own palette. Advanced JSON and diagram source settings take precedence over the color controls.
 
 For example, select **Sequence**, choose a custom appearance, and apply:
 
@@ -95,6 +121,8 @@ Open `http://127.0.0.1:4173`, press **Run rendering checks**, then run:
 ```sh
 npm run test:render
 ```
+
+Use **Export README comparisons** on the preview page to regenerate the English comparison images from `dev/readme-examples.ts`.
 
 The preview uses the production rendering module. It checks every listed family in light and dark modes, per-type isolation, native opt-outs, error recovery, markup sanitization, unload behavior, and narrow containers. `test:render` verifies that the saved browser report matches the current source. It does not substitute for testing inside Obsidian.
 

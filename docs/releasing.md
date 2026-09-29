@@ -14,9 +14,9 @@ The Mermaid version is pinned because the flowchart adapter uses its bundled ELK
 
 ## GitHub release
 
-Use the repository `theChildinus/mermaid-beauty`. Publish the source with README, manifest, MIT license, third-party notices, and build instructions on the default branch. Create the tag `1.0.0`, without a `v` prefix, for the reviewed commit.
+Use the repository `theChildinus/mermaid-beauty`. Publish the source with README, manifest, MIT license, third-party notices, and build instructions on the default branch. Create the tag `1.1.0`, without a `v` prefix, for the reviewed commit.
 
-Attach `dist/1.0.0/main.js`, `manifest.json`, `styles.css`, and `SHA256SUMS` to the release. The JavaScript includes bundled third-party notices. Read back the branch/tag and download asset hashes before marking the release delivered.
+Attach `dist/1.1.0/main.js`, `manifest.json`, `styles.css`, and `SHA256SUMS` to the release. The JavaScript includes bundled third-party notices. Read back the branch/tag and download asset hashes before marking the release delivered.
 
 ## Community directory
 

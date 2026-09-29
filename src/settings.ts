@@ -1,3 +1,5 @@
+import { COLOR_FIELDS, normalizeColor, type CustomColors } from './colors';
+
 export const DIAGRAM_TYPES = {
   flowchart: 'Flowchart', sequence: 'Sequence', class: 'Class', state: 'State',
   er: 'Entity relationship', gantt: 'Gantt', pie: 'Pie', mindmap: 'Mind map',
@@ -18,6 +20,7 @@ export type LayoutName = 'auto' | 'elk' | 'dagre';
 export type RenderMode = 'inherit' | 'beauty' | 'native';
 export interface Appearance {
   palette: PaletteName;
+  colors?: CustomColors;
   fontSize: number;
   radius: number;
   spacing: number;
@@ -50,6 +53,18 @@ function appearance(value: unknown): Partial<Appearance> {
   if (!isRecord(value)) return {};
   const result: Partial<Appearance> = {};
   if (typeof value.palette === 'string' && Object.hasOwn(PALETTES, value.palette)) result.palette = value.palette as PaletteName;
+  if (isRecord(value.colors)) {
+    const colors: CustomColors = {};
+    for (const mode of ['light', 'dark'] as const) {
+      const saved = value.colors[mode];
+      if (!isRecord(saved)) continue;
+      for (const key of Object.keys(COLOR_FIELDS) as (keyof typeof COLOR_FIELDS)[]) {
+        const color = normalizeColor(saved[key]);
+        if (color) (colors[mode] ??= {})[key] = color;
+      }
+    }
+    if (Object.keys(colors).length) result.colors = colors;
+  }
   if (bounded(value.fontSize, 10, 28)) result.fontSize = value.fontSize;
   if (bounded(value.radius, 0, 24)) result.radius = value.radius;
   if (bounded(value.spacing, 20, 120)) result.spacing = value.spacing;
@@ -75,7 +90,14 @@ export function loadSettings(value: unknown): BeautySettings {
   return result;
 }
 export function resolveAppearance(settings: BeautySettings, type: DiagramType): Appearance {
-  return { ...settings.defaults, ...appearance(settings.types[type]) };
+  const override = appearance(settings.types[type]);
+  // Choosing a per-type preset starts from that preset, while individual color
+  // overrides inherit any other global colors until a preset is chosen.
+  const colors = override.palette ? override.colors : {
+    light: { ...settings.defaults.colors?.light, ...override.colors?.light },
+    dark: { ...settings.defaults.colors?.dark, ...override.colors?.dark },
+  };
+  return { ...settings.defaults, ...override, colors };
 }
 export function shouldEnhance(settings: BeautySettings, type: DiagramType): boolean {
   return settings.enabled && settings.types[type]?.mode !== 'native';

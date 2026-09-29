@@ -4,7 +4,23 @@ Mermaid Beauty 为 Obsidian 中的 Mermaid 图统一配色、字体、线条和�
 
 默认的薄荷绿配色、胶囊边标签和流程图布局参考了 Codex 的视觉效果。插件使用公开的 Mermaid 引擎和自行编写的主题；字体、图类型和布局参数不同，结果可能与 Codex 有差异。
 
-![默认流程图效果](docs/images/flowchart.svg)
+## 使用前后对比
+
+每组图片使用同一份英文 Mermaid 源码和相同画布宽度。**Before** 使用 Mermaid 12 的默认主题、布局及 SVG 文字标签；**After** 使用 Mermaid Beauty 的薄荷绿预设。Obsidian 主题和 Mermaid 版本可能改变默认效果。
+
+### 流程图
+
+![流程图使用前后对比](docs/images/flowchart-comparison.png)
+
+### 时序图
+
+![时序图使用前后对比](docs/images/sequence-comparison.png)
+
+### 类图
+
+![类图使用前后对比](docs/images/class-comparison.png)
+
+[查看英文示例源码](dev/readme-examples.ts)
 
 流程图节点按文字长度决定宽度，并保留纵向留白；胶囊标签先测量再布局，减少换行和拥挤。折线采用更舒展的圆角，箭头使用细线样式。
 
@@ -16,7 +32,9 @@ Mermaid Beauty 为 Obsidian 中的 Mermaid 图统一配色、字体、线条和�
 
 ## 设置
 
-在 **设置 → Mermaid Beauty** 中调整全局配色、字号、圆角、间距和宽度适配。提供薄荷绿、灰蓝、天蓝和玫瑰四套配色，跟随 Obsidian 的明暗模式切换。
+在 **设置 → Mermaid Beauty** 中调整全局配色、字号、圆角、间距和宽度适配。在 **Customize colors** 中选择浅色或深色模式，可用取色器或十六进制色值分别设置背景、节点、标签、文字、边框、连线和强调色。渲染时跟随 Obsidian 的明暗模式。
+
+薄荷绿、灰蓝、天蓝和玫瑰四套预设可作为自定义的起点。切换 **Color preset** 会重置当前样式在两种模式下的自定义颜色；**Reset colors** 可清除颜色覆盖。
 
 需要单独调整一种图时，在 **Diagram types** 中选择类型，再选择渲染方式：
 
@@ -25,6 +43,8 @@ Mermaid Beauty 为 Obsidian 中的 Mermaid 图统一配色、字体、线条和�
 | Inherit defaults | 使用全局样式，默认启用增强渲染。 |
 | Enhanced, with custom appearance | 为这种图单独设置样式，也可填写 Mermaid 配置 JSON。 |
 | Existing renderer | 交给原有渲染器处理。 |
+
+每种图可以只覆盖需要的颜色，其余继承全局设置；为该类型选择预设后，则使用独立调色盘。高级 JSON 和图内显式设置的优先级高于颜色控件。
 
 例如，时序图可以单独设置参与者颜色和间距：
 

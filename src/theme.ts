@@ -1,19 +1,7 @@
 import type { MermaidConfig } from 'mermaid';
-import { isRecord, type Appearance, type DiagramType, type PaletteName } from './settings';
+import { paletteColors } from './colors';
+import { isRecord, type Appearance, type DiagramType } from './settings';
 
-interface Colors { background: string; surface: string; label: string; text: string; border: string; line: string; accent: string; }
-const LIGHT: Record<PaletteName, Colors> = {
-  mint: { background: '#ffffff', surface: '#ddf3e7', label: '#effaf4', text: '#176b42', border: '#afd7c1', line: '#8b9690', accent: '#26845b' },
-  slate: { background: '#ffffff', surface: '#edf0f5', label: '#f7f8fa', text: '#354158', border: '#c1cbd8', line: '#8993a3', accent: '#536783' },
-  sky: { background: '#ffffff', surface: '#e1effc', label: '#f1f7ff', text: '#225c95', border: '#b1cee9', line: '#869daf', accent: '#367db9' },
-  rose: { background: '#ffffff', surface: '#f8e5ed', label: '#fff4f8', text: '#934360', border: '#dfb5c6', line: '#a5929a', accent: '#aa5375' },
-};
-const DARK: Record<PaletteName, Colors> = {
-  mint: { background: '#171c1a', surface: '#203e32', label: '#1b2e26', text: '#b3e4cb', border: '#416b55', line: '#819c8d', accent: '#79cba1' },
-  slate: { background: '#191c22', surface: '#2b3445', label: '#222936', text: '#d6dfef', border: '#526177', line: '#98a3b5', accent: '#abc0e2' },
-  sky: { background: '#171d24', surface: '#233b53', label: '#1e2c3b', text: '#b9dcff', border: '#436c91', line: '#8aa4bc', accent: '#86bfee' },
-  rose: { background: '#21191d', surface: '#482d3b', label: '#33222b', text: '#f4cbdd', border: '#80546a', line: '#b395a5', accent: '#e39eba' },
-};
 const GRAPH_TYPES = new Set<DiagramType>(['flowchart', 'class', 'state', 'er', 'requirement', 'usecase', 'agentflow']);
 export function supportsGraphLayout(type: DiagramType): boolean { return GRAPH_TYPES.has(type); }
 
@@ -26,7 +14,7 @@ export function mergeConfig(base: Record<string, unknown>, extra: Record<string,
 }
 
 export function themeConfig(appearance: Appearance, type: DiagramType, dark: boolean, extra: Record<string, unknown> = {}): MermaidConfig {
-  const c = (dark ? DARK : LIGHT)[appearance.palette];
+  const c = paletteColors(appearance, dark);
   const font = 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
   const config: MermaidConfig = {
     startOnLoad: false, securityLevel: 'strict', suppressErrorRendering: true,
