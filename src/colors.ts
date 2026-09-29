@@ -30,5 +30,6 @@ export function normalizeColor(value: unknown): string | undefined {
 }
 
 export function paletteColors(appearance: Appearance, dark: boolean): Colors {
-  return { ...(dark ? DARK : LIGHT)[appearance.palette], ...appearance.colors?.[dark ? 'dark' : 'light'] };
+  const custom = appearance.useCustomColors === false ? undefined : appearance.colors?.[dark ? 'dark' : 'light'];
+  return { ...(dark ? DARK : LIGHT)[appearance.palette], ...custom };
 }

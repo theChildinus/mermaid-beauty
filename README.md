@@ -54,7 +54,9 @@ To build from source, run `npm ci` and `npm run build`, then copy the same three
 
 ## Configure
 
-Open **Settings → Mermaid Beauty**. Under **Customize colors**, choose light or dark mode, then use the color pickers or enter hex colors such as `#26845b`. Rendering follows Obsidian's current theme. Choosing a **Color preset** resets custom colors in both modes; **Reset colors** removes overrides for the current appearance.
+Open **Settings → Mermaid Beauty**. Under **Color palette**, select **Mint**, **Slate**, **Sky**, or **Rose** to apply a ready-made scheme. Each option shows its colors before you select it.
+
+Choose **Custom** to open the light and dark color editors, then use the color pickers or enter hex colors such as `#26845b`. Rendering follows Obsidian's current theme. Switching to a preset keeps your custom colors saved; select **Custom** again to restore them. **Reset colors** clears saved custom colors for the current appearance and returns to its preset.
 
 The defaults apply to all diagram types. Under **Diagram types**, choose a type and a renderer:
 

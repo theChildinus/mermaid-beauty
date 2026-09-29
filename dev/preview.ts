@@ -172,6 +172,25 @@ run.addEventListener('click', async () => {
       }
     } finally { container.remove(); document.body.classList.remove('theme-dark'); }
   });
+  await test('Preset selection hides saved custom colors and Custom restores them', async () => {
+    const settings = loadSettings({ defaults: { palette: 'sky', useCustomColors: false,
+      colors: { light: { surface: '#fedcba' }, dark: { surface: '#654321' } } } });
+    const container = document.createElement('div'); output.append(container);
+    try {
+      for (const dark of [false, true]) {
+        document.body.classList.toggle('theme-dark', dark);
+        for (const custom of [false, true]) {
+          settings.defaults.useCustomColors = custom;
+          container.replaceChildren();
+          const result = await renderer.render(`palette-switch-${++serial}`, 'flowchart LR; A[Choose] --> B[Enjoy]', settings, container);
+          const svg = mount(container, result.svg);
+          const expected = custom ? (dark ? 'rgb(101, 67, 33)' : 'rgb(254, 220, 186)')
+            : (dark ? 'rgb(35, 59, 83)' : 'rgb(225, 239, 252)');
+          assert(getComputedStyle(svg.querySelector('.node rect')!).fill === expected, 'Preset/custom switch did not update the rendered colors');
+        }
+      }
+    } finally { container.remove(); document.body.classList.remove('theme-dark'); }
+  });
   await test('Source colors override a custom palette', async () => {
     const result = await renderer.render(`source-custom-${++serial}`, fixtures.find(item => item.name === 'Source config')!.source,
       loadSettings({ defaults: { colors: { light: { surface: '#fedcba' } } } }));

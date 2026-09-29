@@ -16,3 +16,11 @@
 .mermaid-beauty-settings .mermaid-beauty-colors { padding-left: 16px; border-left: 2px solid var(--background-modifier-border); }
 .mermaid-beauty-settings input.mermaid-beauty-hex { width: 104px; font-family: var(--font-monospace); }
 .mermaid-beauty-settings input.mermaid-beauty-hex.is-invalid { border-color: var(--text-error); }
+.mermaid-beauty-settings .mermaid-beauty-palettes { display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 8px; margin: 0 0 20px; }
+.mermaid-beauty-settings .mermaid-beauty-palette-choice { height: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px; white-space: normal; text-align: left; border: 1px solid var(--background-modifier-border); box-shadow: none; }
+.mermaid-beauty-settings .mermaid-beauty-palette-choice[aria-pressed="true"] { border-color: var(--interactive-accent); box-shadow: 0 0 0 1px var(--interactive-accent); background: var(--background-secondary); }
+.mermaid-beauty-settings .mermaid-beauty-palette-choice:focus-visible { outline: 2px solid var(--interactive-accent); outline-offset: 3px; }
+.mermaid-beauty-settings .mermaid-beauty-swatches { display: flex; width: 100%; overflow: hidden; border-radius: 5px; }
+.mermaid-beauty-settings .mermaid-beauty-swatches > span { flex: 1; height: 18px; background: var(--mermaid-beauty-swatch); }
+.mermaid-beauty-settings .mermaid-beauty-palette-name { font-weight: 600; }
+.mermaid-beauty-settings .mermaid-beauty-palette-caption { color: var(--text-muted); font-size: var(--font-smallest); }

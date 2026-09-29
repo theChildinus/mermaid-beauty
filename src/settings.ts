@@ -21,6 +21,8 @@ export type RenderMode = 'inherit' | 'beauty' | 'native';
 export interface Appearance {
   palette: PaletteName;
   colors?: CustomColors;
+  /** False keeps custom colors saved while displaying the selected preset. */
+  useCustomColors?: boolean;
   fontSize: number;
   radius: number;
   spacing: number;
@@ -53,6 +55,7 @@ function appearance(value: unknown): Partial<Appearance> {
   if (!isRecord(value)) return {};
   const result: Partial<Appearance> = {};
   if (typeof value.palette === 'string' && Object.hasOwn(PALETTES, value.palette)) result.palette = value.palette as PaletteName;
+  if (typeof value.useCustomColors === 'boolean') result.useCustomColors = value.useCustomColors;
   if (isRecord(value.colors)) {
     const colors: CustomColors = {};
     for (const mode of ['light', 'dark'] as const) {
@@ -93,11 +96,13 @@ export function resolveAppearance(settings: BeautySettings, type: DiagramType): 
   const override = appearance(settings.types[type]);
   // Choosing a per-type preset starts from that preset, while individual color
   // overrides inherit any other global colors until a preset is chosen.
+  const inheritedColors = settings.defaults.useCustomColors === false ? undefined : settings.defaults.colors;
   const colors = override.palette ? override.colors : {
-    light: { ...settings.defaults.colors?.light, ...override.colors?.light },
-    dark: { ...settings.defaults.colors?.dark, ...override.colors?.dark },
+    light: { ...inheritedColors?.light, ...override.colors?.light },
+    dark: { ...inheritedColors?.dark, ...override.colors?.dark },
   };
-  return { ...settings.defaults, ...override, colors };
+  const colorOwner = override.palette || override.colors || override.useCustomColors !== undefined ? override : settings.defaults;
+  return { ...settings.defaults, ...override, colors, useCustomColors: colorOwner.useCustomColors };
 }
 export function shouldEnhance(settings: BeautySettings, type: DiagramType): boolean {
   return settings.enabled && settings.types[type]?.mode !== 'native';
