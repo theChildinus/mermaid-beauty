@@ -1,42 +1,37 @@
-import type { Fixture } from './fixtures';
 import { BeautyRenderer } from '../src/renderer';
 import { loadSettings } from '../src/settings';
 
-export const readmeExamples: Fixture[] = [
-  { name: 'Flowchart', type: 'flowchart', source: `flowchart LR
-  Publisher[Publisher] -->|Publish version| Control[Content service]
-  Reader[Reader] -->|Look up path| Control
-  Worker[Sync worker] -->|Check for updates| Control
-  Worker -->|Download files| Files[File store]
-  Control <-->|Read and write| Index[(Index)]
-  Worker -->|Register files and report status| Index` },
-  { name: 'Sequence', type: 'sequence', source: `sequenceDiagram
-  participant Reader
-  participant API as Content service
-  participant Store as File store
-  Reader->>API: Open article
-  activate API
-  API->>Store: Load content
-  Store-->>API: Article
-  Note right of API: Cache the result
-  API-->>Reader: Display article
-  deactivate API` },
-  { name: 'Class', type: 'class', source: `classDiagram
-  class Library {
-    +String name
-    +findBook()
+import { readmeExamples } from './readme-sources';
+
+interface NativeExample { type: string; source: string; svg: string; }
+interface NativeResult {
+  kind: 'mermaid-native-examples'; examples: NativeExample[];
+  baseline: { version: string; theme: string; layout: string; htmlLabels: boolean };
+  error?: string;
+}
+
+async function nativeExamples(): Promise<NativeResult> {
+  const frame = document.createElement('iframe');
+  frame.setAttribute('title', 'Unmodified native Mermaid');
+  frame.style.cssText = 'position:absolute;left:-10000px;width:1136px;height:800px;visibility:hidden';
+  let timer: ReturnType<typeof setTimeout>;
+  let receive: (event: MessageEvent<NativeResult>) => void;
+  try {
+    return await new Promise<NativeResult>((resolve, reject) => {
+      receive = event => {
+        if (event.origin !== location.origin || event.source !== frame.contentWindow || event.data?.kind !== 'mermaid-native-examples') return;
+        if (event.data.error) reject(new Error(event.data.error));
+        else resolve(event.data);
+      };
+      window.addEventListener('message', receive);
+      timer = setTimeout(() => reject(new Error('Native Mermaid rendering timed out.')), 30_000);
+      frame.src = '/native.html';
+      document.body.append(frame);
+    });
+  } finally {
+    clearTimeout(timer!); window.removeEventListener('message', receive!); frame.remove();
   }
-  class Book {
-    +String title
-    +borrow()
-  }
-  class Reader {
-    +String name
-    +read()
-  }
-  Library "1" --> "many" Book : stores
-  Reader --> Book : borrows` },
-];
+}
 
 function panel(source: string, y: number, height: number, title: string, subtitle: string): string {
   const svg = new DOMParser().parseFromString(source, 'image/svg+xml').documentElement;
@@ -50,43 +45,37 @@ function panel(source: string, y: number, height: number, title: string, subtitl
     ${new XMLSerializer().serializeToString(svg)}`;
 }
 
-async function png(source: string, height: number): Promise<string> {
-  const url = URL.createObjectURL(new Blob([source], { type: 'image/svg+xml' }));
-  try {
-    const image = new Image(); image.src = url; await image.decode();
-    const canvas = document.createElement('canvas'); canvas.width = 2400; canvas.height = height * 2;
-    const context = canvas.getContext('2d')!;
-    context.drawImage(image, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL('image/png').split(',')[1]!;
-  } finally { URL.revokeObjectURL(url); }
-}
-
 /** Both sides use exactly the same source and canvas width; only rendering changes. */
 export async function exportReadmeExamples(container: HTMLElement): Promise<void> {
   container.replaceChildren();
-  const engine = (await import('mermaid')).default;
+  const native = await nativeExamples();
   const renderer = new BeautyRenderer();
   const assets = [];
   const wasDark = document.body.classList.contains('theme-dark');
   document.body.classList.remove('theme-dark');
   try {
     for (const example of readmeExamples) {
-      engine.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'default', htmlLabels: false,
-        flowchart: { htmlLabels: false }, suppressErrorRendering: true });
-      const before = await engine.render(`before-${example.type}`, example.source);
+      const before = native.examples.find(item => item.type === example.type);
+      if (!before || before.source !== example.source || before.svg.includes('mermaid-beauty')) {
+        throw new Error('The native baseline must use the same source and contain no plugin output.');
+      }
       const after = await renderer.render(`after-${example.type}`, example.source, loadSettings({}));
-      const rowHeight = example.type === 'flowchart' ? 380 : 430;
+      const rowHeight = example.type === 'flowchart' ? 360 : 430;
       const height = rowHeight * 2 + 32;
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="${height}" viewBox="0 0 1200 ${height}" font-family="system-ui, sans-serif" role="img" aria-label="${example.name}: before and after Mermaid Beauty">
         <rect width="1200" height="${height}" fill="#f5f7f6"/>
-        ${panel(before.svg, 8, rowHeight, 'Before', 'Default Mermaid · same diagram source')}
+        ${panel(before.svg, 8, rowHeight, 'Before', 'Native Mermaid 11.13.0 · default theme and layout')}
         ${panel(after.svg, rowHeight + 24, rowHeight, 'After', 'Mermaid Beauty · Mint preset')}
       </svg>`;
-      const encoded = await png(svg, height);
-      const image = document.createElement('img'); image.src = `data:image/png;base64,${encoded}`;
-      image.alt = `${example.name}: default Mermaid compared with Mermaid Beauty`;
-      image.style.width = '100%'; image.style.maxWidth = '1200px'; container.append(image);
-      assets.push({ name: example.type, svg, png: encoded });
+      const article = document.createElement('article');
+      article.id = `readme-${example.type}`;
+      article.style.cssText = 'width:1200px;max-width:100%;margin-bottom:24px';
+      const parsed = new DOMParser().parseFromString(svg, 'image/svg+xml');
+      if (parsed.querySelector('parsererror')) throw new Error('Invalid comparison SVG.');
+      const drawing = document.importNode(parsed.documentElement, true) as unknown as SVGSVGElement;
+      drawing.style.cssText = 'display:block;width:100%;height:auto';
+      article.append(drawing); container.append(article);
+      assets.push({ name: example.type, svg, baseline: native.baseline });
     }
     const response = await fetch('/readme-assets', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(assets) });
     if (!response.ok) throw new Error('Could not save README comparison images.');

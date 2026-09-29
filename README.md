@@ -6,27 +6,27 @@ Give Mermaid diagrams in Obsidian a consistent appearance: soft colors, rounded 
 
 ## Before and after
 
-Each pair uses the same English Mermaid source at the same canvas width. **Before** uses Mermaid 12's default theme and layout with SVG text labels; **After** uses Mermaid Beauty's Mint preset. Obsidian themes and Mermaid versions can change the baseline appearance.
+Each pair uses exactly the same English Mermaid source. **Before** is native Mermaid 11.13.0, the version bundled with Obsidian 1.13.7, with its default theme, Dagre layout, fonts, and labels. It runs separately without the plugin. **After** is Mermaid Beauty with the Mint preset. Your Obsidian theme may change the native colors.
 
-### Flowchart
+### Online shopping
 
-Rounded routes, capsule labels, and nodes sized to their content.
+Browse products, pay, and receive an order. The flowchart branches when payment succeeds or a card is declined.
 
-![Flowchart before and after Mermaid Beauty](docs/images/flowchart-comparison.png)
+![Flowchart before and after Mermaid Beauty](docs/images/flowchart-comparison.jpg)
 
-### Sequence diagram
+### Ordering coffee
 
-A shared palette and typography for participants, messages, and notes.
+A customer orders a latte, pays the cashier, and receives a drink from the barista.
 
-![Sequence diagram before and after Mermaid Beauty](docs/images/sequence-comparison.png)
+![Sequence diagram before and after Mermaid Beauty](docs/images/sequence-comparison.jpg)
 
-### Class diagram
+### Library books
 
-Soft cards and consistent labels, with relationships preserved.
+A library has books, and members borrow them. The class diagram keeps the same fields and relationships.
 
-![Class diagram before and after Mermaid Beauty](docs/images/class-comparison.png)
+![Class diagram before and after Mermaid Beauty](docs/images/class-comparison.jpg)
 
-[Example sources](dev/readme-examples.ts)
+[Example sources](dev/readme-sources.ts)
 
 ## Features
 
@@ -122,7 +122,7 @@ Open `http://127.0.0.1:4173`, press **Run rendering checks**, then run:
 npm run test:render
 ```
 
-Use **Export README comparisons** on the preview page to regenerate the English comparison images from `dev/readme-examples.ts`.
+Use **Export README comparisons** on the preview page to render `dev/readme-sources.ts` and save the comparison SVGs. Open `/comparison/flowchart`, `/comparison/sequence`, or `/comparison/class` on the same preview server and capture the page as a JPEG image; browser capture preserves native HTML labels. The separate native preview imports the pinned `mermaid-native` development dependency without the plugin build patch.
 
 The preview uses the production rendering module. It checks every listed family in light and dark modes, per-type isolation, native opt-outs, error recovery, markup sanitization, unload behavior, and narrow containers. `test:render` verifies that the saved browser report matches the current source. It does not substitute for testing inside Obsidian.
 

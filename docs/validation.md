@@ -7,13 +7,13 @@ Validated on 2026-09-29 for version 1.1.0.
 - TypeScript, Obsidian ESLint rules, production build: passed.
 - Unit tests: 27 passed, covering settings, renderer delegation, disposal, and orthogonal path geometry.
 - Real browser: 78 light/dark renders and 14 behavior checks passed. The report includes the source hash and individual results: [validation-results.json](validation-results.json).
-- Dependencies: npm audit reported no vulnerabilities when dependencies were installed.
+- Production dependencies remain unchanged. The pinned native Mermaid 11.13.0 development dependency reproduces the version bundled with Obsidian 1.13.7. It is used only for the fixed README examples, is excluded from the plugin bundle, and has known upstream advisories reported by `npm audit`.
 
 Flowchart checks verify content-sized nodes, label padding measured before layout, single-line medium-length labels, rounded routes, open arrows, retained semantic shapes, explicit line breaks, Markdown emphasis, groups, and loops. All listed families are also checked in a 360px container.
 
 Custom palettes are checked in light and dark modes across flowcharts, sequence diagrams, XY charts, and ZenUML. The checks cover each color role, per-type inheritance, source overrides, invalid saved colors, and compatibility with existing presets.
 
-The three README comparisons use the same English source on both sides and were inspected as exported PNGs. SVG originals and regeneration code are included. The baseline is Mermaid 12 with its default theme and layout, using SVG text labels.
+The three README comparisons use the same English source on both sides and were inspected as exported JPEGs. SVG originals and regeneration code are included. The baseline runs unmodified Mermaid 11.13.0 in a separate iframe and a separate bundle without the plugin patch. The export checks the native default theme, Dagre layout, HTML labels, and identical source on both sides. JPEGs are browser captures so native HTML labels remain intact. The examples cover online shopping, ordering coffee, and library books.
 
 ## Obsidian integration
 

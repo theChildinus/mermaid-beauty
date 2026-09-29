@@ -24,6 +24,7 @@
     "eslint": "^9.0.0",
     "eslint-plugin-obsidianmd": "latest",
     "globals": "^16.0.0",
+    "mermaid-native": "npm:mermaid@11.13.0",
     "obsidian": "1.13.1",
     "typescript": "^5.9.0",
     "vitest": "^5.0.2"

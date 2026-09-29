@@ -6,21 +6,21 @@ Mermaid Beauty 为 Obsidian 中的 Mermaid 图统一配色、字体、线条和�
 
 ## 使用前后对比
 
-每组图片使用同一份英文 Mermaid 源码和相同画布宽度。**Before** 使用 Mermaid 12 的默认主题、布局及 SVG 文字标签；**After** 使用 Mermaid Beauty 的薄荷绿预设。Obsidian 主题和 Mermaid 版本可能改变默认效果。
+每组图片使用完全相同的英文 Mermaid 源码。**Before** 是原生 Mermaid 11.13.0（Obsidian 1.13.7 内置的版本），保留默认主题、Dagre 布局、字体和标签，在独立页面中运行，不加载插件。**After** 使用 Mermaid Beauty 的薄荷绿预设。Obsidian 主题可能改变原生配色。
 
-### 流程图
+### 网购流程
 
-![流程图使用前后对比](docs/images/flowchart-comparison.png)
+![流程图使用前后对比](docs/images/flowchart-comparison.jpg)
 
-### 时序图
+### 咖啡点单
 
-![时序图使用前后对比](docs/images/sequence-comparison.png)
+![时序图使用前后对比](docs/images/sequence-comparison.jpg)
 
-### 类图
+### 图书借阅
 
-![类图使用前后对比](docs/images/class-comparison.png)
+![类图使用前后对比](docs/images/class-comparison.jpg)
 
-[查看英文示例源码](dev/readme-examples.ts)
+[查看英文示例源码](dev/readme-sources.ts)
 
 流程图节点按文字长度决定宽度，并保留纵向留白；胶囊标签先测量再布局，减少换行和拥挤。折线采用更舒展的圆角，箭头使用细线样式。
 

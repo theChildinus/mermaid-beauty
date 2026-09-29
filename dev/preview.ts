@@ -13,7 +13,7 @@ exportButton.addEventListener('click', async () => {
   exportButton.disabled = true; run.disabled = true;
   try {
     await exportReadmeExamples(document.querySelector('#readme-comparisons')!);
-    status.textContent = 'Saved 3 English before/after comparisons to docs/images.';
+    status.textContent = 'Saved 3 comparison SVGs. Capture the rendered panels as JPEGs for the README.';
   } catch (error) { status.textContent = String(error); }
   finally { exportButton.disabled = false; run.disabled = false; }
 });
