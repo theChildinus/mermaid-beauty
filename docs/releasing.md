@@ -14,9 +14,9 @@ The Mermaid version is pinned because the flowchart adapter uses its bundled ELK
 
 ## GitHub release
 
-Use the repository `theChildinus/mermaid-beauty`. Publish the source with README, manifest, MIT license, third-party notices, and build instructions on the default branch. Create the tag `1.2.0`, without a `v` prefix, for the reviewed commit.
+Use the repository `theChildinus/mermaid-beauty`. Publish the source with README, manifest, MIT license, third-party notices, and build instructions on the default branch. Create a tag matching `manifest.json` exactly, without a `v` prefix, for the reviewed commit.
 
-Attach `dist/1.2.0/main.js`, `manifest.json`, `styles.css` to the release. Keep `SHA256SUMS` for local verification; it is not a supported plugin release asset. The JavaScript includes bundled third-party notices. Read back the branch/tag and download asset hashes before marking the release delivered.
+Attach `main.js`, `manifest.json`, and `styles.css` from `dist/<version>/` to the release. Keep `SHA256SUMS` for local verification; it is not a supported plugin release asset. The JavaScript includes bundled third-party notices. Read back the branch/tag and download asset hashes before marking the release delivered.
 
 ## Community directory
 
@@ -31,3 +31,5 @@ The build adapter in `scripts/zenuml-svg-build.mjs` compiles the original SVG en
 Run **Attest release build** on the approved release ref in GitHub Actions. Download its three release files, compare their hashes with the locally verified build, and use those exact files for the release. This records GitHub build provenance for the artifact hashes. Adding the workflow alone does not create attestations.
 
 Publish only after reviewing the test results and remaining warnings in [validation.md](validation.md). A successful local check does not confirm marketplace acceptance. Check the new commit's review result in the community dashboard after submission.
+
+Browser fixtures and preview tools live in `tests/browser`, which the [official scanner configuration](https://github.com/obsidianmd/eslint-plugin/blob/master/docs/configuration.md#community-plugin-scanner-configuration) excludes from plugin-source scanning. Local lint and browser checks still cover them. The build rejects test imports in the production dependency graph. Do not move runtime code into test directories to avoid review.

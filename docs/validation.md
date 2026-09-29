@@ -1,12 +1,34 @@
 # Release validation
 
-Validated on 2026-09-29 for version 1.2.0.
+Version 1.2.1 candidate, checked on 2026-09-29. Publication and the community directory's new review are still pending.
 
-## Automated checks
+## 1.2.1 checks
+
+- `npm run check`: TypeScript, 82 unit tests, production build, and lint passed. Production source and browser tests both have zero lint errors or warnings.
+- Real browser: 80 fixture renders and 392 behavior checks passed. [validation-results.json](validation-results.json) records every result and source hash `5a45d76d21b3d954107c4a3de30aaeab009197f0648ae1724ef96ca6551d9c7e`.
+- The matrix covers all 34 diagram families, four presets, and both light/dark modes. Checks measure text contrast against the actual fills, main outlines and connections, circle/ellipse label alignment at 10/15/28 px, and 1000/360 px containers. Explicit styles, source configuration, native opt-outs, failure recovery, and unload checks pass.
+- Dedicated regressions cover Mermaid Zoom's sequence cloning/scaling, filled labels, Kanban wrapping and geometry, C4 relationships, Timeline connectors, Sankey band ratios/blending, and Event modeling's HTML labels.
+- `npm audit --omit=dev`: zero reported vulnerabilities. The full offline Mermaid engine, ELK, and ZenUML remain bundled.
+
+The three local plugin assets match `dist/1.2.1/`. Obsidian 1.13.7 loaded the new build after toggling Beauty off/on and showed version 1.2.1 after refreshing its plugin list. Chinese settings retained Sky, font size 16, radius 11, spacing 48, automatic layout, fit-width, and line width 1.5 px. This runtime check covers loading and settings; the full diagram matrix was exercised in the browser. Beauty's settings file and all four Mermaid Zoom files stayed byte-for-byte unchanged.
+
+## 1.2.1 review changes
+
+Production code creates missing SVG stylesheets through Obsidian's `createSvg`. Horizontal scrolling uses an explicit container class instead of `:has`; switching to native rendering, errors, unload, and late binding callbacks clear or preserve that class as appropriate.
+
+The standalone browser harness now lives in `tests/browser`. The [official scanner configuration](https://github.com/obsidianmd/eslint-plugin/blob/master/docs/configuration.md#community-plugin-scanner-configuration) excludes test directories from plugin-source scanning. These tools still run in local lint and browser checks. Only their Obsidian DOM-helper and request-API lint rules are adjusted, because ordinary browsers do not provide those APIs. Production rules remain enabled, and the build rejects imports from test or preview code. This is a source-layout correction; the new marketplace result still needs to be checked after publication.
+
+`main.js` is 5,921,564 bytes, above the marketplace's 5 MB Obsidian Sync Standard threshold. That warning remains applicable. The README and release notes disclose the per-file sync limit. No diagram families, ELK layouts, or offline support were removed.
+
+## 1.2.0 historical validation
+
+The following records the released 1.2.0 checks; its older counts do not describe the 1.2.1 suite.
+
+### Automated checks
 
 - TypeScript and production build: passed. ESLint covers both `src` and `dev`: zero errors; remaining warnings are browser DOM/fetch calls in the standalone preview.
 - Unit tests: 48 passed, covering settings, renderer delegation, disposal, and orthogonal path geometry.
-- Real browser: 80 light/dark renders and 40 behavior checks passed. The report includes the source hash and individual results: [validation-results.json](validation-results.json).
+- Real browser: 80 light/dark renders and 40 behavior checks passed. The 1.2.0 report remains available in the 1.2.0 Git tag.
 - Production dependencies remain unchanged. The pinned native Mermaid 11.13.0 development dependency reproduces the version bundled with Obsidian 1.13.7. It is used only for the fixed README examples, is excluded from the plugin bundle, and has known upstream advisories reported by `npm audit`.
 
 Flowchart checks verify content-sized nodes, label padding measured before layout, single-line medium-length labels, rounded routes, open arrows, retained semantic shapes, explicit line breaks, Markdown emphasis, groups, and loops. All listed families are also checked in a 360px container.
@@ -19,7 +41,7 @@ Connector widths were checked in light and dark modes for all 21 supported conne
 
 Language tests cover Chinese locale variants, English fallback, explicit selection, persistence, and translated JSON validation errors without changing Mermaid configuration keys.
 
-## Obsidian integration
+### Obsidian integration
 
 Obsidian 1.13.7 on macOS loaded the 1.2.0 production bundle after disabling and re-enabling the plugin. Follow Obsidian displayed Chinese settings. Selecting English immediately translated setting names, descriptions, palette choices, and both command names. Returning to Follow Obsidian restored Chinese; the command palette contained the two translated commands without duplicate English entries.
 
@@ -27,7 +49,7 @@ Changing the global line width to 3px made connections in an existing flowchart 
 
 The test vault had Codeblock Customizer, Iconic, and Mermaid Zoom enabled. Mermaid Zoom controls remained available. This is an observation for these installed versions, not a guarantee for other plugin combinations. Reading view, Live Preview, and renderer unload were exercised during 1.0.0 validation; this update's Obsidian check focused on language, commands, line width, persistence, and reloading.
 
-## Marketplace review fixes
+### Marketplace review fixes
 
 The failed marketplace review covered release 1.1.0 at `1d8eb61`. This local 1.2.0 candidate removes all five reported errors: four static style assignments in the preview and the runtime script-creation finding in the bundled ZenUML editor.
 
@@ -35,12 +57,12 @@ The ZenUML SVG entry is rebuilt from the unchanged sources in its locked npm pac
 
 Settings now expose named definitions for Obsidian search. Searching for the Chinese line-width label found the setting in Obsidian 1.13.7. Calls to the new settings and slider APIs are guarded by `requireApiVersion('1.13.0')`; older hosts use the same definitions with imperative rendering. The previous deprecated display refresh, dynamic tooltip, and native-preview API calls are removed. The CSS `!important` override is removed.
 
-The build is minified with esbuild and retains third-party licenses. Only the three supported plugin assets will be attached to a release. A manually triggered GitHub Actions workflow has been prepared for build attestations; no attestation exists until that workflow is run and the exact resulting files are published.
+The build is minified with esbuild and retains third-party licenses. Release 1.2.0 includes only the three supported plugin assets. GitHub Actions built and attested those files; their hashes matched the local build and the downloaded release assets.
 
-The candidate has not been submitted for a new marketplace review. Local validation does not establish acceptance.
+The community directory review for 1.2.0 at `07476f9` completed on 2026-09-29. It verified artifact attestations, found no vulnerable production dependencies, and reproduced `main.js` byte for byte. Its Review score remains Caution: 28 warnings in the standalone browser tools, one production DOM-helper warning, one CSS `:has` warning, and the bundle-size warning.
 
 ## Remaining limits
 
 Live Preview can cache a widget after an appearance change; switching reading/editing mode refreshes it. Mobile devices and older supported Obsidian versions have not been exercised. No pixel-for-pixel equivalence with Codex is claimed.
 
-The complete diagram bundle is 5,911,379 bytes, down from 15,999,179 bytes in 1.1.0, and remains above the marketplace's 5MB Obsidian Sync Standard warning threshold. Browser preview DOM/fetch warnings are retained because these pages run outside Obsidian and are excluded from `main.js`. The scoped `.mermaid:has(> .mermaid-beauty-diagram)` selector is retained to allow horizontal scrolling without changing native diagrams; it may still receive a CSS advisory. These are separate from the five errors fixed above.
+The released 1.2.0 bundle is 5,911,379 bytes, down from 15,999,179 bytes in 1.1.0. The 1.2.1 size and Sync limit are recorded above. A second minifier saved only about 90 KB in a local experiment and was not added. No diagram family, ELK layout, or offline rendering support was removed to reduce the size.

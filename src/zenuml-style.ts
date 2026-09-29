@@ -40,6 +40,8 @@ export function styleZenUml(svg: Element, config: MermaidConfig, appearance: App
   apply(CONNECTORS.zenuml!, { stroke: line, 'stroke-width': `${appearance.lineWidth}px` });
   apply('.fragment-border, .fragment-separator, .frame-header-line, .group-outline, .divider-line', { stroke: line, 'stroke-width': '1.25px' });
   apply('.arrow-head path', { fill: line, stroke: line, 'stroke-width': '1.25px' });
+  apply('.self-call svg path, .fragment > svg path', { stroke: line });
+  apply('.self-call svg path[fill="#000"]', { fill: line });
   apply('.participant-icon, .return-icon', { color: text, fill: text });
   // Scale the whole measured layout: changing text alone would clip fixed-size participants.
   const width = Number(svg.getAttribute('viewBox')?.split(/\s+/)[2]);

@@ -5,6 +5,7 @@ import { styleZenUml } from './zenuml-style';
 import { styleConnectorWidth } from './line-width';
 import { flowchartLayout } from './flowchart-layout';
 import { softenOrthogonalPath } from './rounded-path';
+import { styleFilledLabels } from './filled-labels';
 
 /** Each render owns the configuration until its SVG is complete. */
 export class BeautyRenderer {
@@ -12,7 +13,7 @@ export class BeautyRenderer {
   private pending: Promise<unknown> = Promise.resolve();
   private disposed = false;
 
-  constructor(private readonly createHost: () => HTMLDivElement) {}
+  constructor(private readonly createHost: () => HTMLDivElement, private readonly createStyle: () => SVGStyleElement) {}
 
   render(id: string, source: string, settings: BeautySettings, container?: HTMLElement): Promise<RenderResult> {
     const task = this.pending.then(async () => {
@@ -27,7 +28,7 @@ export class BeautyRenderer {
       if (this.disposed) throw new Error('Mermaid Beauty has been unloaded.');
       const type = diagramType(source);
       const appearance = resolveAppearance(settings, type);
-      const extra = parseCustomConfig(settings.types[type]?.config ?? '');
+      let extra = parseCustomConfig(settings.types[type]?.config ?? '');
       const doc = container?.ownerDocument ?? document;
       const dark = doc.body.classList.contains('theme-dark');
       // Mermaid measures text in the main document, even for a pop-out window.
@@ -40,15 +41,18 @@ export class BeautyRenderer {
         await document.fonts.ready;
         if (this.disposed) throw new Error('Mermaid Beauty has been unloaded.');
         let config = themeConfig(appearance, type, dark, extra);
+        let pieConfig = config.pie;
         engine.initialize(config);
         if (/^\s*(?:---|%%\{)/m.test(source)) {
           const parsedSource = await engine.parse(source);
+          if (parsedSource) pieConfig = { ...pieConfig, ...parsedSource.config.pie };
           if (parsedSource && parsedSource.config.themeVariables) {
             // Initialize again so Mermaid recalculates derived colors (such as mainBkg).
             // Only validated color options enter initialize; security settings stay fixed.
             const variables: unknown = parsedSource.config.themeVariables;
             const overrides = parseCustomConfig(JSON.stringify({ themeVariables: variables }));
-            config = mergeConfig(config as Record<string, unknown>, overrides);
+            extra = mergeConfig(extra, overrides);
+            config = themeConfig(appearance, type, dark, extra);
             engine.initialize(config);
           }
         }
@@ -58,13 +62,14 @@ export class BeautyRenderer {
         const svg = parsed.documentElement;
         if (svg.localName !== 'svg' || parsed.querySelector('parsererror')) throw new Error('Mermaid returned invalid SVG.');
         if (type === 'zenuml') styleZenUml(svg, config, appearance);
-        styleConnectorWidth(svg, type, appearance.lineWidth);
+        styleConnectorWidth(svg, type, appearance.lineWidth, this.createStyle);
         // Most Mermaid renderers leave the canvas transparent. Honor the selected
         // background as well as chart renderers that draw their own background.
         const variables: unknown = config.themeVariables;
         if (isRecord(variables) && typeof variables.background === 'string') {
           (svg as unknown as SVGSVGElement).style.backgroundColor = variables.background;
         }
+        styleFilledLabels(svg, type, { ...config, pie: pieConfig }, extra, host);
         if (type === 'flowchart') {
           for (const path of svg.querySelectorAll('path.flowchart-link[data-look="classic"]')) {
             path.setAttribute('d', softenOrthogonalPath(path.getAttribute('d') ?? '', appearance.fontSize * 0.8));
@@ -81,6 +86,15 @@ export class BeautyRenderer {
         svg.classList.add('mermaid-beauty-diagram');
         svg.setAttribute('data-mermaid-beauty-type', type);
         svg.setAttribute('data-mermaid-beauty-fit', String(appearance.fitWidth));
+        if (type === 'sequence') {
+          // Zoom clones a responsive SVG into a shrink-to-fit wrapper, but
+          // calculates its scale from viewBox. Supply that width only to the
+          // modal stylesheet; the original diagram keeps its responsive size.
+          const width = Number(svg.getAttribute('viewBox')?.split(/[\s,]+/)[2]);
+          if (Number.isFinite(width) && width > 0) {
+            (svg as unknown as SVGSVGElement).style.setProperty('--mermaid-beauty-sequence-width', `${width}px`);
+          }
+        }
         // Mermaid's info renderer has fixed dimensions but omits its viewBox.
         if (type === 'info' && !svg.hasAttribute('viewBox')) svg.setAttribute('viewBox', '0 0 400 100');
         if (!appearance.fitWidth) {

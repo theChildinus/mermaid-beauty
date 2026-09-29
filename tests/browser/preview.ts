@@ -1,10 +1,13 @@
-import { CONNECTORS } from '../src/line-width';
-import type { DiagramType } from '../src/settings';
+import { CONNECTORS } from '../../src/line-width';
+import type { DiagramType } from '../../src/settings';
 import { exportReadmeExamples } from './readme-examples';
 import { fixtures } from './fixtures';
-import { BeautyRenderer } from '../src/renderer';
-import { DIAGRAM_TYPES, diagramType, loadSettings } from '../src/settings';
-import { attachRenderer, type MermaidHost } from '../src/bridge';
+import { BeautyRenderer } from '../../src/renderer';
+import { DIAGRAM_TYPES, diagramType, loadSettings } from '../../src/settings';
+import { attachRenderer, type MermaidHost } from '../../src/bridge';
+import { checkPaletteContrast } from './contrast-checks';
+import { checkKanban } from './kanban-checks';
+import { checkReadability } from './readability-checks';
 
 declare const BUILD_HASH: string;
 const output = document.querySelector('#results')!;
@@ -40,7 +43,8 @@ document.querySelector('#compare')!.addEventListener('click', () => { void compa
 async function compareLayouts(): Promise<void> {
   const container = document.querySelector('#comparisons')!;
   container.replaceChildren();
-  const renderer = new BeautyRenderer(() => document.createElement('div'));
+  const renderer = new BeautyRenderer(() => document.createElement('div'),
+    () => document.createElementNS('http://www.w3.org/2000/svg', 'style'));
   for (const alignment of ['LEFTUP', 'NONE', 'BALANCED', 'RIGHTDOWN']) {
     const card = document.createElement('article'); card.className = 'card light-card';
     const title = document.createElement('h2'); title.textContent = alignment; card.append(title);
@@ -70,7 +74,8 @@ run.addEventListener('click', () => { void runChecks().catch(showFailure); });
 async function runChecks(): Promise<void> {
   run.disabled = true; exportButton.disabled = true;
   output.replaceChildren();
-  const renderer = new BeautyRenderer(() => document.createElement('div'));
+  const renderer = new BeautyRenderer(() => document.createElement('div'),
+    () => document.createElementNS('http://www.w3.org/2000/svg', 'style'));
   const results: { name: string; passed: boolean; error?: string }[] = [];
   const checks: { name: string; passed: boolean; error?: string }[] = [];
   let serial = 0;
@@ -133,6 +138,11 @@ async function runChecks(): Promise<void> {
   }
   document.body.classList.remove('theme-dark');
   dark.checked = false;
+  const palettes = document.querySelector('#palette-checks')!;
+  palettes.replaceChildren();
+  await checkPaletteContrast(renderer, palettes, test);
+  await checkKanban(renderer, output, test);
+  await checkReadability(renderer, output, test);
   await test('Every declared diagram family has a fixture', async () => {
     const covered = new Set(fixtures.map(item => item.type));
     for (const type of Object.keys(DIAGRAM_TYPES)) assert(type === 'other' || covered.has(type as keyof typeof DIAGRAM_TYPES), `Uncovered family: ${type}`);
@@ -319,6 +329,101 @@ async function runChecks(): Promise<void> {
     const svg = mount(container, result.svg);
     assert(svg.getBoundingClientRect().width > 320 && container.scrollWidth > container.clientWidth, 'Natural width was shrunk');
     container.remove();
+  });
+  await test('Scroll containers preserve bindings and reset on native rendering, fallback, and unload', async () => {
+    const container = document.createElement('div');
+    container.className = 'mermaid preview-narrow preview-scroll-check'; output.append(container);
+    let settings = loadSettings({ defaults: { fitWidth: false } });
+    let nativeBindings = 0;
+    let enhancedBindings = 0;
+    let fallback = false;
+    const host: MermaidHost = { render: async () => ({ svg: '<svg xmlns="http://www.w3.org/2000/svg"/>', diagramType: 'flowchart',
+      bindFunctions: () => { nativeBindings++; } }) };
+    const detach = attachRenderer(host, () => settings, async (id, source, parent) => {
+      const result = await renderer.render(id, source, settings, parent);
+      return { ...result, bindFunctions: element => { enhancedBindings++; result.bindFunctions?.(element); } };
+    }, () => { fallback = true; });
+    const draw = async (source = fixtures[0]!.source) => {
+      const result = await host.render(`scroll-${++serial}`, source, container);
+      container.replaceChildren(); mount(container, result.svg); result.bindFunctions?.(container);
+      return result;
+    };
+    try {
+      await draw();
+      assert(enhancedBindings === 1, 'Original enhanced bindings were lost');
+      assert(getComputedStyle(container).overflowX === 'auto' && container.scrollWidth > container.clientWidth,
+        'Enhanced diagrams lost horizontal scrolling');
+      settings = loadSettings({ enabled: false }); await draw();
+      assert(nativeBindings === 1 && !container.classList.contains('mermaid-beauty-container') &&
+        getComputedStyle(container).overflowX === 'visible', 'Native diagrams retained plugin scrolling');
+      settings = loadSettings({ defaults: { fitWidth: false } }); await draw();
+      await draw('flowchart LR\nA[');
+      assert(fallback && !container.classList.contains('mermaid-beauty-container'), 'Fallback retained plugin scrolling');
+      const pendingBinding = await draw(); detach();
+      assert(!container.classList.contains('mermaid-beauty-container'), 'Unload left a container class');
+      pendingBinding.bindFunctions?.(container);
+      assert(!container.classList.contains('mermaid-beauty-container'), 'A late binding reactivated styling after unload');
+    } finally { detach(); container.remove(); }
+  });
+  await test('Zoom sequence clones use the dimensions expected by fit-to-view', async () => {
+    const source = 'sequenceDiagram\nparticipant A as Client\nparticipant B as Service\nloop Poll\nA->>B: Fetch the next available work item\nactivate B\nalt Ready\nB-->>A: Return work\nelse Waiting\nA->>A: Retry later\nend\nNote over A,B: Keep request and response order\ndeactivate B\nend';
+    const host = document.createElement('div'); output.append(host);
+    try {
+      for (const dark of [false, true]) for (const fitWidth of [false, true]) for (const width of [320, 900]) {
+        document.body.classList.toggle('theme-dark', dark);
+        host.replaceChildren(); host.style.width = `${width}px`;
+        const inline = document.createElement('div'); inline.className = 'mermaid'; host.append(inline);
+        const result = await renderer.render(`zoom-size-${++serial}`, source,
+          loadSettings({ defaults: { fitWidth, lineWidth: 1.5 } }), inline);
+        const svg = mount(inline, result.svg);
+        const inlineWidth = svg.getBoundingClientRect().width;
+        const bounds = svg.viewBox.baseVal;
+        assert(Math.abs(inlineWidth - (fitWidth ? Math.min(width, bounds.width) : bounds.width)) < 1,
+          'Sequence inline sizing changed');
+        // Reproduce Zoom 1.7's detached clone and shrink-to-fit wrapper. Its
+        // initial measurement falls back to viewBox before insertion into DOM.
+        const wrapper = document.createElement('div'); wrapper.className = 'mermaid-zoom-modal-wrapper';
+        const clone = svg.cloneNode(true) as SVGSVGElement;
+        clone.style.removeProperty('width'); clone.style.removeProperty('height');
+        clone.style.maxWidth = `${bounds.width}px`;
+        wrapper.append(clone);
+        assert(clone.getBoundingClientRect().width === 0, 'Clone should be detached before Zoom measures it');
+        host.append(wrapper);
+        assert(Math.abs(clone.getBoundingClientRect().width - bounds.width) < 1, 'Zoom clone has the 300px fallback width');
+        const line = clone.querySelector<SVGGraphicsElement>('.messageLine0')!;
+        for (const scale of [0.25, 1, 3]) {
+          wrapper.style.transform = `scale(${scale})`;
+          assert(Math.abs(clone.getBoundingClientRect().width - bounds.width * scale) < 1, 'Zoom width does not match its scale');
+          assert(Math.abs(clone.getBoundingClientRect().height - bounds.height * scale) < 1, 'Zoom height does not match its scale');
+          assert(Math.abs(line.getScreenCTM()!.a - scale) < 0.01, 'Extra SVG scaling distorts strokes and markers');
+        }
+        assert(Math.abs(svg.getBoundingClientRect().width - inlineWidth) < 1, 'Opening Zoom changed the original diagram');
+      }
+    } finally { host.remove(); document.body.classList.remove('theme-dark'); }
+  });
+  await test('Zoom stroke compatibility is limited to enhanced sequence diagrams', async () => {
+    const wrapper = document.createElement('div'); wrapper.className = 'mermaid-zoom-modal-wrapper'; output.append(wrapper);
+    try {
+      for (const original of output.querySelectorAll<SVGSVGElement>('.card .mermaid > svg')) {
+        const clone = original.cloneNode(true) as SVGSVGElement;
+        wrapper.replaceChildren(clone);
+        const sequence = original.dataset.mermaidBeautyType === 'sequence';
+        const selector = sequence ? '.messageLine0, .messageLine1, .actor-line, .loopLine, rect, marker path' : 'text';
+        for (const element of clone.querySelectorAll(selector)) {
+          assert(getComputedStyle(element).vectorEffect === (sequence ? 'none' : 'non-scaling-stroke'),
+            `Zoom stroke override has wrong scope: ${original.dataset.mermaidBeautyType}`);
+        }
+        const originalLine = original.querySelector('.messageLine0');
+        if (originalLine) {
+          assert(getComputedStyle(originalLine).vectorEffect === 'none', 'Inline sequence strokes changed');
+          assert(getComputedStyle(clone.querySelector('.messageLine0')!).strokeWidth === getComputedStyle(originalLine).strokeWidth,
+            'Configured sequence line width changed');
+          clone.classList.remove('mermaid-beauty-diagram');
+          assert(getComputedStyle(clone.querySelector('.messageLine0')!).vectorEffect === 'non-scaling-stroke',
+            'Override reached an SVG without the Beauty class');
+        }
+      }
+    } finally { wrapper.remove(); }
   });
   await test('Semantic shapes and explicit node styles survive', async () => {
     const card = Array.from(output.querySelectorAll('.card')).find(card => card.querySelector('h2')?.textContent === 'Shapes and styles / light')!;

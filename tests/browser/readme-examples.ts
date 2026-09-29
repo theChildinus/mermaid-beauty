@@ -1,5 +1,5 @@
-import { BeautyRenderer } from '../src/renderer';
-import { loadSettings } from '../src/settings';
+import { BeautyRenderer } from '../../src/renderer';
+import { loadSettings } from '../../src/settings';
 
 import { readmeExamples } from './readme-sources';
 
@@ -49,7 +49,8 @@ function panel(source: string, y: number, height: number, title: string, subtitl
 export async function exportReadmeExamples(container: HTMLElement): Promise<void> {
   container.replaceChildren();
   const native = await nativeExamples();
-  const renderer = new BeautyRenderer(() => document.createElement('div'));
+  const renderer = new BeautyRenderer(() => document.createElement('div'),
+    () => document.createElementNS('http://www.w3.org/2000/svg', 'style'));
   const assets = [];
   const wasDark = document.body.classList.contains('theme-dark');
   document.body.classList.remove('theme-dark');

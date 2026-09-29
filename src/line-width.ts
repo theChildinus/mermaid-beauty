@@ -25,13 +25,15 @@ export function connectorWidthCss(type: DiagramType, width: number, scope = ''):
     ${select('.edge-thickness-invisible')} { stroke-width: 0; }`;
 }
 
-export function styleConnectorWidth(svg: Element, type: DiagramType, width: number): void {
+export function styleConnectorWidth(svg: Element, type: DiagramType, width: number, createStyle: () => SVGStyleElement): void {
   const id = svg.getAttribute('id');
   if (!id) return;
   const css = connectorWidthCss(type, width, `#${CSS.escape(id)} `);
   if (!css) return;
   // Some renderers (including Wardley) do not consume Mermaid's themeCSS.
-  const style = svg.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'style');
-  style.textContent = css;
-  svg.appendChild(style);
+  // Reuse the final sheet to preserve cascade order. Wardley emits no stylesheet,
+  // so the host provides its DOM factory (Obsidian createSvg in production).
+  const styles = svg.querySelectorAll('style');
+  const style = styles.item(styles.length - 1) ?? svg.appendChild(createStyle());
+  style.textContent += `\n${css}`;
 }

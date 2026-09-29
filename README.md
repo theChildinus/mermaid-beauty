@@ -26,7 +26,7 @@ A library has books, and members borrow them. The class diagram keeps the same f
 
 ![Class diagram before and after Mermaid Beauty](docs/images/class-comparison.jpg)
 
-[Example sources](dev/readme-sources.ts)
+[Example sources](tests/browser/readme-sources.ts)
 
 ## Features
 
@@ -44,7 +44,7 @@ The Mint palette and flowchart treatment are inspired by the diagrams shown in C
 
 Requires Obsidian 1.12.7 or later.
 
-Until the plugin is listed in the community directory, install it manually:
+Install from the [community directory](https://community.obsidian.md/plugins/mermaid-beauty), or install manually:
 
 1. Download `main.js`, `manifest.json`, and `styles.css` from a [GitHub release](https://github.com/theChildinus/mermaid-beauty/releases).
 2. Place them in `<vault>/.obsidian/plugins/mermaid-beauty/`.
@@ -53,11 +53,15 @@ Until the plugin is listed in the community directory, install it manually:
 
 To build from source, run `npm ci` and `npm run build`, then copy the same three files. Use Node.js 24.12 or later for development.
 
+The complete offline renderer makes `main.js` about 5.9 MB. It exceeds Obsidian Sync Standard's 5 MB per-file limit, so that plan cannot sync this file. Install the plugin separately on each device.
+
 ## Configure
 
 Open **Settings → Mermaid Beauty**. **Language** offers **Follow Obsidian**, **中文**, and **English**. It changes the plugin interface immediately and keeps diagram source and labels unchanged. Unsupported Obsidian languages fall back to English.
 
 Under **Color palette**, select **Mint**, **Slate**, **Sky**, or **Rose** to apply a ready-made scheme. Each option shows its colors before you select it.
+
+All four presets use stronger text, distinct connectors and outlines, and soft fills in both light and dark modes. Sequence numbers, in-bar Gantt labels, pie values, and Git branch labels adapt to their fill when needed for readability. Explicit text colors in advanced options or diagram source remain authoritative.
 
 Choose **Custom** to open the light and dark color editors, then use the color pickers or enter hex colors such as `#26845b`. Rendering follows Obsidian's current theme. Switching to a preset keeps your custom colors saved; select **Custom** again to restore them. **Reset colors** clears saved custom colors for the current appearance and returns to its preset.
 
@@ -112,6 +116,10 @@ Relationship diagrams that support interchangeable graph layouts use ELK by defa
 
 Flowchart cards fit their text and reserve vertical space. Labels are measured with their capsule padding before layout, and orthogonal routes use wider, bounded corner rounding. Advanced flowchart options accept `elk` settings, including node placement alignment.
 
+All four palettes provide explicit light/dark colors for chart series, axes, groups, and labels. Filled node labels choose a readable foreground when only the background is customized; explicit text colors remain authoritative. SVG node labels are centered from their measured bounds before layout, including circle and ellipse shapes. Sankey bands retain their values and gradients without a darkening blend mode.
+
+Kanban columns and cards use separate fills and visible outlines. Headers and task text share a left inset, columns keep a common height, and long ticket/assignee labels move onto separate rows. Card corners are capped at 8 px to retain a rectangular shape. Explicit source colors, ticket links, and priority colors are preserved.
+
 Coverage is tied to the bundled Mermaid version. New upstream diagram types require a plugin update. Unrecognized declarations are attempted with the bundled engine, then handed to the existing renderer if they fail.
 
 ## Privacy and compatibility
@@ -121,6 +129,8 @@ Rendering happens locally. The plugin does not read unrelated notes, send diagra
 The production code uses browser APIs and Obsidian's API, without Node.js or Electron calls. Mobile behavior still needs device testing. Large diagrams and the bundled engine increase memory use; limits are 100,000 source characters and 1,500 graph edges. Unsupported or invalid diagrams may also fail in the existing renderer.
 
 The plugin wraps `loadMermaid().render`. That function is used by Obsidian's current Markdown renderer, but changes in Obsidian or another renderer plugin can affect integration.
+
+Enhanced sequence diagrams retain their natural dimensions and proportional strokes in Mermaid Zoom's fullscreen view. This compatibility styling applies only to those fullscreen copies; inline diagrams and other diagram types keep their existing behavior.
 
 ## Development
 
@@ -136,13 +146,13 @@ Open `http://127.0.0.1:4173`, press **Run rendering checks**, then run:
 npm run test:render
 ```
 
-Use **Export README comparisons** on the preview page to render `dev/readme-sources.ts` and save the comparison SVGs. Open `/comparison/flowchart`, `/comparison/sequence`, or `/comparison/class` on the same preview server and capture the page as a JPEG image; browser capture preserves native HTML labels. The separate native preview imports the pinned `mermaid-native` development dependency without the plugin build patch.
+Use **Export README comparisons** on the preview page to render `tests/browser/readme-sources.ts` and save the comparison SVGs. Open `/comparison/flowchart`, `/comparison/sequence`, or `/comparison/class` on the same preview server and capture the page as a JPEG image; browser capture preserves native HTML labels. The separate native preview imports the pinned `mermaid-native` development dependency without the plugin build patch.
 
 The preview uses the production rendering module. It checks every listed family in light and dark modes, per-type isolation, native opt-outs, error recovery, markup sanitization, unload behavior, and narrow containers. `test:render` verifies that the saved browser report matches the current source. It does not substitute for testing inside Obsidian.
 
 Report bugs with your Obsidian version, plugin version, diagram type, and a minimal example that contains no private information.
 
-The pinned Mermaid bundle has a small, checked build patch for flowchart label measurement in `scripts/mermaid-layout-patch.mjs`. It changes only the enhanced flowchart layout; dependency files on disk stay untouched. Review this patch and the bundled ELK import when upgrading Mermaid.
+The pinned Mermaid bundle has checked build patches for SVG node centering, flowchart label measurement, Kanban layout, and theme defaults bypassed by C4, Wardley, and Venn in `scripts/mermaid-layout-patch.mjs`. Dependency files on disk stay untouched. Review these patches and the bundled ELK import when upgrading Mermaid.
 
 ## License
 

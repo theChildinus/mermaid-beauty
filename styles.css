@@ -6,9 +6,17 @@
   pointer-events: none;
   contain: layout style;
 }
-.mermaid:has(> .mermaid-beauty-diagram) { overflow-x: auto; }
+.mermaid.mermaid-beauty-container { overflow-x: auto; }
 .mermaid-beauty-diagram[data-mermaid-beauty-fit="true"] { max-width: 100%; height: auto; }
 .mermaid-beauty-diagram[data-mermaid-beauty-fit="false"] { max-width: none; }
+/* Zoom measures its detached clone using viewBox, then scales its wrapper.
+   Keep that clone at the same size and scale strokes with text and markers. */
+.mermaid-zoom-modal-wrapper svg.mermaid-beauty-diagram[data-mermaid-beauty-type="sequence"] {
+  width: var(--mermaid-beauty-sequence-width);
+}
+.mermaid-zoom-modal-wrapper svg.mermaid-beauty-diagram[data-mermaid-beauty-type="sequence"] * {
+  vector-effect: none;
+}
 .mermaid-beauty-settings .mermaid-beauty-config { width: 100%; min-height: 150px; font-family: var(--font-monospace); }
 .mermaid-beauty-settings .mermaid-beauty-error { color: var(--text-error); white-space: pre-wrap; }
 .mermaid-beauty-settings .mermaid-beauty-section { margin-top: 24px; }

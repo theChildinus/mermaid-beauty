@@ -3,7 +3,7 @@ import globals from 'globals';
 export default [
   ...obsidianmd.configs.recommended,
   {
-    files: ['src/**/*.ts', 'dev/**/*.ts'],
+    files: ['src/**/*.ts', 'tests/browser/**/*.ts'],
     rules: {
       'obsidianmd/ui/sentence-case': ['warn', { brands: ['Mermaid Beauty', 'Mermaid', 'Obsidian', 'README'], acronyms: ['ELK', 'JSON', 'SVG'] }],
     },
@@ -13,8 +13,15 @@ export default [
     },
   },
   {
-    files: ['src/line-width.ts'],
-    // This engine is shared with the real-browser harness, which has no Obsidian DOM extensions.
-    rules: { 'obsidianmd/prefer-create-el': 'off' },
+    // These pages run in an ordinary browser, where Obsidian helpers do not
+    // exist. Keep every other rule, including HTML sanitization and styling.
+    files: ['tests/browser/**/*.ts'],
+    rules: {
+      'obsidianmd/prefer-create-el': 'off',
+      'no-restricted-globals': ['warn',
+        { name: 'app', message: 'The standalone preview must not depend on an Obsidian app instance.' },
+        { name: 'localStorage', message: 'Keep preview checks isolated instead of persisting browser state.' },
+      ],
+    },
   },
 ];

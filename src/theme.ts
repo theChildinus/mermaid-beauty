@@ -1,5 +1,6 @@
 import type { MermaidConfig } from 'mermaid';
-import { paletteColors } from './colors';
+import { chartTheme } from './chart-theme';
+import { normalizeColor, paletteColors, textOnFill } from './colors';
 import { isRecord, type Appearance, type DiagramType } from './settings';
 
 const GRAPH_TYPES = new Set<DiagramType>(['flowchart', 'class', 'state', 'er', 'requirement', 'usecase', 'agentflow']);
@@ -15,6 +16,9 @@ export function mergeConfig(base: Record<string, unknown>, extra: Record<string,
 
 export function themeConfig(appearance: Appearance, type: DiagramType, dark: boolean, extra: Record<string, unknown> = {}): MermaidConfig {
   const c = paletteColors(appearance, dark);
+  const charts = chartTheme(c, dark, type);
+  const extraVariables = isRecord(extra.themeVariables) ? extra.themeVariables : {};
+  const numberBackground = normalizeColor(extraVariables.signalColor) ?? c.line;
   const font = 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
   const config: MermaidConfig = {
     startOnLoad: false, securityLevel: 'strict', suppressErrorRendering: true,
@@ -22,6 +26,7 @@ export function themeConfig(appearance: Appearance, type: DiagramType, dark: boo
     maxTextSize: 100_000, maxEdges: 1500, theme: 'base', look: 'classic',
     fontFamily: font, fontSize: appearance.fontSize, htmlLabels: false,
     themeVariables: {
+      ...charts,
       darkMode: dark, background: c.background, fontFamily: font, fontSize: `${appearance.fontSize}px`,
       radius: appearance.radius, strokeWidth: 1.25,
       primaryColor: c.surface, primaryTextColor: c.text, primaryBorderColor: c.border,
@@ -32,7 +37,8 @@ export function themeConfig(appearance: Appearance, type: DiagramType, dark: boo
       actorBkg: c.surface, actorBorder: c.border, actorTextColor: c.text, actorLineColor: c.line,
       signalColor: c.line, signalTextColor: c.text, labelBoxBkgColor: c.label,
       labelBoxBorderColor: c.border, labelTextColor: c.text, loopTextColor: c.text,
-      activationBkgColor: c.surface, activationBorderColor: c.border, sequenceNumberColor: c.text,
+      // Sequence number badges use signalColor as their fill, unlike actor labels.
+      activationBkgColor: c.surface, activationBorderColor: c.border, sequenceNumberColor: textOnFill(numberBackground, c.text),
       noteBkgColor: c.label, noteBorderColor: c.border, noteTextColor: c.text,
       titleColor: c.text, sectionBkgColor: c.label, altSectionBkgColor: c.background,
       taskBkgColor: c.surface, taskBorderColor: c.border, taskTextColor: c.text,
@@ -41,11 +47,9 @@ export function themeConfig(appearance: Appearance, type: DiagramType, dark: boo
       activeTaskBkgColor: c.accent, activeTaskBorderColor: c.accent,
       pieTitleTextColor: c.text, pieSectionTextColor: c.text, pieLegendTextColor: c.text,
       pieStrokeColor: c.background, pieOuterStrokeColor: c.border,
-      pie1: c.surface, pie2: c.border, pie3: c.label, pie4: c.accent,
-      git0: c.accent, git1: c.border, git2: c.surface,
-      xyChart: { backgroundColor: c.background, titleColor: c.text, xAxisLabelColor: c.text,
+      xyChart: { backgroundColor: c.background, titleColor: c.text, legendTextColor: c.text, dataLabelColor: c.text, xAxisTitleColor: c.text, yAxisTitleColor: c.text, xAxisLabelColor: c.text,
         yAxisLabelColor: c.text, xAxisLineColor: c.line, yAxisLineColor: c.line,
-        xAxisTickColor: c.line, yAxisTickColor: c.line, plotColorPalette: `${c.accent},${c.border},${c.line}` },
+        xAxisTickColor: c.line, yAxisTickColor: c.line, plotColorPalette: Array.from({ length: 12 }, (_, i) => String(charts[`cScale${i}`])).join(',') },
     },
     flowchart: { htmlLabels: false, useMaxWidth: appearance.fitWidth, nodeSpacing: appearance.spacing,
       rankSpacing: appearance.spacing + 24, padding: 16, minNodeWidth: 0, curve: 'rounded', wrappingWidth: 420 },
@@ -57,6 +61,7 @@ export function themeConfig(appearance: Appearance, type: DiagramType, dark: boo
     themeCSS: `
       text, .label { font-family: ${font}; }
       .node text, .edgeLabel text, text.actor, .classTitle, .entityLabel { font-weight: 600; }
+      .sequenceNumber { font-weight: 600; }
       .node tspan[font-weight="normal"], .edgeLabel tspan[font-weight="normal"] { font-weight: 600; }
       .node rect, rect.actor, rect.actor-top, rect.actor-bottom, .classGroup rect { rx: ${appearance.radius}px; ry: ${appearance.radius}px; }
       .edgeLabel rect, .edgeLabel .label rect { rx: ${appearance.fontSize}px; ry: ${appearance.fontSize}px; stroke: ${c.border}; stroke-width: 1px; opacity: 1; }
@@ -75,6 +80,10 @@ export function themeConfig(appearance: Appearance, type: DiagramType, dark: boo
     }
   }
   config.c4 = c4;
+  config.railroad = { terminalFill: c.surface, terminalStroke: c.border, terminalTextColor: c.text,
+    nonTerminalFill: c.label, nonTerminalStroke: c.border, nonTerminalTextColor: c.text,
+    commentFill: c.label, commentStroke: c.border, commentTextColor: c.text,
+    specialFill: c.surface, specialStroke: c.border, ruleNameColor: c.text, lineColor: c.line, markerFill: c.line };
   if (type === 'flowchart') config.elk = {
     preset: 'legacy', nodePlacementAlignment: 'NONE', straightenEdges: true,
     mergeEdges: false, considerModelOrder: 'NODES_AND_EDGES',
@@ -82,5 +91,35 @@ export function themeConfig(appearance: Appearance, type: DiagramType, dark: boo
   if (supportsGraphLayout(type)) config.layout = appearance.layout === 'auto' ? 'elk' : appearance.layout;
   if (type === 'flowchart' && config.layout === 'elk') config.layout = 'beauty-flowchart';
   // Keep specialized layouts for timelines, charts, mind maps, and architecture diagrams.
-  return mergeConfig(config as Record<string, unknown>, extra);
+  const merged = mergeConfig(config as Record<string, unknown>, extra) as MermaidConfig;
+  const variables = merged.themeVariables as Record<string, string> & { treemap: { leafStrokeColor: string; sectionStrokeColor: string } };
+  if (type === 'kanban') {
+    const customSections = Object.keys(extraVariables).some(key => /^cScale\d+$/.test(key));
+    const customSectionText = Object.keys(extraVariables).some(key => /^cScaleLabel\d+$/.test(key));
+    const columnFill = !customSections || 'clusterBkg' in extraVariables ? `fill: ${variables.clusterBkg};` : '';
+    const columnBorder = !customSections || 'clusterBorder' in extraVariables ? `stroke: ${variables.clusterBorder};` : '';
+    const headerText = !customSectionText || 'textColor' in extraVariables ? `fill: ${variables.textColor};` : '';
+    const cardBorder = 'nodeBorder' in extraVariables ? variables.nodeBorder : variables.primaryBorderColor;
+    // Mermaid derives section colors from cScale, which can collapse to black
+    // in dark themes. Use the explicit column/node roles instead.
+    merged.themeCSS += `
+      .sections .cluster > rect { ${columnFill} ${columnBorder} stroke-width: 1.25px; }
+      .sections .cluster-label text { ${headerText} font-weight: 600; }
+      .items .node > rect { fill: ${variables.primaryColor}; stroke: ${cardBorder}; rx: ${Math.min(appearance.radius, 8)}px; ry: ${Math.min(appearance.radius, 8)}px; }
+      .items .node .label { fill: ${variables.primaryTextColor}; color: ${variables.primaryTextColor}; }
+      .items .node text, .items .node tspan[font-weight="normal"] { font-weight: 400; }
+    `;
+  }
+  if (type === 'sankey') merged.themeCSS += `
+    .links .link { mix-blend-mode: normal !important; }
+    .nodes .node rect { rx: 0; ry: 0; stroke: ${variables.lineColor}; stroke-width: 1px; }
+    .node-labels text { fill: ${variables.textColor}; paint-order: stroke; stroke: ${variables.background}; stroke-width: 4px; stroke-linejoin: round; }
+  `;
+  if (type === 'timeline') merged.themeCSS += `.lineWrapper line { stroke: ${variables.lineColor}; }`;
+  if (type === 'journey') merged.themeCSS += `.journey-section, .task { stroke: ${variables.primaryBorderColor}; }`;
+  if (type === 'treemap') merged.themeCSS += `
+    .treemapLeaf { stroke: ${variables.treemap.leafStrokeColor}; }
+    rect.treemapSection { stroke: ${variables.treemap.sectionStrokeColor}; stroke-opacity: 1; }
+  `;
+  return merged;
 }

@@ -1,4 +1,4 @@
-import type { DiagramType } from '../src/settings';
+import type { DiagramType } from '../../src/settings';
 export interface Fixture { name: string; type: DiagramType; source: string; }
 export const fixtures: Fixture[] = [
   { name: 'Flowchart', type: 'flowchart', source: `flowchart LR

@@ -10,6 +10,11 @@ const result = await build({
   logLevel: 'info', legalComments: 'inline', minify: true, metafile: true,
   plugins: [mermaidLayoutPatch, zenumlSvgBuild],
 });
+// The standalone previews use browser APIs and localhost report endpoints.
+// Enforce that development-only code never enters the shipped plugin.
+if (Object.keys(result.metafile.inputs).some(path => /^(dev|tests)\//.test(path))) {
+  throw new Error('The production bundle must not include browser test or preview code.');
+}
 const notices = await thirdPartyNotices(Object.keys(result.metafile.inputs));
 await appendFile('main.js', '\n' + notices.split('\n').map(line => `// ${line}`).join('\n') + '\n');
 

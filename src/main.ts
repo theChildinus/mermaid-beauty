@@ -7,7 +7,7 @@ import { BeautySettingTab } from './settings-tab';
 
 export default class MermaidBeautyPlugin extends Plugin {
   settings: BeautySettings = loadSettings(DEFAULT_SETTINGS);
-  private renderer = new BeautyRenderer(() => createDiv());
+  private renderer = new BeautyRenderer(() => createDiv(), () => createSvg('style'));
   private detach?: () => void;
   private stopped = false;
   private fallbackReported = false;
