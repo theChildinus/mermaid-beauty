@@ -3,8 +3,10 @@
 ## 1.1.0
 
 - Customize background, node, label, text, border, connector, and accent colors with pickers or hex values. Light and dark modes can use different colors, globally or per diagram type.
-- Keep existing palette choices and use the four presets as starting points.
-- Show English before/after comparisons for flowcharts, sequence diagrams, and class diagrams in both READMEs.
+- Choose Mint, Slate, Sky, or Rose from color preview cards. Switch to Custom to edit colors; switching presets keeps those custom values saved.
+- Show English examples for shopping, ordering coffee, and library books. Before images use native Mermaid 11.13.0 defaults; After images use Mermaid Beauty with the same source.
+
+Existing settings are preserved. Checked with 31 unit tests, 78 browser renders, and 15 behavior checks. Preset selection, custom editing, and restoring saved colors were verified in Obsidian 1.13.7 on macOS.
 
 ## 1.0.0
 
