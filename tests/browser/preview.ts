@@ -21,7 +21,7 @@ async function exportExamples(): Promise<void> {
   exportButton.disabled = true; run.disabled = true;
   try {
     await exportReadmeExamples(document.querySelector('#readme-comparisons')!);
-    status.textContent = 'Saved README comparison images at 3600px.';
+    status.textContent = 'Saved README comparison images for wide and narrow screens.';
   } catch (error) { status.textContent = String(error); }
   finally { exportButton.disabled = false; run.disabled = false; }
 }

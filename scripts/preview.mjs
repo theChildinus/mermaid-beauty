@@ -30,12 +30,14 @@ const server = createServer(async (req, res) => {
       const assets = JSON.parse(data);
       if (!Array.isArray(assets) || assets.length !== 1 || assets.some(asset =>
         asset.name !== 'flowchart' || typeof asset.svg !== 'string' ||
-        typeof asset.png !== 'string' || !asset.png.startsWith('data:image/png;base64,'))) {
+        typeof asset.png !== 'string' || !asset.png.startsWith('data:image/png;base64,') ||
+        typeof asset.stackedPng !== 'string' || !asset.stackedPng.startsWith('data:image/png;base64,'))) {
         res.writeHead(400).end(); return;
       }
       for (const asset of assets) {
         await writeFile(`docs/images/${asset.name}-comparison.svg`, asset.svg);
         await writeFile(`docs/images/${asset.name}-comparison.png`, Buffer.from(asset.png.slice(22), 'base64'));
+        await writeFile(`docs/images/${asset.name}-comparison-stacked.png`, Buffer.from(asset.stackedPng.slice(22), 'base64'));
       }
       await writeFile(`${previewDir}/readme-baseline.json`, JSON.stringify(assets.map(({ name, baseline }) => ({ name, baseline })), null, 2));
       res.writeHead(200).end('Saved'); return;

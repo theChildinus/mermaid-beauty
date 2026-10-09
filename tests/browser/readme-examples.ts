@@ -33,32 +33,45 @@ async function nativeExamples(): Promise<NativeResult> {
   }
 }
 
-function panel(source: string, x: number, y: number, width: number, height: number, title: string, subtitle: string): string {
+function dimensions(source: string): { width: number; height: number } {
   const svg = new DOMParser().parseFromString(source, 'image/svg+xml').documentElement;
-  svg.setAttribute('x', String(x + 24)); svg.setAttribute('y', String(y + 72));
-  svg.setAttribute('width', String(width - 48)); svg.setAttribute('height', String(height - 100));
+  const bounds = svg.getAttribute('viewBox')?.split(/[\s,]+/).map(Number);
+  if (!bounds || bounds.length !== 4 || !bounds.every(Number.isFinite) || bounds[2]! <= 0 || bounds[3]! <= 0) {
+    throw new Error('The comparison needs a valid diagram viewBox.');
+  }
+  return { width: bounds[2]!, height: bounds[3]! };
+}
+
+function panel(source: string, x: number, y: number, width: number, height: number,
+  scale: number, title: string, subtitle: string): string {
+  const svg = new DOMParser().parseFromString(source, 'image/svg+xml').documentElement;
+  const size = dimensions(source);
+  const drawingWidth = size.width * scale, drawingHeight = size.height * scale;
+  svg.setAttribute('x', String(x + (width - drawingWidth) / 2));
+  svg.setAttribute('y', String(y + 84 + (height - 108 - drawingHeight) / 2));
+  svg.setAttribute('width', String(drawingWidth)); svg.setAttribute('height', String(drawingHeight));
   svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
   svg.removeAttribute('style');
-  return `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="16" fill="#ffffff" stroke="#dce5df"/>
-    <text x="${x + 24}" y="${y + 32}" font-size="20" font-weight="600" fill="#24382d">${title}</text>
-    <text x="${x + 24}" y="${y + 55}" font-size="13" fill="#66736c">${subtitle}</text>
+  return `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="14" fill="#ffffff" stroke="#d6deea"/>
+    <text x="${x + 24}" y="${y + 36}" font-size="24" font-weight="600" fill="#1f2937">${title}</text>
+    <text x="${x + 24}" y="${y + 61}" font-size="15" fill="#526176">${subtitle}</text>
     ${new XMLSerializer().serializeToString(svg)}`;
 }
 
 /** Rasterize the self-contained SVG at 3× resolution, including HTML labels. */
-async function pngDataUrl(svg: string, height: number): Promise<string> {
+async function pngDataUrl(svg: string, width: number, height: number): Promise<string> {
   const picture = new Image();
   picture.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
   await picture.decode();
   const canvas = document.createElement('canvas');
-  canvas.width = 3600; canvas.height = height * 3;
+  canvas.width = width * 3; canvas.height = height * 3;
   const context = canvas.getContext('2d');
   if (!context) throw new Error('Could not create the README image canvas.');
   context.drawImage(picture, 0, 0, canvas.width, canvas.height);
   return canvas.toDataURL('image/png');
 }
 
-/** Both sides use exactly the same source and canvas width; only rendering changes. */
+/** Both sides use the same source and scale, so font and spacing differences stay honest. */
 export async function exportReadmeExamples(container: HTMLElement): Promise<void> {
   container.replaceChildren();
   const native = await nativeExamples();
@@ -73,13 +86,24 @@ export async function exportReadmeExamples(container: HTMLElement): Promise<void
       if (!before || before.source !== example.source || before.svg.includes('mermaid-beauty')) {
         throw new Error('The native baseline must use the same source and contain no plugin output.');
       }
-      const after = await renderer.render(`after-${example.type}`, example.source, loadSettings({ defaults: { palette: example.palette } }));
-      const height = 780;
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="${height}" viewBox="0 0 1200 ${height}" font-family="system-ui, sans-serif" role="img" aria-label="${example.name}: before and after Mermaid Beauty">
-        <rect width="1200" height="${height}" fill="#f5f7f6"/>
-        ${panel(before.svg, 8, 8, 1184, 374, 'Before', 'Native Mermaid 11.13.0 · default theme and layout')}
-        ${panel(after.svg, 8, 398, 1184, 374, 'After', `Mermaid Beauty · ${example.palette.charAt(0).toUpperCase() + example.palette.slice(1)} preset`)}
-      </svg>`;
+      const after = await renderer.render(`after-${example.type}`, example.source, loadSettings(undefined));
+      const beforeSize = dimensions(before.svg), afterSize = dimensions(after.svg);
+      const panelWidth = 556;
+      const scale = Math.min((panelWidth - 48) / Math.max(beforeSize.width, afterSize.width),
+        560 / Math.max(beforeSize.height, afterSize.height));
+      const panelHeight = Math.ceil(Math.max(beforeSize.height, afterSize.height) * scale) + 108;
+      const comparison = (stacked: boolean): { svg: string; width: number; height: number } => {
+        const width = stacked ? panelWidth + 32 : panelWidth * 2 + 48;
+        const height = stacked ? panelHeight * 2 + 48 : panelHeight + 32;
+        return { width, height, svg: `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="system-ui, sans-serif" role="img" aria-label="${example.name}: before and after Mermaid Beauty">
+          <rect width="${width}" height="${height}" fill="#f6f8fb"/>
+          ${panel(before.svg, 16, 16, panelWidth, panelHeight, scale, 'Before', 'Mermaid 11.13.0 · default rendering')}
+          ${panel(after.svg, stacked ? 16 : panelWidth + 32, stacked ? panelHeight + 32 : 16,
+            panelWidth, panelHeight, scale, 'After', 'Mermaid Beauty · default coordinated colors')}
+        </svg>` };
+      };
+      const wide = comparison(false), stacked = comparison(true);
+      const svg = wide.svg;
       const article = document.createElement('article');
       article.id = `readme-${example.type}`;
       article.className = 'preview-readme-article';
@@ -88,7 +112,8 @@ export async function exportReadmeExamples(container: HTMLElement): Promise<void
       const drawing = document.importNode(parsed.documentElement, true) as unknown as SVGSVGElement;
       drawing.classList.add('preview-readme-svg');
       article.append(drawing); container.append(article);
-      assets.push({ name: example.type, svg, png: await pngDataUrl(svg, height), baseline: native.baseline });
+      assets.push({ name: example.type, svg, png: await pngDataUrl(svg, wide.width, wide.height),
+        stackedPng: await pngDataUrl(stacked.svg, stacked.width, stacked.height), baseline: native.baseline });
     }
     const response = await fetch('/readme-assets', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(assets) });
     if (!response.ok) throw new Error('Could not save README comparison images.');
