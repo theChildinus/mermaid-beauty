@@ -1,11 +1,12 @@
 import type { Mermaid, RenderResult } from 'mermaid';
-import { diagramType, isRecord, parseCustomConfig, resolveAppearance, type BeautySettings } from './settings';
+import { diagramType, isRecord, parseCustomConfig, resolveAppearance, resolveTypeSettings, type BeautySettings } from './settings';
 import { mergeConfig, themeConfig } from './theme';
 import { styleZenUml } from './zenuml-style';
 import { styleConnectorWidth } from './line-width';
 import { flowchartLayout } from './flowchart-layout';
 import { softenOrthogonalPath } from './rounded-path';
 import { styleFilledLabels } from './filled-labels';
+import { styleFlowchartColors } from './flowchart-colors';
 
 /** Each render owns the configuration until its SVG is complete. */
 export class BeautyRenderer {
@@ -28,7 +29,7 @@ export class BeautyRenderer {
       if (this.disposed) throw new Error('Mermaid Beauty has been unloaded.');
       const type = diagramType(source);
       const appearance = resolveAppearance(settings, type);
-      let extra = parseCustomConfig(settings.types[type]?.config ?? '');
+      let extra = parseCustomConfig(resolveTypeSettings(settings, type).config ?? '');
       const doc = container?.ownerDocument ?? document;
       const dark = doc.body.classList.contains('theme-dark');
       // Mermaid measures text in the main document, even for a pop-out window.
@@ -41,10 +42,12 @@ export class BeautyRenderer {
         await document.fonts.ready;
         if (this.disposed) throw new Error('Mermaid Beauty has been unloaded.');
         let config = themeConfig(appearance, type, dark, extra);
+        let sourceTheme: unknown = isRecord(extra.flowchart) ? extra.flowchart.theme : undefined;
         let pieConfig = config.pie;
         engine.initialize(config);
         if (/^\s*(?:---|%%\{)/m.test(source)) {
           const parsedSource = await engine.parse(source);
+          if (parsedSource) sourceTheme = parsedSource.config.flowchart?.theme ?? parsedSource.config.theme ?? sourceTheme;
           if (parsedSource) pieConfig = { ...pieConfig, ...parsedSource.config.pie };
           if (parsedSource && parsedSource.config.themeVariables) {
             // Initialize again so Mermaid recalculates derived colors (such as mainBkg).
@@ -69,6 +72,7 @@ export class BeautyRenderer {
         if (isRecord(variables) && typeof variables.background === 'string') {
           (svg as unknown as SVGSVGElement).style.backgroundColor = variables.background;
         }
+        if (type === 'flowchart' && appearance.colorStyle === 'multi' && (!sourceTheme || sourceTheme === config.theme)) styleFlowchartColors(svg, config);
         styleFilledLabels(svg, type, { ...config, pie: pieConfig }, extra, host);
         if (type === 'flowchart') {
           for (const path of svg.querySelectorAll('path.flowchart-link[data-look="classic"]')) {

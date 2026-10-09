@@ -1,0 +1,3025 @@
+{
+  "checkedAt": "2026-10-09T08:58:49.389Z",
+  "buildHash": "9f301c6b55f00ae204fc8febe05bda5d9dccf78d9270e8bc588d84dc6b0c1b16",
+  "results": [
+    {
+      "name": "Flowchart / light",
+      "passed": true
+    },
+    {
+      "name": "Sequence / light",
+      "passed": true
+    },
+    {
+      "name": "Class / light",
+      "passed": true
+    },
+    {
+      "name": "State / light",
+      "passed": true
+    },
+    {
+      "name": "Entity relationship / light",
+      "passed": true
+    },
+    {
+      "name": "Gantt / light",
+      "passed": true
+    },
+    {
+      "name": "Pie / light",
+      "passed": true
+    },
+    {
+      "name": "Mind map / light",
+      "passed": true
+    },
+    {
+      "name": "Timeline / light",
+      "passed": true
+    },
+    {
+      "name": "Journey / light",
+      "passed": true
+    },
+    {
+      "name": "Git graph / light",
+      "passed": true
+    },
+    {
+      "name": "Quadrant / light",
+      "passed": true
+    },
+    {
+      "name": "Requirement / light",
+      "passed": true
+    },
+    {
+      "name": "C4 / light",
+      "passed": true
+    },
+    {
+      "name": "Sankey / light",
+      "passed": true
+    },
+    {
+      "name": "XY chart / light",
+      "passed": true
+    },
+    {
+      "name": "Block / light",
+      "passed": true
+    },
+    {
+      "name": "Packet / light",
+      "passed": true
+    },
+    {
+      "name": "Architecture / light",
+      "passed": true
+    },
+    {
+      "name": "Kanban / light",
+      "passed": true
+    },
+    {
+      "name": "Radar / light",
+      "passed": true
+    },
+    {
+      "name": "Treemap / light",
+      "passed": true
+    },
+    {
+      "name": "Venn / light",
+      "passed": true
+    },
+    {
+      "name": "Railroad / light",
+      "passed": true
+    },
+    {
+      "name": "Railroad EBNF / light",
+      "passed": true
+    },
+    {
+      "name": "Railroad ABNF / light",
+      "passed": true
+    },
+    {
+      "name": "Railroad PEG / light",
+      "passed": true
+    },
+    {
+      "name": "Tree view / light",
+      "passed": true
+    },
+    {
+      "name": "Cynefin / light",
+      "passed": true
+    },
+    {
+      "name": "Swimlane / light",
+      "passed": true
+    },
+    {
+      "name": "Use case / light",
+      "passed": true
+    },
+    {
+      "name": "Agent flow / light",
+      "passed": true
+    },
+    {
+      "name": "Event modeling / light",
+      "passed": true
+    },
+    {
+      "name": "Ishikawa / light",
+      "passed": true
+    },
+    {
+      "name": "Wardley / light",
+      "passed": true
+    },
+    {
+      "name": "ZenUML / light",
+      "passed": true
+    },
+    {
+      "name": "ZenUML fragments / light",
+      "passed": true
+    },
+    {
+      "name": "Info / light",
+      "passed": true
+    },
+    {
+      "name": "Shapes and styles / light",
+      "passed": true
+    },
+    {
+      "name": "Source config / light",
+      "passed": true
+    },
+    {
+      "name": "Flowchart / dark",
+      "passed": true
+    },
+    {
+      "name": "Sequence / dark",
+      "passed": true
+    },
+    {
+      "name": "Class / dark",
+      "passed": true
+    },
+    {
+      "name": "State / dark",
+      "passed": true
+    },
+    {
+      "name": "Entity relationship / dark",
+      "passed": true
+    },
+    {
+      "name": "Gantt / dark",
+      "passed": true
+    },
+    {
+      "name": "Pie / dark",
+      "passed": true
+    },
+    {
+      "name": "Mind map / dark",
+      "passed": true
+    },
+    {
+      "name": "Timeline / dark",
+      "passed": true
+    },
+    {
+      "name": "Journey / dark",
+      "passed": true
+    },
+    {
+      "name": "Git graph / dark",
+      "passed": true
+    },
+    {
+      "name": "Quadrant / dark",
+      "passed": true
+    },
+    {
+      "name": "Requirement / dark",
+      "passed": true
+    },
+    {
+      "name": "C4 / dark",
+      "passed": true
+    },
+    {
+      "name": "Sankey / dark",
+      "passed": true
+    },
+    {
+      "name": "XY chart / dark",
+      "passed": true
+    },
+    {
+      "name": "Block / dark",
+      "passed": true
+    },
+    {
+      "name": "Packet / dark",
+      "passed": true
+    },
+    {
+      "name": "Architecture / dark",
+      "passed": true
+    },
+    {
+      "name": "Kanban / dark",
+      "passed": true
+    },
+    {
+      "name": "Radar / dark",
+      "passed": true
+    },
+    {
+      "name": "Treemap / dark",
+      "passed": true
+    },
+    {
+      "name": "Venn / dark",
+      "passed": true
+    },
+    {
+      "name": "Railroad / dark",
+      "passed": true
+    },
+    {
+      "name": "Railroad EBNF / dark",
+      "passed": true
+    },
+    {
+      "name": "Railroad ABNF / dark",
+      "passed": true
+    },
+    {
+      "name": "Railroad PEG / dark",
+      "passed": true
+    },
+    {
+      "name": "Tree view / dark",
+      "passed": true
+    },
+    {
+      "name": "Cynefin / dark",
+      "passed": true
+    },
+    {
+      "name": "Swimlane / dark",
+      "passed": true
+    },
+    {
+      "name": "Use case / dark",
+      "passed": true
+    },
+    {
+      "name": "Agent flow / dark",
+      "passed": true
+    },
+    {
+      "name": "Event modeling / dark",
+      "passed": true
+    },
+    {
+      "name": "Ishikawa / dark",
+      "passed": true
+    },
+    {
+      "name": "Wardley / dark",
+      "passed": true
+    },
+    {
+      "name": "ZenUML / dark",
+      "passed": true
+    },
+    {
+      "name": "ZenUML fragments / dark",
+      "passed": true
+    },
+    {
+      "name": "Info / dark",
+      "passed": true
+    },
+    {
+      "name": "Shapes and styles / dark",
+      "passed": true
+    },
+    {
+      "name": "Source config / dark",
+      "passed": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "mint light filled labels and palette contrast",
+      "passed": true
+    },
+    {
+      "name": "mint dark filled labels and palette contrast",
+      "passed": true
+    },
+    {
+      "name": "slate light filled labels and palette contrast",
+      "passed": true
+    },
+    {
+      "name": "slate dark filled labels and palette contrast",
+      "passed": true
+    },
+    {
+      "name": "sky light filled labels and palette contrast",
+      "passed": true
+    },
+    {
+      "name": "sky dark filled labels and palette contrast",
+      "passed": true
+    },
+    {
+      "name": "rose light filled labels and palette contrast",
+      "passed": true
+    },
+    {
+      "name": "rose dark filled labels and palette contrast",
+      "passed": true
+    },
+    {
+      "name": "Derived pie colors, opacity and repeated Git branch colors stay readable",
+      "passed": true
+    },
+    {
+      "name": "Filled labels honor source and per-type text colors and source backgrounds",
+      "passed": true
+    },
+    {
+      "name": "Kanban mint light outlines and label bounds",
+      "passed": true
+    },
+    {
+      "name": "Kanban mint dark outlines and label bounds",
+      "passed": true
+    },
+    {
+      "name": "Kanban slate light outlines and label bounds",
+      "passed": true
+    },
+    {
+      "name": "Kanban slate dark outlines and label bounds",
+      "passed": true
+    },
+    {
+      "name": "Kanban sky light outlines and label bounds",
+      "passed": true
+    },
+    {
+      "name": "Kanban sky dark outlines and label bounds",
+      "passed": true
+    },
+    {
+      "name": "Kanban rose light outlines and label bounds",
+      "passed": true
+    },
+    {
+      "name": "Kanban rose dark outlines and label bounds",
+      "passed": true
+    },
+    {
+      "name": "Kanban source colors remain authoritative",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Flowchart",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Sequence",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Class",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light State",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Entity relationship",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Gantt",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Pie",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Mind map",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Timeline",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Journey",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Git graph",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Quadrant",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Requirement",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light C4",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Sankey",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light XY chart",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Block",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Packet",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Architecture",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Kanban",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Radar",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Treemap",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Venn",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Railroad",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Railroad EBNF",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Railroad ABNF",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Railroad PEG",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Tree view",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Cynefin",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Swimlane",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Use case",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Agent flow",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Event modeling",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Ishikawa",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Wardley",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light ZenUML",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light ZenUML fragments",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Info",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Shapes and styles",
+      "passed": true
+    },
+    {
+      "name": "Readability mint light Source config",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Flowchart",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Sequence",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Class",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark State",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Entity relationship",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Gantt",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Pie",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Mind map",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Timeline",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Journey",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Git graph",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Quadrant",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Requirement",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark C4",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Sankey",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark XY chart",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Block",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Packet",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Architecture",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Kanban",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Radar",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Treemap",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Venn",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Railroad",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Railroad EBNF",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Railroad ABNF",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Railroad PEG",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Tree view",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Cynefin",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Swimlane",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Use case",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Agent flow",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Event modeling",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Ishikawa",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Wardley",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark ZenUML",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark ZenUML fragments",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Info",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Shapes and styles",
+      "passed": true
+    },
+    {
+      "name": "Readability mint dark Source config",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Flowchart",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Sequence",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Class",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light State",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Entity relationship",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Gantt",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Pie",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Mind map",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Timeline",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Journey",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Git graph",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Quadrant",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Requirement",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light C4",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Sankey",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light XY chart",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Block",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Packet",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Architecture",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Kanban",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Radar",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Treemap",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Venn",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Railroad",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Railroad EBNF",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Railroad ABNF",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Railroad PEG",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Tree view",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Cynefin",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Swimlane",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Use case",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Agent flow",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Event modeling",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Ishikawa",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Wardley",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light ZenUML",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light ZenUML fragments",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Info",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Shapes and styles",
+      "passed": true
+    },
+    {
+      "name": "Readability slate light Source config",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Flowchart",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Sequence",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Class",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark State",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Entity relationship",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Gantt",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Pie",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Mind map",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Timeline",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Journey",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Git graph",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Quadrant",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Requirement",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark C4",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Sankey",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark XY chart",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Block",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Packet",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Architecture",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Kanban",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Radar",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Treemap",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Venn",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Railroad",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Railroad EBNF",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Railroad ABNF",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Railroad PEG",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Tree view",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Cynefin",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Swimlane",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Use case",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Agent flow",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Event modeling",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Ishikawa",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Wardley",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark ZenUML",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark ZenUML fragments",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Info",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Shapes and styles",
+      "passed": true
+    },
+    {
+      "name": "Readability slate dark Source config",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Flowchart",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Sequence",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Class",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light State",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Entity relationship",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Gantt",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Pie",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Mind map",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Timeline",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Journey",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Git graph",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Quadrant",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Requirement",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light C4",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Sankey",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light XY chart",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Block",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Packet",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Architecture",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Kanban",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Radar",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Treemap",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Venn",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Railroad",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Railroad EBNF",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Railroad ABNF",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Railroad PEG",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Tree view",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Cynefin",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Swimlane",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Use case",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Agent flow",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Event modeling",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Ishikawa",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Wardley",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light ZenUML",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light ZenUML fragments",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Info",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Shapes and styles",
+      "passed": true
+    },
+    {
+      "name": "Readability sky light Source config",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Flowchart",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Sequence",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Class",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark State",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Entity relationship",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Gantt",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Pie",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Mind map",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Timeline",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Journey",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Git graph",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Quadrant",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Requirement",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark C4",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Sankey",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark XY chart",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Block",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Packet",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Architecture",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Kanban",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Radar",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Treemap",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Venn",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Railroad",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Railroad EBNF",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Railroad ABNF",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Railroad PEG",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Tree view",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Cynefin",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Swimlane",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Use case",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Agent flow",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Event modeling",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Ishikawa",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Wardley",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark ZenUML",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark ZenUML fragments",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Info",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Shapes and styles",
+      "passed": true
+    },
+    {
+      "name": "Readability sky dark Source config",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Flowchart",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Sequence",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Class",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light State",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Entity relationship",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Gantt",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Pie",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Mind map",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Timeline",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Journey",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Git graph",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Quadrant",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Requirement",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light C4",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Sankey",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light XY chart",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Block",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Packet",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Architecture",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Kanban",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Radar",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Treemap",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Venn",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Railroad",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Railroad EBNF",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Railroad ABNF",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Railroad PEG",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Tree view",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Cynefin",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Swimlane",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Use case",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Agent flow",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Event modeling",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Ishikawa",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Wardley",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light ZenUML",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light ZenUML fragments",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Info",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Shapes and styles",
+      "passed": true
+    },
+    {
+      "name": "Readability rose light Source config",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Flowchart",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Sequence",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Class",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark State",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Entity relationship",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Gantt",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Pie",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Mind map",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Timeline",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Journey",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Git graph",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Quadrant",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Requirement",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark C4",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Sankey",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark XY chart",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Block",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Packet",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Architecture",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Kanban",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Radar",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Treemap",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Venn",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Railroad",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Railroad EBNF",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Railroad ABNF",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Railroad PEG",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Tree view",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Cynefin",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Swimlane",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Use case",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Agent flow",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Event modeling",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Ishikawa",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Wardley",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark ZenUML",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark ZenUML fragments",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Info",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Shapes and styles",
+      "passed": true
+    },
+    {
+      "name": "Readability rose dark Source config",
+      "passed": true
+    },
+    {
+      "name": "Specialized diagrams retain authored colors and Sankey quantities",
+      "passed": true
+    },
+    {
+      "name": "Centered node labels mindmap font 10",
+      "passed": true
+    },
+    {
+      "name": "Centered node labels mindmap font 15",
+      "passed": true
+    },
+    {
+      "name": "Centered node labels mindmap font 28",
+      "passed": true
+    },
+    {
+      "name": "Centered node labels usecase font 10",
+      "passed": true
+    },
+    {
+      "name": "Centered node labels usecase font 15",
+      "passed": true
+    },
+    {
+      "name": "Centered node labels usecase font 28",
+      "passed": true
+    },
+    {
+      "name": "Centered node labels flowchart font 10",
+      "passed": true
+    },
+    {
+      "name": "Centered node labels flowchart font 15",
+      "passed": true
+    },
+    {
+      "name": "Centered node labels flowchart font 28",
+      "passed": true
+    },
+    {
+      "name": "Multicolor stable source node colors auto / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor stable source node colors dagre / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Flowchart / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Sequence / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Class / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor State / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Entity relationship / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Gantt / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Pie / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Mind map / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Timeline / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Journey / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Git graph / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Quadrant / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Requirement / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor C4 / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Sankey / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor XY chart / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Block / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Packet / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Architecture / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Kanban / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Radar / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Treemap / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Venn / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Railroad / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Railroad EBNF / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Railroad ABNF / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Railroad PEG / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Tree view / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Cynefin / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Swimlane / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Use case / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Agent flow / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Event modeling / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Ishikawa / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Wardley / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor ZenUML / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor ZenUML fragments / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Info / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Shapes and styles / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Source config / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor clear flowchart light separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor clear sequence light separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor clear class light separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor clear kanban light separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor cool flowchart light separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor cool sequence light separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor cool class light separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor cool kanban light separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor natural flowchart light separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor natural sequence light separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor natural class light separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor natural kanban light separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor clear text, connectors and plot labels / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor cool text, connectors and plot labels / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor natural text, connectors and plot labels / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor explicit colors / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor custom controls and named themes / light",
+      "passed": true
+    },
+    {
+      "name": "Multicolor stable source node colors auto / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor stable source node colors dagre / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Flowchart / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Sequence / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Class / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor State / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Entity relationship / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Gantt / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Pie / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Mind map / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Timeline / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Journey / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Git graph / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Quadrant / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Requirement / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor C4 / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Sankey / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor XY chart / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Block / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Packet / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Architecture / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Kanban / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Radar / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Treemap / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Venn / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Railroad / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Railroad EBNF / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Railroad ABNF / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Railroad PEG / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Tree view / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Cynefin / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Swimlane / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Use case / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Agent flow / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Event modeling / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Ishikawa / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Wardley / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor ZenUML / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor ZenUML fragments / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Info / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Shapes and styles / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor Source config / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor clear flowchart dark separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor clear sequence dark separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor clear class dark separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor clear kanban dark separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor cool flowchart dark separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor cool sequence dark separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor cool class dark separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor cool kanban dark separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor natural flowchart dark separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor natural sequence dark separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor natural class dark separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor natural kanban dark separation and contrast",
+      "passed": true
+    },
+    {
+      "name": "Multicolor clear text, connectors and plot labels / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor cool text, connectors and plot labels / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor natural text, connectors and plot labels / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor explicit colors / dark",
+      "passed": true
+    },
+    {
+      "name": "Multicolor custom controls and named themes / dark",
+      "passed": true
+    },
+    {
+      "name": "Inherited settings ignore saved inactive custom options",
+      "passed": true
+    },
+    {
+      "name": "Every declared diagram family has a fixture",
+      "passed": true
+    },
+    {
+      "name": "Per-type colors remain isolated during concurrent rendering",
+      "passed": true
+    },
+    {
+      "name": "Custom light and dark colors reach flowcharts, sequences, charts and ZenUML",
+      "passed": true
+    },
+    {
+      "name": "Preset selection hides saved custom colors and Custom restores them",
+      "passed": true
+    },
+    {
+      "name": "Source colors override a custom palette",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to flowchart in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to sequence in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to class in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to state in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to er in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to requirement in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to mindmap in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to journey in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to git in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to c4 in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to block in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to architecture in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to railroad in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to treeview in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to swimlane in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to usecase in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to agentflow in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to eventmodeling in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to ishikawa in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to wardley in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Connector width applies to zenuml in light and dark modes",
+      "passed": true
+    },
+    {
+      "name": "Line widths preserve explicit, dashed, thick and invisible edges",
+      "passed": true
+    },
+    {
+      "name": "Line width leaves node borders, chart axes and quantity-scaled bands unchanged",
+      "passed": true
+    },
+    {
+      "name": "Per-type widths remain isolated",
+      "passed": true
+    },
+    {
+      "name": "Line width comparison renders at normal and narrow widths",
+      "passed": true
+    },
+    {
+      "name": "Native opt-out and unloading preserve the original renderer",
+      "passed": true
+    },
+    {
+      "name": "Invalid source does not poison the queue or leak measuring elements",
+      "passed": true
+    },
+    {
+      "name": "Labels cannot introduce executable markup",
+      "passed": true
+    },
+    {
+      "name": "Fit-width diagrams stay inside a 360px container",
+      "passed": true
+    },
+    {
+      "name": "Unscaled diagrams retain their natural width and scroll",
+      "passed": true
+    },
+    {
+      "name": "Scroll containers preserve bindings and reset on native rendering, fallback, and unload",
+      "passed": true
+    },
+    {
+      "name": "Zoom Flowchart / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Flowchart / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Flowchart / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Flowchart / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Sequence / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Sequence / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Sequence / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Sequence / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Class / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Class / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Class / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Class / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom State / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom State / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom State / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom State / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Entity relationship / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Entity relationship / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Entity relationship / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Entity relationship / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Gantt / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Gantt / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Gantt / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Gantt / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Pie / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Pie / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Pie / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Pie / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Mind map / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Mind map / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Mind map / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Mind map / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Timeline / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Timeline / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Timeline / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Timeline / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Journey / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Journey / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Journey / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Journey / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Git graph / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Git graph / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Git graph / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Git graph / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Quadrant / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Quadrant / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Quadrant / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Quadrant / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Requirement / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Requirement / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Requirement / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Requirement / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom C4 / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom C4 / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom C4 / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom C4 / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Sankey / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Sankey / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Sankey / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Sankey / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom XY chart / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom XY chart / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom XY chart / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom XY chart / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Block / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Block / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Block / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Block / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Packet / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Packet / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Packet / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Packet / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Architecture / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Architecture / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Architecture / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Architecture / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Kanban / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Kanban / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Kanban / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Kanban / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Radar / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Radar / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Radar / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Radar / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Treemap / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Treemap / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Treemap / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Treemap / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Venn / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Venn / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Venn / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Venn / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad EBNF / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad EBNF / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad EBNF / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad EBNF / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad ABNF / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad ABNF / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad ABNF / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad ABNF / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad PEG / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad PEG / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad PEG / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Railroad PEG / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Tree view / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Tree view / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Tree view / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Tree view / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Cynefin / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Cynefin / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Cynefin / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Cynefin / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Swimlane / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Swimlane / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Swimlane / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Swimlane / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Use case / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Use case / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Use case / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Use case / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Agent flow / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Agent flow / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Agent flow / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Agent flow / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Event modeling / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Event modeling / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Event modeling / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Event modeling / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Ishikawa / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Ishikawa / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Ishikawa / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Ishikawa / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Wardley / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Wardley / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Wardley / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Wardley / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom ZenUML / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom ZenUML / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom ZenUML / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom ZenUML / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom ZenUML fragments / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom ZenUML fragments / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom ZenUML fragments / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom ZenUML fragments / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Info / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Info / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Info / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Info / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Shapes and styles / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Shapes and styles / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Shapes and styles / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Shapes and styles / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Source config / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Source config / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Source config / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Source config / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Sequence loops and activations / light / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Sequence loops and activations / light / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Sequence loops and activations / dark / fit=false: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom Sequence loops and activations / dark / fit=true: dimensions, strokes and markers",
+      "passed": true
+    },
+    {
+      "name": "Zoom retains explicit widths, dashed, thick and invisible edges and source vector effects",
+      "passed": true
+    },
+    {
+      "name": "Semantic shapes and explicit node styles survive",
+      "passed": true
+    },
+    {
+      "name": "ZenUML theme remains isolated between rendered diagrams",
+      "passed": true
+    },
+    {
+      "name": "Flowchart cards fit content and labels reserve capsule space",
+      "passed": true
+    },
+    {
+      "name": "Flowchart line breaks, emphasis, nested groups and loops survive",
+      "passed": true
+    },
+    {
+      "name": "Disposed renderer rejects new work",
+      "passed": true
+    }
+  ],
+  "failed": []
+}

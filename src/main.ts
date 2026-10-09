@@ -2,7 +2,7 @@ import { getLanguage, loadMermaid, MarkdownView, Notice, Plugin } from 'obsidian
 import { resolveLanguage, translate, type UiLanguage, type UiText } from './i18n';
 import { attachRenderer, type MermaidHost } from './bridge';
 import { BeautyRenderer } from './renderer';
-import { DEFAULT_SETTINGS, loadSettings, type BeautySettings } from './settings';
+import { DEFAULT_SETTINGS, hasRenderingChanges, loadSettings, type BeautySettings } from './settings';
 import { BeautySettingTab } from './settings-tab';
 
 export default class MermaidBeautyPlugin extends Plugin {
@@ -14,6 +14,8 @@ export default class MermaidBeautyPlugin extends Plugin {
   private refreshTimer?: number;
   private commandLanguage?: UiLanguage;
   private pendingSave: Promise<void> = Promise.resolve();
+  private saveTimer?: number;
+  private saveWaiters: (() => void)[] = [];
 
   async onload(): Promise<void> {
     this.settings = loadSettings(await this.loadData());
@@ -61,19 +63,35 @@ export default class MermaidBeautyPlugin extends Plugin {
     }
   }
 
-  async save(settings: BeautySettings): Promise<void> {
+  /** Apply settings immediately; nearby changes share one serialized disk write. */
+  save(settings: BeautySettings): Promise<void> {
+    if (this.stopped) return Promise.resolve();
     settings = loadSettings(settings);
+    const renderingChanged = hasRenderingChanges(this.settings, settings);
     this.settings = settings;
     this.updateCommands();
-    const write = this.pendingSave.then(() => this.saveData(settings));
-    this.pendingSave = write.catch(() => undefined);
-    try {
-      await write;
+    if (renderingChanged) {
       this.fallbackReported = false;
       this.refresh();
-    } catch {
-      new Notice(this.t('Could not save Mermaid Beauty settings. Please try again.'));
     }
+    window.clearTimeout(this.saveTimer);
+    const saved = new Promise<void>(resolve => this.saveWaiters.push(resolve));
+    this.saveTimer = window.setTimeout(() => this.persistSettings(), 150);
+    return saved;
+  }
+
+  private persistSettings(): void {
+    window.clearTimeout(this.saveTimer);
+    this.saveTimer = undefined;
+    if (!this.saveWaiters.length) return;
+    const settings = this.settings;
+    const waiters = this.saveWaiters;
+    this.saveWaiters = [];
+    const write = this.pendingSave.then(() => this.saveData(settings));
+    this.pendingSave = write.catch(() => {
+      new Notice(this.t('Could not save Mermaid Beauty settings. Please try again.'));
+    });
+    void this.pendingSave.then(() => { for (const resolve of waiters) resolve(); });
   }
 
   refresh(): void {
@@ -92,6 +110,7 @@ export default class MermaidBeautyPlugin extends Plugin {
 
   onunload(): void {
     this.stopped = true;
+    this.persistSettings();
     window.clearTimeout(this.refreshTimer);
     this.detach?.();
     this.renderer.dispose();

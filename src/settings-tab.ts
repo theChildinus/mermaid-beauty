@@ -4,13 +4,15 @@ import { CONNECTORS } from './line-width';
 import type { LanguageSetting, UiText } from './i18n';
 import { COLOR_FIELDS, normalizeColor, paletteColors, type ColorMode } from './colors';
 import type MermaidBeautyPlugin from './main';
-import { DIAGRAM_TYPES, PALETTES, parseCustomConfig, resolveAppearance,
-  type Appearance, type DiagramType, type LayoutName, type PaletteName, type RenderMode } from './settings';
+import { DIAGRAM_TYPES, MULTICOLOR_PALETTES, parseCustomConfig, resolveAppearance,
+  type Appearance, type DiagramType, type LayoutName, type MulticolorPaletteName, type PaletteName, type RenderMode } from './settings';
+import { componentPalette } from './component-theme';
 import { supportsGraphLayout } from './theme';
 
 export class BeautySettingTab extends PluginSettingTab {
   private selected: DiagramType = 'flowchart';
   private colorMode: ColorMode = 'light';
+  private customOpen = false;
   constructor(app: App, private plugin: MermaidBeautyPlugin) { super(app, plugin); }
 
   private row(name: UiText, desc: UiText | undefined, render: (setting: Setting) => void): SettingDefinitionRender {
@@ -26,11 +28,11 @@ export class BeautySettingTab extends PluginSettingTab {
         setting.addDropdown(dropdown => dropdown.addOptions(Object.fromEntries(Object.entries(DIAGRAM_TYPES).map(([key, label]) => [key, t(label)])))
           .setValue(this.selected).onChange(value => { this.selected = value as DiagramType; this.refreshSettings(); }));
       }),
-      this.row('Renderer', 'Inherit uses enhanced rendering and the default appearance.', setting => {
+      this.row('Renderer', 'Inherit uses the default appearance and keeps your custom settings saved.', setting => {
         setting.addDropdown(dropdown => dropdown.addOptions({ inherit: t('Inherit defaults'), beauty: t('Enhanced, with custom appearance'), native: t('Existing renderer') })
           .setValue(override.mode ?? 'inherit').onChange(async value => {
             const mode = value as RenderMode;
-            const types = { ...this.plugin.settings.types, [type]: mode === 'inherit' ? {} : { ...this.plugin.settings.types[type], mode } };
+            const types = { ...this.plugin.settings.types, [type]: { ...this.plugin.settings.types[type], mode } };
             await this.plugin.save({ ...this.plugin.settings, types });
             this.refreshSettings();
           }));
@@ -120,65 +122,76 @@ export class BeautySettingTab extends PluginSettingTab {
         : { ...current, defaults: { ...current.defaults, ...patch } });
     };
     const custom = value.useCustomColors ?? Object.values(value.colors ?? {}).some(colors => Object.keys(colors).length > 0);
-    const rows: SettingDefinition[] = [this.row('Color palette', 'Choose a ready-made palette or customize your own. Switching presets keeps your custom colors saved.', setting => {
+    let paletteChoices: HTMLElement | undefined;
+    const rows: SettingDefinition[] = [this.row('Color style', 'Distinguish components with colors, or use one hue throughout.', setting => {
+      const choices = setting.controlEl.createDiv({ cls: 'mermaid-beauty-color-style', attr: { role: 'group', 'aria-label': t('Color style') } });
+      for (const [name, label] of [['multi', 'Coordinated colors'], ['single', 'Single hue']] as const) {
+        const button = choices.createEl('button', { text: t(label), attr: { type: 'button', 'aria-pressed': String(value.colorStyle === name) } });
+        button.addEventListener('click', () => { void (async () => {
+          await update({ colorStyle: name }); this.refreshSettings();
+        })(); });
+      }
+    }), this.row('Color palette', value.colorStyle === 'multi'
+      ? 'Soft fills, clear text and connectors. Colors distinguish components.' : 'One hue throughout, with clear text and connectors.', setting => {
       setting.setClass('mermaid-beauty-stacked');
       const choices = setting.controlEl.createDiv({ cls: 'mermaid-beauty-palettes', attr: { role: 'group', 'aria-label': t('Color palette') } });
-      const selected = custom ? 'custom' : value.palette;
+      paletteChoices = choices;
+      const selected = custom ? 'custom' : value.colorStyle === 'multi' ? value.multiPalette ?? 'clear' : value.palette;
       const darkPreview = setting.settingEl.ownerDocument.body.classList.contains('theme-dark');
-      for (const [name, label] of [...Object.entries(PALETTES), ['custom', 'Custom']]) {
+      const palettes = value.colorStyle === 'multi' ? Object.entries(MULTICOLOR_PALETTES)
+        : Object.entries({ sky: 'Clear blue', mint: 'Quiet teal', slate: 'Neutral gray', rose: 'Soft rose' });
+      const captions: Record<string, UiText> = {
+        clear: 'General · Clear groups', cool: 'Cool · Technical notes', natural: 'Soft · Long reads',
+        sky: 'Blue · Simple and clear', mint: 'Teal · Calm and gentle', slate: 'Gray · Focus on content', rose: 'Rose · Warm and soft',
+      };
+      for (const [name, label] of palettes) {
         const button = choices.createEl('button', { cls: 'mermaid-beauty-palette-choice', attr: {
           type: 'button', 'aria-label': t('{name} palette', { name: t(label as UiText) }), 'aria-pressed': String(selected === name),
         } });
-        const preview = paletteColors(name === 'custom' ? { ...value, useCustomColors: true }
-          : { ...value, palette: name as PaletteName, colors: undefined }, darkPreview);
+        const preview = paletteColors({ ...value, ...(value.colorStyle === 'multi' ? { multiPalette: name as MulticolorPaletteName }
+          : { palette: name as PaletteName }), useCustomColors: false }, darkPreview);
         const swatches = button.createSpan({ cls: 'mermaid-beauty-swatches', attr: { 'aria-hidden': 'true' } });
-        for (const key of ['surface', 'border', 'line', 'text', 'accent'] as const) {
-          swatches.createSpan().style.setProperty('--mermaid-beauty-swatch', preview[key]);
-        }
-        button.createSpan({ text: t(label as UiText), cls: 'mermaid-beauty-palette-name' });
-        button.createSpan({ text: t(name === 'custom' ? 'Your own colors' : 'Ready to use'), cls: 'mermaid-beauty-palette-caption' });
+        const colors = value.colorStyle === 'multi' ? componentPalette(preview, darkPreview) : { fills: [preview.surface], borders: [preview.border] };
+        colors.fills.slice(0, 4).forEach((fill, index) => {
+          const swatch = swatches.createSpan({ text: 'Aa' });
+          swatch.style.setProperty('--mermaid-beauty-swatch', fill);
+          swatch.style.setProperty('--mermaid-beauty-swatch-border', colors.borders[index]!);
+          swatch.style.setProperty('--mermaid-beauty-swatch-text', preview.text);
+        });
+        const nameRow = button.createSpan({ cls: 'mermaid-beauty-palette-name' });
+        nameRow.createSpan({ text: t(label as UiText) });
+        nameRow.createSpan({ text: '✓', cls: 'mermaid-beauty-palette-check', attr: { 'aria-hidden': 'true' } });
+        button.createSpan({ text: t(captions[name]!), cls: 'mermaid-beauty-palette-caption' });
         button.addEventListener('click', () => { void (async () => {
-          await update(name === 'custom' ? { useCustomColors: true } : { palette: name as PaletteName, useCustomColors: false });
+          this.customOpen = false;
+          await update({ ...(value.colorStyle === 'multi' ? { multiPalette: name as MulticolorPaletteName }
+            : { palette: name as PaletteName }), useCustomColors: false });
           this.refreshSettings();
         })(); });
       }
-    })];
-    if (custom) {
-      rows.push(this.row('Customize colors', 'Edit light and dark colors separately. Rendering follows the Obsidian theme.', setting => {
-        setting.addDropdown(dropdown => dropdown.addOptions({ light: t('Light mode'), dark: t('Dark mode') }).setValue(this.colorMode)
-          .onChange(mode => { this.colorMode = mode as ColorMode; this.refreshSettings(); }));
-      }));
-      const mode = this.colorMode;
-      const colors = paletteColors(value, mode === 'dark');
-      for (const key of Object.keys(COLOR_FIELDS) as (keyof typeof COLOR_FIELDS)[]) {
-        rows.push(this.row(COLOR_FIELDS[key], undefined, setting => {
-          let picker: ColorComponent; let hex: TextComponent;
-          const saveColor = async (input: string): Promise<void> => {
-            const color = normalizeColor(input);
-            hex.inputEl.setCustomValidity(color ? '' : t('Enter a hex color, such as #26845b.'));
-            hex.inputEl.toggleClass('is-invalid', !color); hex.inputEl.setAttribute('aria-invalid', String(!color));
-            if (!color) { hex.inputEl.reportValidity(); return; }
-            picker.setValue(color); hex.setValue(color);
-            const current = type ? this.plugin.settings.types[type] : this.plugin.settings.defaults;
-            await update({ colors: { ...current?.colors, [mode]: { ...current?.colors?.[mode], [key]: color } } });
-          };
-          setting.addColorPicker(component => {
-            picker = component; picker.setValue(colors[key]).onChange(color => { void saveColor(color); });
-          }).addText(component => {
-            hex = component; hex.setValue(colors[key]); hex.inputEl.addClass('mermaid-beauty-hex');
-            hex.inputEl.setAttribute('aria-label', t('{name} hex color', { name: t(COLOR_FIELDS[key]) }));
-            hex.inputEl.spellcheck = false;
-            hex.inputEl.addEventListener('change', () => { void saveColor(hex.getValue()); });
-          });
-          setting.controlEl.querySelector('input[type="color"]')?.setAttribute('aria-label', t('{name} color', { name: t(COLOR_FIELDS[key]) }));
-        }));
+    }), this.row('Customize colors', undefined, setting => {
+      setting.setClass('mermaid-beauty-custom'); setting.setClass('mermaid-beauty-stacked');
+      const details = setting.controlEl.createEl('details'); details.open = this.customOpen;
+      const summary = details.createEl('summary', { text: t(custom ? 'Custom colors (active)' : 'Customize colors') });
+      const group = new SettingGroup(details);
+      const markCustom = (): void => {
+        if (!summary.isConnected) return;
+        summary.setText(t('Custom colors (active)'));
+        for (const button of paletteChoices?.querySelectorAll('button') ?? []) button.setAttribute('aria-pressed', 'false');
+      };
+      for (const definition of this.customColorControls({ ...value, useCustomColors: true }, update, type, markCustom)) {
+        group.addSetting(control => {
+          control.setName(definition.name);
+          if (definition.desc) control.setDesc(definition.desc);
+          definition.render?.(control, group);
+        });
       }
-      rows.push(this.row('Reset colors', 'Remove saved custom colors in both modes and return to the selected preset.', setting => {
-        setting.addButton(button => button.setButtonText(t('Reset colors')).onClick(async () => {
-          await update({ colors: undefined, useCustomColors: false }); this.refreshSettings();
-        }));
-      }));
-    }
+      details.addEventListener('toggle', () => {
+        if (!details.isConnected) return;
+        this.customOpen = details.open;
+      });
+      setting.controlEl.createEl('p', { text: t('Colors follow the light or dark Obsidian theme.'), cls: 'mermaid-beauty-palette-caption' });
+    })];
     for (const [key, name, description, min, max, step] of [
       ['fontSize', 'Font size', 'Text size in pixels.', 10, 28, 1],
       ['radius', 'Corner radius', 'Round the corners of supported rectangular nodes, in pixels. Semantic shapes stay unchanged.', 0, 24, 1],
@@ -206,6 +219,47 @@ export class BeautySettingTab extends PluginSettingTab {
       }));
     rows.push(this.row('Fit available width', 'Shrink wide diagrams to fit the note. Turn off to allow horizontal scrolling.', setting => {
       setting.addToggle(toggle => toggle.setValue(value.fitWidth).onChange(async fitWidth => update({ fitWidth })));
+    }));
+    return rows;
+  }
+
+  private customColorControls(value: Appearance, update: (patch: Partial<Appearance>) => Promise<void>, type: DiagramType | undefined, onEdit: () => void): SettingDefinition[] {
+    const t = this.plugin.t;
+    const rows: SettingDefinition[] = [this.row('Edit theme', 'Edit light and dark colors separately. Rendering follows the Obsidian theme.', setting => {
+      setting.addDropdown(dropdown => dropdown.addOptions({ light: t('Light mode'), dark: t('Dark mode') }).setValue(this.colorMode)
+        .onChange(mode => { this.colorMode = mode as ColorMode; this.refreshSettings(); }));
+    })];
+    const mode = this.colorMode;
+    const colors = paletteColors(value, mode === 'dark');
+    for (const key of Object.keys(COLOR_FIELDS) as (keyof typeof COLOR_FIELDS)[]) {
+      rows.push(this.row(COLOR_FIELDS[key], undefined, setting => {
+        let picker: ColorComponent; let hex: TextComponent;
+        const saveColor = async (input: string): Promise<void> => {
+          const color = normalizeColor(input);
+          hex.inputEl.setCustomValidity(color ? '' : t('Enter a hex color, such as #26845b.'));
+          hex.inputEl.toggleClass('is-invalid', !color); hex.inputEl.setAttribute('aria-invalid', String(!color));
+          if (!color) { hex.inputEl.reportValidity(); return; }
+          picker.setValue(color); hex.setValue(color);
+          const current = type ? this.plugin.settings.types[type] : this.plugin.settings.defaults;
+          await update({ useCustomColors: true, colors: { ...current?.colors, [mode]: { ...current?.colors?.[mode], [key]: color } } });
+          onEdit();
+        };
+        setting.addColorPicker(component => {
+          picker = component; picker.setValue(colors[key]).onChange(color => { void saveColor(color); });
+        }).addText(component => {
+          hex = component; hex.setValue(colors[key]); hex.inputEl.addClass('mermaid-beauty-hex');
+          hex.inputEl.setAttribute('aria-label', t('{name} hex color', { name: t(COLOR_FIELDS[key]) }));
+          hex.inputEl.spellcheck = false;
+          hex.inputEl.addEventListener('change', () => { void saveColor(hex.getValue()); });
+        });
+        setting.controlEl.querySelector('input[type="color"]')?.setAttribute('aria-label', t('{name} color', { name: t(COLOR_FIELDS[key]) }));
+      }));
+    }
+    rows.push(this.row('Reset colors', 'Remove saved custom colors in both modes and return to the selected preset.', setting => {
+      setting.addButton(button => button.setButtonText(t('Reset colors')).onClick(async () => {
+        this.customOpen = false;
+        await update({ colors: undefined, useCustomColors: false }); this.refreshSettings();
+      }));
     }));
     return rows;
   }

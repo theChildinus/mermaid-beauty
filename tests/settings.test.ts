@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_SETTINGS, DIAGRAM_TYPES, diagramType, loadSettings, parseCustomConfig, resolveAppearance, shouldEnhance } from '../src/settings';
+import { DEFAULT_SETTINGS, DIAGRAM_TYPES, diagramType, hasRenderingChanges, loadSettings, parseCustomConfig, resolveAppearance, resolveTypeSettings, shouldEnhance } from '../src/settings';
 import { themeConfig } from '../src/theme';
 
 describe('rendering choices', () => {
@@ -28,6 +28,32 @@ describe('rendering choices', () => {
   it('never forces graph layout onto sequence, gantt, or mind maps', () => {
     for (const type of ['sequence', 'gantt', 'mindmap'] as const) expect(themeConfig(DEFAULT_SETTINGS.defaults, type, false).layout).toBeUndefined();
     expect(themeConfig(DEFAULT_SETTINGS.defaults, 'flowchart', false).layout).toBe('beauty-flowchart');
+  });
+  it('keeps saved overrides dormant while inheriting and restores them after reloading', () => {
+    const settings = loadSettings({ defaults: { fontSize: 15, palette: 'mint' }, types: {
+      flowchart: { mode: 'beauty', fontSize: 22, palette: 'sky', config: '{"flowchart":{"wrappingWidth":250}}' },
+    } });
+    const saved = { ...settings.types.flowchart };
+    settings.types.flowchart!.mode = 'inherit';
+    const reloaded = loadSettings(JSON.parse(JSON.stringify(settings)));
+    expect(resolveAppearance(reloaded, 'flowchart')).toMatchObject({ fontSize: 15, palette: 'mint' });
+    expect(resolveTypeSettings(reloaded, 'flowchart').config).toBeUndefined();
+    expect(reloaded.types.flowchart).toEqual({ ...saved, mode: 'inherit' });
+    reloaded.types.flowchart!.mode = 'beauty';
+    expect(resolveAppearance(reloaded, 'flowchart')).toMatchObject({ fontSize: 22, palette: 'sky' });
+    expect(resolveTypeSettings(reloaded, 'flowchart').config).toBe(saved.config);
+  });
+  it('redraws for effective rendering changes while ignoring language and dormant settings', () => {
+    const before = loadSettings({ types: { flowchart: { mode: 'inherit', fontSize: 22, config: '{invalid' } } });
+    expect(hasRenderingChanges(before, { ...before, language: 'zh' })).toBe(false);
+    const dormant = loadSettings({ ...before, types: { flowchart: { ...before.types.flowchart, fontSize: 24 } } });
+    expect(hasRenderingChanges(before, dormant)).toBe(false);
+    const active = loadSettings({ ...dormant, types: { flowchart: { ...dormant.types.flowchart, mode: 'beauty' } } });
+    expect(hasRenderingChanges(dormant, active)).toBe(true);
+    expect(hasRenderingChanges(before, loadSettings({ ...before, defaults: { ...before.defaults, lineWidth: 3 } }))).toBe(true);
+    expect(hasRenderingChanges(before, loadSettings({ ...before, types: { flowchart: { mode: 'native' } } }))).toBe(true);
+    expect(hasRenderingChanges({ ...before, enabled: false }, { ...active, enabled: false })).toBe(false);
+    expect(hasRenderingChanges(before, { ...before, enabled: false })).toBe(true);
   });
 });
 

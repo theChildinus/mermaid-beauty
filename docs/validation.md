@@ -1,8 +1,21 @@
 # Release validation
 
-Version 1.2.2 candidate, checked on 2026-09-29. GitHub publication and the community directory review are pending.
+## 1.3.0 candidate checks from 2026-10-09
 
-## 1.2.2 checks
+Settings now use a segmented color-style control and three coordinated palette cards: Clear blue and teal, Cool tones, and Soft natural. Each card shows the actual fill, border, and text colors without decorative connector arrows. Each scheme defines its full component and chart palette for both light and dark themes. Single-hue presets retain their saved IDs and colors; the two color styles remember their choices separately. Custom colors are collapsed by default, and expanding them does not activate or save custom colors.
+
+These changes also preserve saved per-type appearance and JSON options while inheriting defaults, coalesce nearby saves, skip note redraws for UI-only or inactive-palette changes, and assign flowchart colors by source node ID. The appearance-preview feature and its supporting code remain removed; settings focus on rendering existing Mermaid blocks.
+
+- `npm run check`: TypeScript, 115 unit tests, lint with zero warnings, and the production build passed.
+- `npm run test:render`: 80 fixture renders and 674 behavior checks passed. [settings-optimization-results.json](settings-optimization-results.json) records source hash `9f301c6b55f00ae204fc8febe05bda5d9dccf78d9270e8bc588d84dc6b0c1b16` and timestamp `2026-10-09T08:58:49.389Z`.
+- The 118 multicolor checks cover the three complete coordinated schemes, actual rendered text, borders, connectors, chart-series labels with SVG opacity, light/dark modes, stable source-ID assignment, and explicit source overrides. Unit tests verify preset migration, independent choices across reloads, inactive presets avoiding redraws, per-type preset ownership, and palette contrast. They also retain the existing save, error-recovery, and unload checks.
+- The three 1.3.0 build assets were installed together in the local vault, reloaded in Obsidian 1.14.4, and shown as version 1.3.0 in the refreshed plugin list. The actual settings page shows the segmented control, three cards without arrows, a selected-card checkmark, and the left-aligned custom disclosure. Expanding and collapsing custom colors left the settings file unchanged. Installed assets match the build byte for byte; saved settings, the enabled-plugin list, and the open read-view note match their pre-install hashes. This host check covers loading and settings; the rendering matrix and narrow diagram containers run in the browser fixture. Mobile devices and older Obsidian versions were not tested, and GitHub publication is pending.
+- `npm audit --omit=dev`: two low-severity findings in the unchanged Mermaid → KaTeX 0.16.47 dependency chain, both from [GHSA-238p-pmpm-9mq7](https://github.com/advisories/GHSA-238p-pmpm-9mq7). The advisory requires existing prototype pollution or attacker control of renderer-option prototypes; no exploitable Obsidian host path was established by these checks. KaTeX 0.18.2 is the upstream fix. The audit's automatic fix would downgrade Mermaid across a major version, so no dependency change is included in this candidate.
+- The production bundle is 5,932,703 bytes. The build still bundles the complete offline engines and rejects preview imports, script creation, browser storage, and React editor code.
+
+## 1.2.2 candidate checks from 2026-09-29
+
+The following is the historical candidate record. At the time, GitHub publication and the community directory review were pending.
 
 - `npm run check`: TypeScript, 82 unit tests, lint with zero warnings, and the production build passed.
 - `npm run test:render`: 80 fixture renders and 555 behavior checks passed in the browser. [validation-results.json](validation-results.json) records the results and source hash `7098443a76f50f6c928c92429946b5897e90b05036c71c46c027657ebad23e60`.

@@ -17,10 +17,16 @@ export const DIAGRAM_TYPES = {
 export type DiagramType = keyof typeof DIAGRAM_TYPES;
 export const PALETTES = { mint: 'Mint', slate: 'Slate', sky: 'Sky', rose: 'Rose' } as const;
 export type PaletteName = keyof typeof PALETTES;
+export const MULTICOLOR_PALETTES = { clear: 'Clear blue and teal', cool: 'Cool tones', natural: 'Soft natural' } as const;
+export type MulticolorPaletteName = keyof typeof MULTICOLOR_PALETTES;
 export type LayoutName = 'auto' | 'elk' | 'dagre';
 export type RenderMode = 'inherit' | 'beauty' | 'native';
+export type ColorStyle = 'single' | 'multi';
 export interface Appearance {
+  colorStyle: ColorStyle;
   palette: PaletteName;
+  /** Saved separately so switching color styles restores the previous choice. */
+  multiPalette?: MulticolorPaletteName;
   colors?: CustomColors;
   /** False keeps custom colors saved while displaying the selected preset. */
   useCustomColors?: boolean;
@@ -46,7 +52,7 @@ export interface BeautySettings {
 export const DEFAULT_SETTINGS: BeautySettings = {
   enabled: true,
   language: 'auto',
-  defaults: { lineWidth: 1.1, palette: 'mint', fontSize: 15, radius: 14, spacing: 48, layout: 'auto', fitWidth: true },
+  defaults: { colorStyle: 'multi', lineWidth: 1.1, palette: 'mint', multiPalette: 'clear', fontSize: 15, radius: 14, spacing: 48, layout: 'auto', fitWidth: true },
   types: {},
 };
 
@@ -59,7 +65,14 @@ function bounded(value: unknown, min: number, max: number): value is number {
 function appearance(value: unknown): Partial<Appearance> {
   if (!isRecord(value)) return {};
   const result: Partial<Appearance> = {};
+  if (value.colorStyle === 'single' || value.colorStyle === 'multi') result.colorStyle = value.colorStyle;
   if (typeof value.palette === 'string' && Object.hasOwn(PALETTES, value.palette)) result.palette = value.palette as PaletteName;
+  if (typeof value.multiPalette === 'string' && Object.hasOwn(MULTICOLOR_PALETTES, value.multiPalette)) {
+    result.multiPalette = value.multiPalette as MulticolorPaletteName;
+  } else if (result.palette) {
+    // Older settings used the single-hue preset to choose their first series color.
+    result.multiPalette = result.palette === 'slate' ? 'cool' : result.palette === 'rose' ? 'natural' : 'clear';
+  }
   if (typeof value.useCustomColors === 'boolean') result.useCustomColors = value.useCustomColors;
   if (isRecord(value.colors)) {
     const colors: CustomColors = {};
@@ -86,7 +99,8 @@ export function loadSettings(value: unknown): BeautySettings {
   if (!isRecord(value)) return result;
   if (value.language === 'en' || value.language === 'zh' || value.language === 'auto') result.language = value.language;
   result.enabled = typeof value.enabled === 'boolean' ? value.enabled : true;
-  result.defaults = { ...result.defaults, ...appearance(value.defaults) };
+  // Saved settings predate the color-style switch; keep their existing appearance.
+  result.defaults = { ...result.defaults, colorStyle: 'single', ...appearance(value.defaults) };
   if (isRecord(value.types)) {
     for (const key of Object.keys(DIAGRAM_TYPES) as DiagramType[]) {
       const saved = value.types[key];
@@ -99,20 +113,43 @@ export function loadSettings(value: unknown): BeautySettings {
   }
   return result;
 }
+/** Explicitly inactive overrides stay saved; legacy overrides without a mode still apply. */
+export function resolveTypeSettings(settings: BeautySettings, type: DiagramType): TypeSettings {
+  const saved = settings.types[type];
+  return saved?.mode === 'inherit' || saved?.mode === 'native' ? {} : saved ?? {};
+}
 export function resolveAppearance(settings: BeautySettings, type: DiagramType): Appearance {
-  const override = appearance(settings.types[type]);
+  const override = appearance(resolveTypeSettings(settings, type));
   // Choosing a per-type preset starts from that preset, while individual color
   // overrides inherit any other global colors until a preset is chosen.
   const inheritedColors = settings.defaults.useCustomColors === false ? undefined : settings.defaults.colors;
-  const colors = override.palette ? override.colors : {
+  const colors = override.palette || override.multiPalette ? override.colors : {
     light: { ...inheritedColors?.light, ...override.colors?.light },
     dark: { ...inheritedColors?.dark, ...override.colors?.dark },
   };
-  const colorOwner = override.palette || override.colors || override.useCustomColors !== undefined ? override : settings.defaults;
+  const colorOwner = override.palette || override.multiPalette || override.colors || override.useCustomColors !== undefined ? override : settings.defaults;
   return { ...settings.defaults, ...override, colors, useCustomColors: colorOwner.useCustomColors };
 }
 export function shouldEnhance(settings: BeautySettings, type: DiagramType): boolean {
   return settings.enabled && settings.types[type]?.mode !== 'native';
+}
+
+/** Compare effective diagram settings, excluding UI language and dormant overrides. */
+export function hasRenderingChanges(before: BeautySettings, after: BeautySettings): boolean {
+  if (before.enabled !== after.enabled) return true;
+  if (!after.enabled) return false;
+  for (const type of Object.keys(DIAGRAM_TYPES) as DiagramType[]) {
+    if (shouldEnhance(before, type) !== shouldEnhance(after, type)) return true;
+    if (!shouldEnhance(after, type)) continue;
+    const previous = resolveAppearance(before, type), next = resolveAppearance(after, type);
+    if (previous.colorStyle === next.colorStyle) {
+      if (next.colorStyle === 'multi') previous.palette = next.palette;
+      else previous.multiPalette = next.multiPalette;
+    }
+    if (JSON.stringify(previous) !== JSON.stringify(next)) return true;
+    if ((resolveTypeSettings(before, type).config ?? '') !== (resolveTypeSettings(after, type).config ?? '')) return true;
+  }
+  return false;
 }
 
 /** Only classify the declaration; the complete Mermaid parser still validates the source. */

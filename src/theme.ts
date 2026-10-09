@@ -1,6 +1,7 @@
 import type { MermaidConfig } from 'mermaid';
 import { chartTheme } from './chart-theme';
 import { normalizeColor, paletteColors, textOnFill } from './colors';
+import { componentPalette, componentTheme, MULTICOLOR_TYPES } from './component-theme';
 import { isRecord, type Appearance, type DiagramType } from './settings';
 
 const GRAPH_TYPES = new Set<DiagramType>(['flowchart', 'class', 'state', 'er', 'requirement', 'usecase', 'agentflow']);
@@ -18,12 +19,14 @@ export function themeConfig(appearance: Appearance, type: DiagramType, dark: boo
   const c = paletteColors(appearance, dark);
   const charts = chartTheme(c, dark, type);
   const extraVariables = isRecord(extra.themeVariables) ? extra.themeVariables : {};
+  const multicolor = appearance.colorStyle === 'multi';
   const numberBackground = normalizeColor(extraVariables.signalColor) ?? c.line;
   const font = 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
   const config: MermaidConfig = {
     startOnLoad: false, securityLevel: 'strict', suppressErrorRendering: true,
     secure: ['securityLevel', 'secure', 'startOnLoad', 'maxTextSize', 'maxEdges', 'suppressErrorRendering'],
-    maxTextSize: 100_000, maxEdges: 1500, theme: 'base', look: 'classic',
+    maxTextSize: 100_000, maxEdges: 1500,
+    theme: multicolor && MULTICOLOR_TYPES.has(type) ? (dark ? 'redux-dark-color' : 'redux-color') : 'base', look: 'classic',
     fontFamily: font, fontSize: appearance.fontSize, htmlLabels: false,
     themeVariables: {
       ...charts,
@@ -50,6 +53,7 @@ export function themeConfig(appearance: Appearance, type: DiagramType, dark: boo
       xyChart: { backgroundColor: c.background, titleColor: c.text, legendTextColor: c.text, dataLabelColor: c.text, xAxisTitleColor: c.text, yAxisTitleColor: c.text, xAxisLabelColor: c.text,
         yAxisLabelColor: c.text, xAxisLineColor: c.line, yAxisLineColor: c.line,
         xAxisTickColor: c.line, yAxisTickColor: c.line, plotColorPalette: Array.from({ length: 12 }, (_, i) => String(charts[`cScale${i}`])).join(',') },
+      ...(multicolor ? componentTheme(c, appearance, dark, type, extraVariables) : {}),
     },
     flowchart: { htmlLabels: false, useMaxWidth: appearance.fitWidth, nodeSpacing: appearance.spacing,
       rankSpacing: appearance.spacing + 24, padding: 16, minNodeWidth: 0, curve: 'rounded', wrappingWidth: 420 },
@@ -93,11 +97,18 @@ export function themeConfig(appearance: Appearance, type: DiagramType, dark: boo
   // Keep specialized layouts for timelines, charts, mind maps, and architecture diagrams.
   const merged = mergeConfig(config as Record<string, unknown>, extra) as MermaidConfig;
   const variables = merged.themeVariables as Record<string, string> & { treemap: { leafStrokeColor: string; sectionStrokeColor: string } };
+  if (multicolor && ('clusterBkg' in extraVariables || 'clusterBorder' in extraVariables)) merged.themeCSS += `
+    .cluster[data-look][data-color-id]:not(.swimlane) > rect,
+    .cluster[data-look][data-color-id]:not(.swimlane) > path {
+      ${'clusterBkg' in extraVariables ? `fill: ${variables.clusterBkg};` : ''}
+      ${'clusterBorder' in extraVariables ? `stroke: ${variables.clusterBorder};` : ''}
+    }
+  `;
   if (type === 'kanban') {
     const customSections = Object.keys(extraVariables).some(key => /^cScale\d+$/.test(key));
     const customSectionText = Object.keys(extraVariables).some(key => /^cScaleLabel\d+$/.test(key));
-    const columnFill = !customSections || 'clusterBkg' in extraVariables ? `fill: ${variables.clusterBkg};` : '';
-    const columnBorder = !customSections || 'clusterBorder' in extraVariables ? `stroke: ${variables.clusterBorder};` : '';
+    const columnFill = (!multicolor && !customSections) || 'clusterBkg' in extraVariables ? `fill: ${variables.clusterBkg};` : '';
+    const columnBorder = (!multicolor && !customSections) || 'clusterBorder' in extraVariables ? `stroke: ${variables.clusterBorder};` : '';
     const headerText = !customSectionText || 'textColor' in extraVariables ? `fill: ${variables.textColor};` : '';
     const cardBorder = 'nodeBorder' in extraVariables ? variables.nodeBorder : variables.primaryBorderColor;
     // Mermaid derives section colors from cScale, which can collapse to black
@@ -109,6 +120,22 @@ export function themeConfig(appearance: Appearance, type: DiagramType, dark: boo
       .items .node .label { fill: ${variables.primaryTextColor}; color: ${variables.primaryTextColor}; }
       .items .node text, .items .node tspan[font-weight="normal"] { font-weight: 400; }
     `;
+    if (multicolor) {
+      const { fills, borders } = componentPalette(c, dark);
+      const custom = appearance.useCustomColors === false ? undefined : appearance.colors?.[dark ? 'dark' : 'light'];
+      for (let i = 0; i < 12; i++) {
+        const authoredSection = `cScale${i + 1}` in extraVariables;
+        merged.themeCSS += `
+          .sections .cluster.section-${i} > rect {
+            ${'clusterBkg' in extraVariables || authoredSection ? '' : `fill: ${custom?.label ?? fills[i % fills.length]};`}
+            ${'clusterBorder' in extraVariables || authoredSection ? '' : `stroke: ${custom?.border ?? borders[i % borders.length]};`}
+          }
+          .sections .cluster.section-${i} .cluster-label text {
+            ${`cScaleLabel${i + 1}` in extraVariables && !('textColor' in extraVariables) ? '' : `fill: ${variables.textColor};`}
+          }
+        `;
+      }
+    }
   }
   if (type === 'sankey') merged.themeCSS += `
     .links .link { mix-blend-mode: normal !important; }

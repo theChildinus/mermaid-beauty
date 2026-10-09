@@ -22,14 +22,26 @@
 .mermaid-beauty-settings .mermaid-beauty-error { color: var(--text-error); white-space: pre-wrap; }
 .mermaid-beauty-settings input.mermaid-beauty-hex { width: 104px; font-family: var(--font-monospace); }
 .mermaid-beauty-settings input.mermaid-beauty-hex.is-invalid { border-color: var(--text-error); }
-.mermaid-beauty-settings .mermaid-beauty-palettes { display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 8px; margin: 0 0 20px; }
-.mermaid-beauty-settings .mermaid-beauty-palette-choice { height: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px; white-space: normal; text-align: left; border: 1px solid var(--background-modifier-border); box-shadow: none; }
-.mermaid-beauty-settings .mermaid-beauty-palette-choice[aria-pressed="true"] { border-color: var(--interactive-accent); box-shadow: 0 0 0 1px var(--interactive-accent); background: var(--background-secondary); }
+.mermaid-beauty-settings .mermaid-beauty-color-style { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid var(--background-modifier-border); border-radius: 8px; background: var(--background-secondary); }
+.mermaid-beauty-settings .mermaid-beauty-color-style > button { border: 0; background: transparent; box-shadow: none; white-space: nowrap; }
+.mermaid-beauty-settings .mermaid-beauty-color-style > button[aria-pressed="true"] { color: var(--interactive-accent); background: var(--background-primary); font-weight: 600; }
+.mermaid-beauty-settings .mermaid-beauty-palettes { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.mermaid-beauty-settings .mermaid-beauty-palette-choice { height: auto; display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 12px; white-space: normal; text-align: left; color: var(--text-normal); background: var(--background-primary); border: 1px solid var(--background-modifier-border); box-shadow: none; }
+.mermaid-beauty-settings .mermaid-beauty-palette-choice[aria-pressed="true"] { border-color: var(--interactive-accent); box-shadow: 0 0 0 1px var(--interactive-accent); }
 .mermaid-beauty-settings .mermaid-beauty-palette-choice:focus-visible { outline: 2px solid var(--interactive-accent); outline-offset: 3px; }
-.mermaid-beauty-settings .mermaid-beauty-swatches { display: flex; width: 100%; overflow: hidden; border-radius: 5px; }
-.mermaid-beauty-settings .mermaid-beauty-swatches > span { flex: 1; height: 18px; background: var(--mermaid-beauty-swatch); }
-.mermaid-beauty-settings .mermaid-beauty-palette-name { font-weight: 600; }
+.mermaid-beauty-settings .mermaid-beauty-swatches { display: flex; gap: 5px; width: 100%; }
+.mermaid-beauty-settings .mermaid-beauty-swatches > span { flex: 1; min-width: 0; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid var(--mermaid-beauty-swatch-border); color: var(--mermaid-beauty-swatch-text); background: var(--mermaid-beauty-swatch); font-size: 12px; }
+.mermaid-beauty-settings .mermaid-beauty-palette-name { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-weight: 600; }
+.mermaid-beauty-settings .mermaid-beauty-palette-check { color: var(--interactive-accent); }
+.mermaid-beauty-settings .mermaid-beauty-palette-choice[aria-pressed="false"] .mermaid-beauty-palette-check { visibility: hidden; }
 .mermaid-beauty-settings .mermaid-beauty-palette-caption { color: var(--text-muted); font-size: var(--font-smallest); }
 
 .mermaid-beauty-settings .mermaid-beauty-stacked { display: block; }
-.mermaid-beauty-settings .mermaid-beauty-stacked .setting-item-control { display: block; margin-top: 12px; }
+.mermaid-beauty-settings .mermaid-beauty-stacked > .setting-item-control { display: block; margin-top: 12px; }
+.mermaid-beauty-settings .mermaid-beauty-custom > .setting-item-info { display: none; }
+.mermaid-beauty-settings .mermaid-beauty-custom > .setting-item-control { margin-top: 0; text-align: left; }
+.mermaid-beauty-settings .mermaid-beauty-custom summary { color: var(--text-muted); cursor: var(--cursor); }
+.mermaid-beauty-settings .mermaid-beauty-custom details[open] summary { margin-bottom: 12px; }
+@media (max-width: 480px) {
+  .mermaid-beauty-settings .mermaid-beauty-palettes { grid-template-columns: minmax(0, 1fr); }
+}

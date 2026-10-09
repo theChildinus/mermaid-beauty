@@ -9,6 +9,7 @@ import { checkPaletteContrast } from './contrast-checks';
 import { checkKanban } from './kanban-checks';
 import { checkReadability } from './readability-checks';
 import { checkZoom } from './zoom-checks';
+import { checkColorStyles } from './color-style-checks';
 
 declare const BUILD_HASH: string;
 const output = document.querySelector('#results')!;
@@ -27,7 +28,7 @@ async function exportExamples(): Promise<void> {
 const compact = document.querySelector<HTMLInputElement>('#compact')!;
 const dark = document.querySelector<HTMLInputElement>('#dark')!;
 const filter = document.querySelector<HTMLSelectElement>('#filter')!;
-for (const name of fixtures.map(fixture => fixture.name)) {
+for (const name of ['Coordinated colors', ...fixtures.map(fixture => fixture.name)]) {
   const option = document.createElement('option'); option.value = name; option.textContent = name; filter.append(option);
 }
 filter.addEventListener('change', () => {
@@ -81,6 +82,7 @@ async function runChecks(): Promise<void> {
   const checks: { name: string; passed: boolean; error?: string }[] = [];
   let serial = 0;
   const test = async (name: string, action: () => Promise<void>): Promise<void> => {
+    status.textContent = `Checking ${name}`;
     try { await action(); checks.push({ name, passed: true }); }
     catch (error) { checks.push({ name, passed: false, error: String(error) }); }
   };
@@ -144,6 +146,12 @@ async function runChecks(): Promise<void> {
   await checkPaletteContrast(renderer, palettes, test);
   await checkKanban(renderer, output, test);
   await checkReadability(renderer, output, test);
+  await checkColorStyles(renderer, output, test);
+  await test('Inherited settings ignore saved inactive custom options', async () => {
+    const result = await renderer.render(`inherit-inactive-${++serial}`, fixtures[0]!.source,
+      loadSettings({ types: { flowchart: { mode: 'inherit', config: '{ invalid JSON', palette: 'rose' } } }));
+    assert(result.svg.includes('#ddf3e7') && !result.svg.includes('#f8e5ed'), 'Inactive options affected the diagram');
+  });
   await test('Every declared diagram family has a fixture', async () => {
     const covered = new Set(fixtures.map(item => item.type));
     for (const type of Object.keys(DIAGRAM_TYPES)) assert(type === 'other' || covered.has(type as keyof typeof DIAGRAM_TYPES), `Uncovered family: ${type}`);

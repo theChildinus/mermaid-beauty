@@ -1,16 +1,21 @@
 import { textOnFill, type Colors } from './colors';
 import type { DiagramType } from './settings';
 
-function tint(color: string, background: string, weight: number): string {
+export function tint(color: string, background: string, weight: number): string {
   return '#' + [1, 3, 5].map(i => Math.round(parseInt(color.slice(i, i + 2), 16) * weight +
     parseInt(background.slice(i, i + 2), 16) * (1 - weight)).toString(16).padStart(2, '0')).join('');
 }
 
-/** Explicit series colors prevent Mermaid's base theme from darkening them to black. */
-export function chartTheme(c: Colors, dark: boolean, type: DiagramType): Record<string, unknown> {
-  const series = dark
+export function seriesColors(c: Colors, dark: boolean): string[] {
+  if (c.series) return [c.accent, ...c.series.slice(1)];
+  return dark
     ? [c.accent, '#e8b86d', '#a9a1ee', '#75c9d2', '#e99eb6', '#b9cf78', '#a3badf', '#dfab91', '#8ec7aa', '#c5a5d2', '#c7c185', '#9bbec4']
     : [c.accent, '#916020', '#7656a6', '#237986', '#a34e73', '#647c28', '#496caa', '#a45b36', '#38765c', '#87578f', '#7c712d', '#476f78'];
+}
+
+/** Explicit series colors prevent Mermaid's base theme from darkening them to black. */
+export function chartTheme(c: Colors, dark: boolean, type: DiagramType): Record<string, unknown> {
+  const series = seriesColors(c, dark);
   const variables: Record<string, unknown> = {
     archEdgeColor: c.line, archEdgeArrowColor: c.line, archGroupBorderColor: c.border,
     gridColor: c.border,
