@@ -1,5 +1,20 @@
 # Release validation
 
+## 1.4.0 candidate checks from 2026-10-10
+
+Coordinated flowcharts now group colors using Mermaid's parsed graph. Members of the same subgraph share a color. Outside subgraphs, continuous chains remain together; a fork separates colors only when at least two independent branches contain two or more nodes each. Short terminal branches, reconverging paths and cycles stay together. Dotted references and invisible layout links do not create group boundaries. Groups reuse at most three color families; colors identify structure, not business roles.
+
+The three coordinated presets are Fresh (blue, teal, amber), Cool (indigo, cyan, violet), and Natural (sage, sand, terracotta). Their light and dark component colors and first three chart accents follow those families; extra chart series remain available. Cards show three actual swatches and name the colors. Coordinated flowchart edge labels use regular-weight text and compact, unoutlined backgrounds. Saved preset IDs, custom colors, single-hue colors, source configuration, native opt-outs, semantic shapes, and connections are preserved.
+
+- `npm run check`: TypeScript, 125 unit tests, lint with zero warnings, and production build passed. Color-family tests cover both themes. Component tests require text contrast of at least 7:1, borders at least 3:1, and connectors at least 4.5:1.
+- `npm run test:render`: 80 real-browser renders and 678 behavior checks passed. [structural-color-results.json](structural-color-results.json) records source hash `2131b8c77c8230b8aba93402c7706d68d0de89f2ec79607275f046de3b8f1cf4` at `2026-10-10T03:41:37.593Z`. Checks cover ELK/Dagre, chain and nested-group continuity, joins/cycles, source reordering, inserted steps, quiet labels, source overrides, native opt-outs, unload, and Zoom compatibility. All three presets were inspected in both themes; narrow rendering was also checked.
+- README comparisons were regenerated from the same public request-review example on both sides. Native Mermaid 11.13.0 uses an isolated, unmodified bundle. Both wide and stacked PNGs were visually inspected; no private diagrams or vault contents are included.
+- `main.js`, `manifest.json`, and `styles.css` were installed together in local Obsidian 1.14.4. After reloading the plugin list and re-enabling Beauty, the UI shows version 1.4.0. Installed files match `dist/1.4.0` byte-for-byte. Saved preferences, enabled plugins, and the existing read-view note retain their pre-install hashes. Previous assets are backed up locally.
+- `npm audit --omit=dev`: two low-severity package findings in the unchanged Mermaid → KaTeX dependency chain, from [GHSA-238p-pmpm-9mq7](https://github.com/advisories/GHSA-238p-pmpm-9mq7). No dependency changes are included.
+- Production `main.js` is 5,935,873 bytes, SHA-256 `cfb770d9559b19ddc4f6bde629a8fc32f7f8644da438af09cf70713c7ea13fbc`. The complete offline engine remains bundled, exceeding Obsidian Sync Standard's 5 MB per-file limit. Mobile devices and older Obsidian versions were not tested.
+
+These are local candidate results. GitHub provenance build, publication, and the community directory's release scan remain separate verification steps.
+
 ## 1.3.0 candidate checks from 2026-10-09
 
 Settings now use a segmented color-style control and three coordinated palette cards: Clear blue and teal, Cool tones, and Soft natural. Each card shows the actual fill, border, and text colors without decorative connector arrows. Each scheme defines its full component and chart palette for both light and dark themes. Single-hue presets retain their saved IDs and colors; the two color styles remember their choices separately. Custom colors are collapsed by default, and expanding them does not activate or save custom colors.

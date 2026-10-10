@@ -7,6 +7,16 @@ import { resolve } from 'node:path';
 export const mermaidLayoutPatch = {
   name: 'mermaid-beauty-label-measurement',
   setup(build) {
+    // Capture Mermaid's own graph before either layout rewrites it; apply colors
+    // after shapes exist. This avoids reparsing source or using deprecated APIs.
+    build.onLoad({ filter: /mermaid\/dist\/chunks\/mermaid\.core\/chunk-7M6MHVWA\.mjs$/ }, async ({ path }) => {
+      const source = await readFile(path, 'utf8');
+      const before = '  await render(data4Layout, svg);';
+      if (source.split(before).length !== 2) throw new Error('Mermaid flowchart graph seam changed. Review the pinned engine before building.');
+      const after = '  const beautyGroups = flowchartGroupsForLayout(data4Layout);\n' + before +
+        '\n  styleFlowchartColors(svg.node(), data4Layout.config, beautyGroups);';
+      return { contents: `import { flowchartGroupsForLayout, styleFlowchartColors } from ${JSON.stringify(resolve('src/flowchart-colors.ts'))};\n` + source.replace(before, after), loader: 'js' };
+    });
     // SVG node labels are left-anchored in Mermaid 12; center their actual
     // measured box before shape/layout calculation (including font bearings).
     const sharedLabelEdits = [
@@ -58,7 +68,7 @@ export const mermaidLayoutPatch = {
         ['width: isMarkdown ? markdownWidth : void 0',
           'width: config.layout === "beauty-flowchart" ? config.flowchart?.wrappingWidth : (isMarkdown ? markdownWidth : void 0)'],
         ['  let bbox;\n  let transformBbox;',
-          '  if (config.layout === "beauty-flowchart") measureFlowchartLabel(labelElement, Number(config.fontSize) || 15);\n  let bbox;\n  let transformBbox;'],
+          '  if (config.layout === "beauty-flowchart") measureFlowchartLabel(labelElement, Number(config.fontSize) || 15, config.theme === "redux-color" || config.theme === "redux-dark-color");\n  let bbox;\n  let transformBbox;'],
       ];
       for (const [before, after] of edits) {
         if (contents.split(before).length !== 2) throw new Error('Mermaid label measurement changed. Review the pinned engine before building.');

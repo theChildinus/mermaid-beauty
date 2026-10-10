@@ -52,7 +52,7 @@ async function compareLayouts(): Promise<void> {
     const title = document.createElement('h2'); title.textContent = alignment; card.append(title);
     const diagram = document.createElement('div'); diagram.className = 'mermaid'; card.append(diagram); container.append(card);
     try {
-      const settings = loadSettings({ types: { flowchart: { mode: 'beauty', config: JSON.stringify({ elk: { nodePlacementAlignment: alignment } }) } } });
+      const settings = loadSettings({ defaults: { colorStyle: 'multi' }, types: { flowchart: { mode: 'beauty', config: JSON.stringify({ elk: { nodePlacementAlignment: alignment } }) } } });
       const result = await renderer.render(`compare-${++comparisonId}`, sample.value, settings, diagram);
       mount(diagram, result.svg);
     } catch (error) { card.append(String(error)); }

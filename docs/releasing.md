@@ -10,7 +10,7 @@ The release consists of the public source repository, a GitHub release, and an O
 4. Run `npm run test:render` and `node scripts/package-release.mjs`.
 5. Test the three built files in Obsidian and check that notes remain unchanged.
 
-The Mermaid version is pinned because the flowchart adapter uses its bundled ELK module. A checked build patch widens edge labels and accounts for capsule padding before layout. Mermaid upgrades require reviewing `src/mermaid-internals.d.ts` and `scripts/mermaid-layout-patch.mjs`, then rerunning the complete browser suite.
+The Mermaid version is pinned because the flowchart adapter uses its bundled ELK module. Checked build patches capture Mermaid’s parsed flowchart graph for automatic color grouping and measure label backgrounds before layout. Mermaid upgrades require reviewing `src/mermaid-internals.d.ts` and `scripts/mermaid-layout-patch.mjs`, then rerunning the complete browser suite.
 
 ## GitHub release
 

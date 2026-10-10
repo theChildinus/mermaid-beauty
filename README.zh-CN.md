@@ -6,7 +6,7 @@
 
 ![同一张请求审批流程图的使用前后对比：使用前为原生紫色节点，使用后为协调多色、平滑连线和清晰标签。](docs/images/flowchart-comparison.png)
 
-前后使用[同一份源码](tests/browser/readme-sources.ts)。After 为插件默认的「清爽蓝青」配色，可看到节点颜色、连线转角和标签的变化。[窄屏可查看上下排列的长图](docs/images/flowchart-comparison-stacked.png)。
+前后使用[同一份源码](tests/browser/readme-sources.ts)。After 使用默认的「清爽」配色：连续步骤同色，独立分支自动分组，最多使用三种色系，连线标签保持简洁。[窄屏可查看上下排列的长图](docs/images/flowchart-comparison-stacked.png)。
 
 ## 安装
 
@@ -22,7 +22,7 @@
 
 打开 **设置 → Mermaid Beauty**：
 
-- **配色**：三套协调多色方案，也可选单色或自定义颜色，随 Obsidian 浅色、深色主题切换。
+- **配色**：清爽、冷静、自然三套协调多色方案，也可选单色或自定义颜色，随 Obsidian 浅色、深色主题切换。
 - **大小与布局**：调整字号、连线粗细、圆角、间距和宽度适配。
 - **按图类型设置**：共用默认外观、单独设置或保留原生渲染。支持流程图、时序图、类图、思维导图和多种数据图表。
 

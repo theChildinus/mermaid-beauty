@@ -20,6 +20,8 @@ export function themeConfig(appearance: Appearance, type: DiagramType, dark: boo
   const charts = chartTheme(c, dark, type);
   const extraVariables = isRecord(extra.themeVariables) ? extra.themeVariables : {};
   const multicolor = appearance.colorStyle === 'multi';
+  const quietLabels = multicolor && type === 'flowchart';
+  const customLabel = appearance.useCustomColors === false ? undefined : appearance.colors?.[dark ? 'dark' : 'light']?.label;
   const numberBackground = normalizeColor(extraVariables.signalColor) ?? c.line;
   const font = 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
   const config: MermaidConfig = {
@@ -36,7 +38,7 @@ export function themeConfig(appearance: Appearance, type: DiagramType, dark: boo
       secondaryColor: c.label, secondaryTextColor: c.text, secondaryBorderColor: c.border,
       tertiaryColor: c.background, tertiaryTextColor: c.text, tertiaryBorderColor: c.border,
       lineColor: c.line, textColor: c.text,
-      clusterBkg: c.label, clusterBorder: c.border, edgeLabelBackground: c.label,
+      clusterBkg: c.label, clusterBorder: c.border, edgeLabelBackground: quietLabels ? customLabel ?? c.background : c.label,
       actorBkg: c.surface, actorBorder: c.border, actorTextColor: c.text, actorLineColor: c.line,
       signalColor: c.line, signalTextColor: c.text, labelBoxBkgColor: c.label,
       labelBoxBorderColor: c.border, labelTextColor: c.text, loopTextColor: c.text,
@@ -71,6 +73,10 @@ export function themeConfig(appearance: Appearance, type: DiagramType, dark: boo
       .edgeLabel rect, .edgeLabel .label rect { rx: ${appearance.fontSize}px; ry: ${appearance.fontSize}px; stroke: ${c.border}; stroke-width: 1px; opacity: 1; }
       .flowchart-link, .messageLine0, .messageLine1, .transition { stroke-width: 1.1px; stroke-linecap: round; stroke-linejoin: round; }
       ${type === 'flowchart' ? `.edgeLabel text { font-size: ${Math.max(10, appearance.fontSize - 1)}px; }` : ''}
+      ${quietLabels ? `
+        .edgeLabel rect, .edgeLabel .label rect { rx: 2px; ry: 2px; stroke: none; }
+        .edgeLabel text, .edgeLabel .label, .edgeLabel tspan[font-weight="normal"] { font-weight: 400; }
+      ` : ''}
     `,
   };
   const c4: Record<string, string | number | boolean> = { useMaxWidth: appearance.fitWidth };

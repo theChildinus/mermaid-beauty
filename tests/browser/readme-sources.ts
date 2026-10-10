@@ -5,6 +5,6 @@ export const readmeExamples: Fixture[] = [
   A[New request] --> B{Approved?}
   B -->|Yes| C[Process request]
   B -->|No| D[Request changes]
-  D --> A
+  D --> F[Notify requester]
   C --> E[Done]` },
 ];

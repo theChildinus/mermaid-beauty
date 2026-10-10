@@ -132,7 +132,7 @@ export class BeautySettingTab extends PluginSettingTab {
         })(); });
       }
     }), this.row('Color palette', value.colorStyle === 'multi'
-      ? 'Soft fills, clear text and connectors. Colors distinguish components.' : 'One hue throughout, with clear text and connectors.', setting => {
+      ? 'Soft fills and clear text. Flowcharts group related branches automatically.' : 'One hue throughout, with clear text and connectors.', setting => {
       setting.setClass('mermaid-beauty-stacked');
       const choices = setting.controlEl.createDiv({ cls: 'mermaid-beauty-palettes', attr: { role: 'group', 'aria-label': t('Color palette') } });
       paletteChoices = choices;
@@ -141,7 +141,7 @@ export class BeautySettingTab extends PluginSettingTab {
       const palettes = value.colorStyle === 'multi' ? Object.entries(MULTICOLOR_PALETTES)
         : Object.entries({ sky: 'Clear blue', mint: 'Quiet teal', slate: 'Neutral gray', rose: 'Soft rose' });
       const captions: Record<string, UiText> = {
-        clear: 'General · Clear groups', cool: 'Cool · Technical notes', natural: 'Soft · Long reads',
+        clear: 'Blue · Teal · Amber', cool: 'Indigo · Cyan · Violet', natural: 'Sage · Sand · Terracotta',
         sky: 'Blue · Simple and clear', mint: 'Teal · Calm and gentle', slate: 'Gray · Focus on content', rose: 'Rose · Warm and soft',
       };
       for (const [name, label] of palettes) {
@@ -152,7 +152,7 @@ export class BeautySettingTab extends PluginSettingTab {
           : { palette: name as PaletteName }), useCustomColors: false }, darkPreview);
         const swatches = button.createSpan({ cls: 'mermaid-beauty-swatches', attr: { 'aria-hidden': 'true' } });
         const colors = value.colorStyle === 'multi' ? componentPalette(preview, darkPreview) : { fills: [preview.surface], borders: [preview.border] };
-        colors.fills.slice(0, 4).forEach((fill, index) => {
+        colors.fills.slice(0, 3).forEach((fill, index) => {
           const swatch = swatches.createSpan({ text: 'Aa' });
           swatch.style.setProperty('--mermaid-beauty-swatch', fill);
           swatch.style.setProperty('--mermaid-beauty-swatch-border', colors.borders[index]!);

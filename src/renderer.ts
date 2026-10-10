@@ -6,7 +6,6 @@ import { styleConnectorWidth } from './line-width';
 import { flowchartLayout } from './flowchart-layout';
 import { softenOrthogonalPath } from './rounded-path';
 import { styleFilledLabels } from './filled-labels';
-import { styleFlowchartColors } from './flowchart-colors';
 
 /** Each render owns the configuration until its SVG is complete. */
 export class BeautyRenderer {
@@ -42,12 +41,10 @@ export class BeautyRenderer {
         await document.fonts.ready;
         if (this.disposed) throw new Error('Mermaid Beauty has been unloaded.');
         let config = themeConfig(appearance, type, dark, extra);
-        let sourceTheme: unknown = isRecord(extra.flowchart) ? extra.flowchart.theme : undefined;
         let pieConfig = config.pie;
         engine.initialize(config);
         if (/^\s*(?:---|%%\{)/m.test(source)) {
           const parsedSource = await engine.parse(source);
-          if (parsedSource) sourceTheme = parsedSource.config.flowchart?.theme ?? parsedSource.config.theme ?? sourceTheme;
           if (parsedSource) pieConfig = { ...pieConfig, ...parsedSource.config.pie };
           if (parsedSource && parsedSource.config.themeVariables) {
             // Initialize again so Mermaid recalculates derived colors (such as mainBkg).
@@ -72,7 +69,6 @@ export class BeautyRenderer {
         if (isRecord(variables) && typeof variables.background === 'string') {
           (svg as unknown as SVGSVGElement).style.backgroundColor = variables.background;
         }
-        if (type === 'flowchart' && appearance.colorStyle === 'multi' && (!sourceTheme || sourceTheme === config.theme)) styleFlowchartColors(svg, config);
         styleFilledLabels(svg, type, { ...config, pie: pieConfig }, extra, host);
         if (type === 'flowchart') {
           for (const path of svg.querySelectorAll('path.flowchart-link[data-look="classic"]')) {
@@ -115,10 +111,12 @@ export class BeautyRenderer {
           const width = Number(rect.getAttribute('width'));
           const height = Number(rect.getAttribute('height'));
           if (!(width > 0 && height > 0)) continue;
-          rect.setAttribute('x', String(Number(rect.getAttribute('x')) - 8));
-          rect.setAttribute('y', String(Number(rect.getAttribute('y')) - 4));
-          rect.setAttribute('width', String(width + 16));
-          rect.setAttribute('height', String(height + 8));
+          const paddingX = type === 'flowchart' && appearance.colorStyle === 'multi' ? 4 : 8;
+          const paddingY = type === 'flowchart' && appearance.colorStyle === 'multi' ? 2 : 4;
+          rect.setAttribute('x', String(Number(rect.getAttribute('x')) - paddingX));
+          rect.setAttribute('y', String(Number(rect.getAttribute('y')) - paddingY));
+          rect.setAttribute('width', String(width + paddingX * 2));
+          rect.setAttribute('height', String(height + paddingY * 2));
         }
         svg.setAttribute('role', 'img');
         if (!svg.getAttribute('aria-label') && !svg.getAttribute('aria-labelledby')) {

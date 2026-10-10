@@ -2,6 +2,7 @@ import type { BeautyRenderer } from '../../src/renderer';
 import { contrastRatio } from '../../src/colors';
 import { loadSettings, MULTICOLOR_PALETTES, type BeautySettings } from '../../src/settings';
 import { fixtures } from './fixtures';
+import { flowchartSourceId } from '../../src/flowchart-colors';
 
 type Check = (name: string, action: () => Promise<void>) => Promise<void>;
 function assert(condition: unknown, message: string): asserts condition {
@@ -58,6 +59,59 @@ export async function checkColorStyles(renderer: BeautyRenderer, output: Element
     for (const dark of [false, true]) {
       document.body.classList.toggle('theme-dark', dark);
       for (const layout of ['auto', 'dagre'] as const) {
+        await test(`Multicolor structural groups ${layout} / ${dark ? 'dark' : 'light'}`, async () => {
+          const settings = loadSettings({ defaults: { colorStyle: 'multi', layout } });
+          const source = `flowchart TB
+            A[Request] --> B[Check]
+            B --> C{Dispatch}
+            C -->|Prepare locally| D[Prepare]
+            D --> E[Complete]
+            C -->|Schedule| F[Schedule]
+            X[Template] --> F
+            F --> G[Run]
+            G --> H[Archive]
+            G --> I[Collect]
+            I --> J[Result]
+            C -.->|Reference| G`;
+          const colors = (svg: SVGSVGElement): Map<string, string> => new Map([...svg.querySelectorAll('.node')].map(node =>
+            [flowchartSourceId(node.id, svg.id), getComputedStyle(node.querySelector('.label-container')!).fill]));
+          const svg = await render(container, source, settings), before = colors(svg);
+          assert(before.size === 11 && svg.querySelectorAll('.flowchart-link').length === 11, 'Node or edge semantics changed');
+          assert(new Set(before.values()).size === 3, 'Expected three quiet groups');
+          for (const group of [['A', 'B', 'C'], ['D', 'E'], ['X', 'F', 'G', 'H', 'I', 'J']]) {
+            assert(new Set(group.map(id => before.get(id))).size === 1, `Broken chain: ${group.join(', ')}`);
+          }
+          for (const rect of svg.querySelectorAll('.edgeLabel rect')) assert(getComputedStyle(rect).stroke === 'none', 'Label capsule still outlined');
+          const label = svg.querySelector('.edgeLabel text');
+          assert(label && getComputedStyle(label).fontWeight === '400', 'Edge label competes with nodes');
+          const reordered = colors(await render(container, source.split('\n').slice(0, 1).concat(source.split('\n').slice(1).reverse()).join('\n'), settings));
+          for (const [id, fill] of before) assert(reordered.get(id) === fill, `Declaration order changed ${id}`);
+          const inserted = colors(await render(container, source.replace('A[Request] --> B[Check]', 'A[Renamed] --> New[Extra step]\nNew --> B[Check]'), settings));
+          for (const [id, fill] of before) assert(inserted.get(id) === fill, `Chain insertion changed ${id}`);
+          for (const links of ['A-->B\nA-->C\nB-->D\nC-->D', 'A-->B\nB-->C\nC-->A', 'A<-->B\nB-->C\nA-->D\nD-->E']) {
+            assert(new Set(colors(await render(container, `flowchart LR\n${links}`, settings)).values()).size === 1, 'Join or cycle fragmented');
+          }
+          const nestedSvg = await render(container, `flowchart TB
+            subgraph Outer
+              A[One] --> B[Two]
+              subgraph Inner
+                C[Three] --> D[Four]
+              end
+              B --> C
+            end`, settings);
+          const nested = colors(nestedSvg);
+          assert(nested.get('A') === nested.get('B') && nested.get('C') === nested.get('D') && nested.get('A') !== nested.get('C'), 'Nested group membership lost');
+          for (const [group, member] of [['Outer', 'A'], ['Inner', 'C']]) {
+            const cluster = [...nestedSvg.querySelectorAll('.cluster')].find(node => flowchartSourceId(node.id, nestedSvg.id) === group)!;
+            assert(getComputedStyle(cluster.querySelector('rect')!).fill === nested.get(member!), 'Container and members have different colors');
+          }
+          if (layout === 'auto') {
+            const card = document.createElement('article'); card.className = `card ${dark ? 'dark' : 'light'}-card`;
+            const title = document.createElement('h2'); title.textContent = `Coordinated colors / structural groups / ${dark ? 'dark' : 'light'}`; card.append(title);
+            const diagram = document.createElement('div'); diagram.className = 'mermaid'; card.append(diagram); output.append(card);
+            await render(diagram, source, settings);
+          }
+        });
         await test(`Multicolor stable source node colors ${layout} / ${dark ? 'dark' : 'light'}`, async () => {
           const settings = loadSettings({ defaults: { colorStyle: 'multi', layout } });
           const colors = (svg: SVGSVGElement): Record<string, string> => Object.fromEntries(
@@ -114,9 +168,9 @@ export async function checkColorStyles(renderer: BeautyRenderer, output: Element
           const again = await render(container, source, settings);
           assert(JSON.stringify([...again.querySelectorAll(selector)].map(shape => getComputedStyle(shape).fill)) === firstFills, 'Color allocation changed after switching modes');
           // Keep a small set of real-engine samples for visual review at both sizes.
-          if (multiPalette === 'clear') {
+          if (multiPalette === 'clear' || type === 'flowchart') {
             const card = document.createElement('article'); card.className = `card ${dark ? 'dark-card' : 'light-card'}`;
-            const heading = document.createElement('h2'); heading.textContent = `Coordinated colors / ${type} / ${dark ? 'dark' : 'light'}`;
+            const heading = document.createElement('h2'); heading.textContent = `Coordinated colors / ${multiPalette} / ${type} / ${dark ? 'dark' : 'light'}`;
             const diagram = document.createElement('div'); diagram.className = 'mermaid'; diagram.append(again);
             card.append(heading, diagram); output.append(card);
           }

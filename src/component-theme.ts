@@ -9,7 +9,7 @@ export const MULTICOLOR_TYPES = new Set<DiagramType>([
 
 export function componentPalette(c: Colors, dark: boolean): { fills: string[]; borders: string[] } {
   const series = seriesColors(c, dark);
-  if (c.componentFills) return { borders: series.slice(0, c.componentFills.length), fills: [...c.componentFills] };
+  if (c.componentFills) return { borders: c.componentBorders ? [...c.componentBorders] : series.slice(0, c.componentFills.length), fills: [...c.componentFills] };
   const borders = [0, 6, 2, 1, 3, 4].map(index => series[index]!);
   return { borders, fills: borders.map(color => tint(color, c.background, dark ? 0.15 : 0.12)) };
 }

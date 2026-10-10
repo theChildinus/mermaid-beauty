@@ -6,7 +6,7 @@ Clearer Mermaid diagrams in Obsidian. Works with your existing `mermaid` blocks,
 
 ![The same request-review flowchart before and after Mermaid Beauty: default purple nodes before, coordinated colors and rounded connectors after.](docs/images/flowchart-comparison.png)
 
-Both use the **[same source](tests/browser/readme-sources.ts)**. After uses the default Clear blue and teal palette, rounded connectors, and outlined labels. [View the vertical comparison for narrow screens](docs/images/flowchart-comparison-stacked.png).
+Both use the **[same source](tests/browser/readme-sources.ts)**. After uses the default Fresh palette: related steps share a color, separate branches form up to three color groups, and connector labels stay unobtrusive. [View the vertical comparison for narrow screens](docs/images/flowchart-comparison-stacked.png).
 
 ## Install
 
@@ -22,7 +22,7 @@ Requires **Obsidian 1.12.7+**. Open **Settings → Community plugins → Browse*
 
 Open **Settings → Mermaid Beauty**:
 
-- **Colors:** three coordinated palettes, single-hue presets, or custom colors. Follows Obsidian's light or dark theme.
+- **Colors:** Fresh, Cool, and Natural coordinated palettes, single-hue presets, or custom colors. Follows Obsidian's light or dark theme.
 - **Size and layout:** adjust text size, connector width, corners, spacing, and fit-to-width.
 - **Per diagram type:** share defaults, use a separate style, or keep native rendering. Supports flowcharts, sequences, class diagrams, mind maps, charts, and more.
 
