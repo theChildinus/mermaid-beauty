@@ -1,6 +1,6 @@
 {
   "name": "mermaid-beauty",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": true,
   "description": "A consistent Mermaid theme with per-diagram rendering controls for Obsidian.",
   "license": "MIT",

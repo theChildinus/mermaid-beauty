@@ -4,9 +4,11 @@
 
 [English](README.md)
 
-![同一张请求审批流程图的使用前后对比：使用前为原生紫色节点，使用后为协调多色、平滑连线和清晰标签。](docs/images/flowchart-comparison.png)
+[![同一张发布流程的布局对比：原生渲染中分组散落、连线跨图绕行；插件将检查、验证、发布从左到右排列，反馈回路走底部。](docs/images/flowchart-comparison-stacked.png)](docs/images/flowchart-comparison-stacked.png)
 
-前后使用[同一份源码](tests/browser/readme-sources.ts)。After 使用默认的「清爽」配色：连续步骤同色，独立分支自动分组，最多使用三种色系，连线标签保持简洁。[窄屏可查看上下排列的长图](docs/images/flowchart-comparison-stacked.png)。
+这张发布流程启用插件后，按**检查 → 验证 → 发布**从左到右排列，同层卡片等宽对齐，减少连线多余的折弯，反馈回路走主流程下方。前后的 11 个节点、16 条连接完全相同。
+
+前后使用[同一份 Mermaid 源码](tests/browser/readme-sources.ts)，按相同比例展示：上方为原生 Mermaid 11.13.0 的默认 Dagre 布局，下方为插件自动使用的 ELK 布局和默认「清爽」配色，没有手工摆放节点或指定颜色。点击图片可放大查看。
 
 ## 安装
 

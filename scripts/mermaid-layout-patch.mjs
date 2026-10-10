@@ -7,6 +7,28 @@ import { resolve } from 'node:path';
 export const mermaidLayoutPatch = {
   name: 'mermaid-beauty-label-measurement',
   setup(build) {
+    // Measure first, then equalize cards in actual ELK layers and route again.
+    // Keep the final port/label corrections ahead of painting and line hops.
+    build.onLoad({ filter: /mermaid\/dist\/chunks\/mermaid\.core\/elk-276RUBZZ\.mjs$/ }, async ({ path }) => {
+      let contents = await readFile(path, 'utf8');
+      const edits = [
+        ['const layoutState = buildElkGraphFromLayoutData(data4Layout, elkContext);', 'let layoutState = buildElkGraphFromLayoutData(data4Layout, elkContext);'],
+        ['const graph = await runElkLayout(elk, layoutState.elkGraph, elkContext.log);',
+          'let graph = await runElkLayout(elk, layoutState.elkGraph, elkContext.log);\n' +
+          '  if (context.beautyCards?.size && sizeFlowchartCards(data4Layout, graph, context.element.node(), context.beautyCards)) {\n' +
+          '    layoutState = buildElkGraphFromLayoutData(data4Layout, elkContext);\n' +
+          '    graph = await runElkLayout(elk, layoutState.elkGraph, elkContext.log);\n  }'],
+        ['  applyElkLayoutResult(data4Layout, graph, layoutState, elkContext.log);',
+          '  applyElkLayoutResult(data4Layout, graph, layoutState, elkContext.log);\n  straightenFlowchartEdges(data4Layout);'],
+        ['measureLayout: /* @__PURE__ */ __name((data4Layout, context) => defaultMeasureLayout(data4Layout, context, { unwrapGroupLabels: true }), "measureLayout"),',
+          'measureLayout: (data4Layout, context) => {\n    context.beautyCards = automaticFlowchartCards(data4Layout);\n    return defaultMeasureLayout(data4Layout, context, { unwrapGroupLabels: true });\n  },'],
+      ];
+      for (const [before, after] of edits) {
+        if (contents.split(before).length !== 2) throw new Error('Mermaid ELK geometry seam changed. Review the pinned engine before building.');
+        contents = contents.replace(before, after);
+      }
+      return { contents: `import { automaticFlowchartCards, sizeFlowchartCards, straightenFlowchartEdges } from ${JSON.stringify(resolve('src/flowchart-geometry.ts'))};\n` + contents, loader: 'js' };
+    });
     // Capture Mermaid's own graph before either layout rewrites it; apply colors
     // after shapes exist. This avoids reparsing source or using deprecated APIs.
     build.onLoad({ filter: /mermaid\/dist\/chunks\/mermaid\.core\/chunk-7M6MHVWA\.mjs$/ }, async ({ path }) => {

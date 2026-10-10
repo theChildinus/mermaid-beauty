@@ -4,9 +4,11 @@ Clearer Mermaid diagrams in Obsidian. Works with your existing `mermaid` blocks,
 
 [中文说明](README.zh-CN.md)
 
-![The same request-review flowchart before and after Mermaid Beauty: default purple nodes before, coordinated colors and rounded connectors after.](docs/images/flowchart-comparison.png)
+[![The same release workflow before and after: native Mermaid scatters stages across the canvas with long cross-group paths; Mermaid Beauty aligns Checks, Validation, and Release from left to right and routes feedback below.](docs/images/flowchart-comparison-stacked.png)](docs/images/flowchart-comparison-stacked.png)
 
-Both use the **[same source](tests/browser/readme-sources.ts)**. After uses the default Fresh palette: related steps share a color, separate branches form up to three color groups, and connector labels stay unobtrusive. [View the vertical comparison for narrow screens](docs/images/flowchart-comparison-stacked.png).
+This release workflow is reorganized into **Checks → Validation → Release**, with equal-width cards in each layer, fewer connector bends, and feedback routed below the main flow. All 11 nodes and 16 connections are preserved.
+
+Both use the **[same Mermaid source](tests/browser/readme-sources.ts)** at the same scale: native Mermaid 11.13.0 with its default Dagre layout above, Mermaid Beauty with automatic ELK layout and the default Fresh palette below. No manual positioning or coloring. Click the image to enlarge.
 
 ## Install
 

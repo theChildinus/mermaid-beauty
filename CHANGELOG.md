@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.1
+
+- Align ordinary flowchart cards at equal widths within the same group and layout layer, including nested groups and all four flow directions.
+- Straighten small connector jogs when the new route and label placement avoid nodes, labels, and additional line conflicts. Keep necessary detours and feedback routes.
+- Preserve automatic color grouping, semantic shapes, authored sizes and styles, and explicit layout choices.
+- Refresh the README comparison with the same release workflow before and after automatic layout improvements.
+
 ## 1.2.0
 
 - Set connector width globally or per diagram type. Zero preserves existing widths; manual widths range from 0.1 to 6 pixels. Node borders, chart axes, and quantity-scaled bands remain unchanged.

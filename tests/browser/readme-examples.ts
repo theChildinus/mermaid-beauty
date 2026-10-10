@@ -88,18 +88,21 @@ export async function exportReadmeExamples(container: HTMLElement): Promise<void
       }
       const after = await renderer.render(`after-${example.type}`, example.source, loadSettings(undefined));
       const beforeSize = dimensions(before.svg), afterSize = dimensions(after.svg);
-      const panelWidth = 556;
-      const scale = Math.min((panelWidth - 48) / Math.max(beforeSize.width, afterSize.width),
-        560 / Math.max(beforeSize.height, afterSize.height));
-      const panelHeight = Math.ceil(Math.max(beforeSize.height, afterSize.height) * scale) + 108;
       const comparison = (stacked: boolean): { svg: string; width: number; height: number } => {
+        // Full-width rows keep horizontal diagrams readable in a README column.
+        const panelWidth = stacked ? 1080 : 556;
+        const scale = Math.min((panelWidth - 48) / Math.max(beforeSize.width, afterSize.width),
+          560 / Math.max(beforeSize.height, afterSize.height));
+        const panelHeight = Math.ceil(Math.max(beforeSize.height, afterSize.height) * scale) + 108;
+        const beforeHeight = stacked ? Math.ceil(beforeSize.height * scale) + 108 : panelHeight;
+        const afterHeight = stacked ? Math.ceil(afterSize.height * scale) + 108 : panelHeight;
         const width = stacked ? panelWidth + 32 : panelWidth * 2 + 48;
-        const height = stacked ? panelHeight * 2 + 48 : panelHeight + 32;
+        const height = stacked ? beforeHeight + afterHeight + 48 : panelHeight + 32;
         return { width, height, svg: `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="system-ui, sans-serif" role="img" aria-label="${example.name}: before and after Mermaid Beauty">
           <rect width="${width}" height="${height}" fill="#f6f8fb"/>
-          ${panel(before.svg, 16, 16, panelWidth, panelHeight, scale, 'Before', 'Mermaid 11.13.0 · default rendering')}
-          ${panel(after.svg, stacked ? 16 : panelWidth + 32, stacked ? panelHeight + 32 : 16,
-            panelWidth, panelHeight, scale, 'After', 'Mermaid Beauty · default coordinated colors')}
+          ${panel(before.svg, 16, 16, panelWidth, beforeHeight, scale, 'Before · Native Mermaid', 'Scattered stages · long cross-group paths')}
+          ${panel(after.svg, stacked ? 16 : panelWidth + 32, stacked ? beforeHeight + 32 : 16,
+            panelWidth, afterHeight, scale, 'After · Mermaid Beauty', 'Stages aligned left to right · feedback routed below')}
         </svg>` };
       };
       const wide = comparison(false), stacked = comparison(true);
