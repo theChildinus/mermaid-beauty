@@ -4,6 +4,10 @@ import { attachRenderer, type MermaidHost } from './bridge';
 import { BeautyRenderer } from './renderer';
 import { DEFAULT_SETTINGS, hasRenderingChanges, loadSettings, type BeautySettings } from './settings';
 import { BeautySettingTab } from './settings-tab';
+import { DiagramExportControls, DiagramPicker, exportDiagram } from './export-controls';
+import { GettingStartedModal } from './getting-started';
+import { SvgClipboard } from './svg-clipboard';
+import { DiagramFileExport } from './file-export';
 
 export default class MermaidBeautyPlugin extends Plugin {
   settings: BeautySettings = loadSettings(DEFAULT_SETTINGS);
@@ -16,12 +20,30 @@ export default class MermaidBeautyPlugin extends Plugin {
   private pendingSave: Promise<void> = Promise.resolve();
   private saveTimer?: number;
   private saveWaiters: (() => void)[] = [];
+  private exportControls = new Set<DiagramExportControls>();
+  private svgClipboard = new SvgClipboard(this.app, (text, values) => this.t(text, values));
+  private fileExport = new DiagramFileExport(this.app, (text, values) => this.t(text, values),
+    () => this.settings.exportFolder, folder => this.save({ ...this.settings, exportFolder: folder }));
 
   async onload(): Promise<void> {
     this.settings = loadSettings(await this.loadData());
     this.addSettingTab(new BeautySettingTab(this.app, this));
+    this.registerMarkdownPostProcessor((element, context) => {
+      if (this.stopped) return;
+      // Watch only Mermaid sections, including the host's async/trust placeholder.
+      if (!element.matches('.mermaid, .mermaid-wrapper') && !element.querySelector('.mermaid, .mermaid-wrapper, code.language-mermaid')) return;
+      const controls = new DiagramExportControls(element, context.sourcePath, this.t, this.svgClipboard, this.fileExport);
+      this.exportControls.add(controls);
+      controls.register(() => this.exportControls.delete(controls));
+      context.addChild(controls);
+    });
     this.updateCommands();
     this.registerEvent(this.app.workspace.on('css-change', () => this.refresh()));
+    this.registerEvent(this.app.workspace.on('editor-paste', (event, editor, info) => {
+      if (event.defaultPrevented || this.stopped) return;
+      const paste = this.svgClipboard.paste(event, editor, info);
+      if (paste) { event.preventDefault(); void paste; }
+    }));
     this.app.workspace.onLayoutReady(() => { void this.start(); });
   }
 
@@ -34,6 +56,7 @@ export default class MermaidBeautyPlugin extends Plugin {
     if (this.commandLanguage) {
       this.removeCommand('refresh-diagrams');
       this.removeCommand('toggle-rendering');
+      for (const id of ['getting-started', 'copy-diagram', 'copy-diagram-svg', 'save-diagram-png', 'save-diagram-svg']) this.removeCommand(id);
     }
     this.commandLanguage = this.language;
     this.addCommand({ id: 'refresh-diagrams', name: this.t('Refresh diagrams'), callback: () => this.refresh() });
@@ -41,7 +64,26 @@ export default class MermaidBeautyPlugin extends Plugin {
       id: 'toggle-rendering', name: this.t('Toggle enhanced rendering'),
       callback: () => { void this.save({ ...this.settings, enabled: !this.settings.enabled }); },
     });
+    this.addCommand({ id: 'getting-started', name: this.t('Getting started'), callback: () => this.showGettingStarted() });
+    for (const [id, name, action] of [
+      ['copy-diagram-svg', 'Copy diagram as SVG', 'copy-svg'],
+      ['copy-diagram', 'Copy diagram as PNG', 'copy'],
+      ['save-diagram-svg', 'Export diagram as SVG', 'svg'],
+      ['save-diagram-png', 'Export diagram as PNG', 'png'],
+    ] as const) this.addCommand({ id, name: this.t(name), checkCallback: checking => {
+      const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+      const diagrams = Array.from(view?.containerEl.querySelectorAll<SVGSVGElement>('.mermaid > svg.mermaid-beauty-diagram') ?? []);
+      if (!diagrams.length || !this.settings.enabled) return false;
+      if (!checking) {
+        const choose = (svg: SVGSVGElement): void => { void exportDiagram(svg, action, view?.file?.path ?? '', this.t, this.svgClipboard, this.fileExport); };
+        if (diagrams.length === 1) choose(diagrams[0]!);
+        else new DiagramPicker(this.app, diagrams, choose, this.t).open();
+      }
+      return true;
+    } });
   }
+
+  showGettingStarted(): void { new GettingStartedModal(this.app, this.t, () => this.refresh()).open(); }
 
   private async start(): Promise<void> {
     try {
@@ -58,6 +100,14 @@ export default class MermaidBeautyPlugin extends Plugin {
           }
         });
       this.refresh();
+      if (!this.settings.welcomeSeen) {
+        const content = createFragment();
+        content.createSpan({ text: this.t('Mermaid Beauty is ready. Open an existing Mermaid note to see the result.') });
+        content.createEl('button', { text: this.t('Getting started') }).addEventListener('click', () => this.showGettingStarted());
+        const welcome = new Notice(content, 12_000);
+        this.register(() => welcome.hide());
+        await this.save({ ...this.settings, welcomeSeen: true });
+      }
     } catch {
       new Notice(this.t('Mermaid Beauty could not start. Existing Mermaid rendering is unchanged.'));
     }
@@ -99,24 +149,23 @@ export default class MermaidBeautyPlugin extends Plugin {
     window.clearTimeout(this.refreshTimer);
     this.refreshTimer = window.setTimeout(() => {
       this.refreshTimer = undefined;
-      this.app.workspace.getLeavesOfType('markdown').forEach(leaf => {
-        if (leaf.view instanceof MarkdownView) leaf.view.previewMode.rerender(true);
-      });
-      // Refresh editor options as well; cached Live Preview widgets may require
-      // switching reading/editing mode. Never rewrite note text to invalidate them.
-      this.app.workspace.updateOptions();
+      // The host uses this event when Markdown processors or Mermaid trust change.
+      // Both Reading view and Live Preview listen to it; do not redraw Reading view twice.
+      this.app.workspace.trigger('post-processor-change');
     }, 150);
   }
 
   onunload(): void {
     this.stopped = true;
+    this.svgClipboard.clear();
+    this.fileExport.dispose();
+    // Markdown sections can outlive the plugin when the host reuses cached views.
+    for (const controls of this.exportControls) controls.unload();
+    this.exportControls.clear();
     this.persistSettings();
     window.clearTimeout(this.refreshTimer);
     this.detach?.();
     this.renderer.dispose();
-    this.app.workspace.getLeavesOfType('markdown').forEach(leaf => {
-      if (leaf.view instanceof MarkdownView) leaf.view.previewMode.rerender(true);
-    });
-    this.app.workspace.updateOptions();
+    this.app.workspace.trigger('post-processor-change');
   }
 }

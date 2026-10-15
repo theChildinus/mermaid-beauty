@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.5.0
+
+- Add a one-time welcome notice and a bilingual getting-started guide, including Obsidian's native Mermaid permission and refresh steps.
+- Refresh cached Live Preview widgets through the host's Markdown post-processor event, without editing note text or undo history.
+- Copy enhanced diagrams as PNG or SVG images, or export PNG/SVG files; keep colors, labels, geometry, and rounded corners in the exported image. Pasting a copied SVG in Obsidian creates a vector attachment and embeds it in the receiving note. Order the menu as Copy as SVG, Copy as PNG, Export as SVG, and Export as PNG, with a separator between copy and export. Desktop exports open the system save dialog, starting in the attachment folder and remembering the last successful location. Completion feedback includes Show in folder. Cancelling writes no image; mobile exports continue to use the configured attachment folder.
+- Add persistent 44-pixel export controls on touch screens and bounded PNG dimensions to limit canvas memory.
+- Label the compact icon Copy and export and place it inside each diagram's bottom-left corner, without adding a row. Keep it fixed while scrolling and separate from Mermaid Zoom's bottom-right controls and drag gestures.
+- Clean up export controls and observers in cached notes when the plugin is disabled, preventing stale actions after a reload.
+- Add three reproducible public examples, a 15-second before/after demo, and cross-device setup instructions. The complete offline engine remains bundled.
+
 ## 1.4.1
 
 - Align ordinary flowchart cards at equal widths within the same group and layout layer, including nested groups and all four flow directions.

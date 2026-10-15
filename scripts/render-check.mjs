@@ -9,6 +9,8 @@ assert(report.results.length >= 80, 'Incomplete rendering suite');
 assert(report.checks.length >= 555, 'Incomplete behavior checks');
 assert(report.checks.filter(check => check.name.startsWith('Zoom ')).length >= 165, 'Incomplete Zoom compatibility checks');
 assert(report.checks.filter(check => check.name.startsWith('Multicolor ')).length >= 114, 'Incomplete multicolor checks');
+assert(report.checks.filter(check => check.name.startsWith('Export ')).length >= 88, 'Incomplete image export checks');
+assert(report.checks.filter(check => check.name.startsWith('Export and Zoom controls')).length >= 6, 'Incomplete export/Zoom coexistence checks');
 assert.deepEqual(report.failed, [], 'Browser reported failed checks');
 for (const result of [...report.results, ...report.checks]) assert(result.passed, `${result.name}: ${result.error}`);
 console.log(`${report.results.length} renders and ${report.checks.length} behavior checks passed in a real browser at ${report.checkedAt}.`);

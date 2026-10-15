@@ -4,15 +4,31 @@ import { loadSettings } from '../src/settings';
 
 const host = vi.hoisted(() => ({
   write: vi.fn(), rerender: vi.fn(), updateOptions: vi.fn(), notice: vi.fn(), addCommand: vi.fn(),
+  trigger: vi.fn(), processor: vi.fn(),
 }));
 vi.mock('../src/settings-tab', () => ({ BeautySettingTab: class {} }));
+vi.mock('../src/export-controls', () => ({
+  DiagramExportControls: class {
+    private cleanups: (() => void)[] = [];
+    register(cleanup: () => void): void { this.cleanups.push(cleanup); }
+    unload = vi.fn(() => { for (const cleanup of this.cleanups) cleanup(); });
+  },
+  DiagramPicker: class {}, exportDiagram: vi.fn(),
+}));
+vi.mock('../src/file-export', () => ({ DiagramFileExport: class { dispose(): void {} } }));
+vi.mock('../src/getting-started', () => ({ GettingStartedModal: class {} }));
 vi.mock('obsidian', () => {
   class MarkdownView { previewMode = { rerender: host.rerender }; }
   return {
     getLanguage: () => 'en', loadMermaid: vi.fn(), Notice: host.notice, MarkdownView,
     Plugin: class {
-      app = { workspace: { getLeavesOfType: () => [{ view: new MarkdownView() }], updateOptions: host.updateOptions } };
+      app = { workspace: { getLeavesOfType: () => [{ view: new MarkdownView() }], updateOptions: host.updateOptions, trigger: host.trigger,
+        on: vi.fn(), onLayoutReady: vi.fn() } };
       saveData = host.write;
+      loadData = vi.fn().mockResolvedValue({});
+      addSettingTab = vi.fn();
+      registerEvent = vi.fn();
+      registerMarkdownPostProcessor = host.processor;
       addCommand = host.addCommand;
       removeCommand = vi.fn();
     },
@@ -38,8 +54,34 @@ describe('settings persistence and refresh', () => {
     await vi.advanceTimersByTimeAsync(150); await Promise.all([first, second]);
     expect(host.write).toHaveBeenCalledTimes(1);
     expect(host.write.mock.calls[0]![0].defaults.fontSize).toBe(20);
-    expect(host.rerender).toHaveBeenCalledTimes(1);
+    expect(host.rerender).not.toHaveBeenCalled();
+    expect(host.trigger).toHaveBeenCalledTimes(1);
+    expect(host.trigger).toHaveBeenCalledWith('post-processor-change');
     current.onunload();
+  });
+  it('observes only Mermaid sections, including native asynchronous placeholders', async () => {
+    const current = plugin(); await current.onload();
+    const process = host.processor.mock.calls[0]![0] as (element: unknown, context: unknown) => void;
+    const context = { addChild: vi.fn(), sourcePath: 'Example.md' };
+    process({ matches: () => false, querySelector: () => null }, context);
+    expect(context.addChild).not.toHaveBeenCalled();
+    process({ matches: () => false, querySelector: () => ({}) }, context);
+    expect(context.addChild).toHaveBeenCalledTimes(1);
+    current.onunload();
+  });
+  it('unloads controls in cached notes when the plugin stops and ignores late processors', async () => {
+    const current = plugin(); await current.onload();
+    const process = host.processor.mock.calls[0]![0] as (element: unknown, context: unknown) => void;
+    const context = { addChild: vi.fn(), sourcePath: 'Example.md' };
+    const element = { matches: () => true };
+    process(element, context); process(element, context);
+    const [closed, cached] = context.addChild.mock.calls.map(call => call[0] as { unload: () => void });
+    closed!.unload(); // The Markdown host already disposed this section.
+    current.onunload();
+    expect(closed!.unload).toHaveBeenCalledTimes(1);
+    expect(cached!.unload).toHaveBeenCalledTimes(1);
+    process(element, context);
+    expect(context.addChild).toHaveBeenCalledTimes(2);
   });
   it('persists UI language and inactive settings without redrawing notes', async () => {
     const current = plugin();
@@ -52,6 +94,15 @@ describe('settings persistence and refresh', () => {
     expect(host.rerender).not.toHaveBeenCalled();
     expect(host.updateOptions).not.toHaveBeenCalled();
     expect(host.addCommand).toHaveBeenCalledWith(expect.objectContaining({ name: '刷新图表' }));
+    current.onunload();
+  });
+  it('remembers the export folder without changing appearance or rerendering diagrams', async () => {
+    const current = plugin();
+    const appearance = structuredClone(current.settings.defaults);
+    const saved = current.save({ ...current.settings, exportFolder: '/chosen/exports' });
+    await vi.advanceTimersByTimeAsync(200); await saved;
+    expect(host.write).toHaveBeenCalledWith(expect.objectContaining({ exportFolder: '/chosen/exports', defaults: appearance }));
+    expect(host.trigger).not.toHaveBeenCalled();
     current.onunload();
   });
   it('flushes the latest pending settings on unload and ignores late UI callbacks', async () => {

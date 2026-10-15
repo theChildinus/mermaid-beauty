@@ -46,12 +46,16 @@ export interface TypeSettings extends Partial<Appearance> {
 export interface BeautySettings {
   language: LanguageSetting;
   enabled: boolean;
+  welcomeSeen: boolean;
+  /** Last successful desktop export directory; unavailable paths fall back to attachments. */
+  exportFolder?: string;
   defaults: Appearance;
   types: Partial<Record<DiagramType, TypeSettings>>;
 }
 export const DEFAULT_SETTINGS: BeautySettings = {
   enabled: true,
   language: 'auto',
+  welcomeSeen: false,
   defaults: { colorStyle: 'multi', lineWidth: 1.1, palette: 'mint', multiPalette: 'clear', fontSize: 15, radius: 14, spacing: 48, layout: 'auto', fitWidth: true },
   types: {},
 };
@@ -95,8 +99,11 @@ function appearance(value: unknown): Partial<Appearance> {
   return result;
 }
 export function loadSettings(value: unknown): BeautySettings {
-  const result: BeautySettings = { enabled: true, language: 'auto', defaults: { ...DEFAULT_SETTINGS.defaults }, types: {} };
+  const result: BeautySettings = { enabled: true, language: 'auto', welcomeSeen: false, defaults: { ...DEFAULT_SETTINGS.defaults }, types: {} };
   if (!isRecord(value)) return result;
+  // Existing installations already know the plugin; only new installs get the welcome notice.
+  result.welcomeSeen = value.welcomeSeen !== false;
+  if (typeof value.exportFolder === 'string' && value.exportFolder.length > 0 && value.exportFolder.length <= 4096 && !value.exportFolder.includes('\0')) result.exportFolder = value.exportFolder;
   if (value.language === 'en' || value.language === 'zh' || value.language === 'auto') result.language = value.language;
   result.enabled = typeof value.enabled === 'boolean' ? value.enabled : true;
   // Saved settings predate the color-style switch; keep their existing appearance.

@@ -6,7 +6,16 @@
   pointer-events: none;
   contain: layout style;
 }
-.mermaid.mermaid-beauty-container { overflow-x: auto; }
+.mermaid.mermaid-beauty-container { --mermaid-beauty-export-size: 28px; position: relative; overflow-x: auto; min-height: calc(var(--mermaid-beauty-export-size) + 16px); }
+.mermaid-beauty-actions { position: absolute; bottom: clamp(0px, (100% - var(--mermaid-beauty-export-size)) / 2, 8px); left: 8px; z-index: 100; display: flex; transform: translateX(var(--mermaid-beauty-scroll-offset, 0px)); }
+.mermaid-beauty-actions > .mermaid-beauty-export { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; width: var(--mermaid-beauty-export-size); height: var(--mermaid-beauty-export-size); min-width: var(--mermaid-beauty-export-size); min-height: var(--mermaid-beauty-export-size); padding: 4px; border-radius: 6px; color: var(--text-muted); background: var(--background-primary); border: 1px solid var(--background-modifier-border); box-shadow: none; opacity: 0.75; }
+.mermaid-beauty-actions > .mermaid-beauty-export:is(:hover, :focus) { color: var(--text-normal); background: var(--background-secondary); opacity: 1; }
+.mermaid-beauty-actions > .mermaid-beauty-export:focus-visible { outline: 2px solid var(--interactive-accent); outline-offset: 2px; opacity: 1; }
+.mermaid-beauty-actions > .mermaid-beauty-export svg { width: 18px; height: 18px; flex: none; }
+@media (hover: none), (pointer: coarse), (max-width: 480px) {
+  .mermaid.mermaid-beauty-container { --mermaid-beauty-export-size: 44px; }
+}
+@media print { .mermaid-beauty-actions { display: none; } }
 .mermaid-beauty-diagram[data-mermaid-beauty-fit="true"] { max-width: 100%; height: auto; }
 .mermaid-beauty-diagram[data-mermaid-beauty-fit="false"] { max-width: none; }
 /* Zoom measures its detached clone using viewBox, then scales its wrapper.
@@ -45,3 +54,6 @@
 @media (max-width: 480px) {
   .mermaid-beauty-settings .mermaid-beauty-palettes { grid-template-columns: minmax(0, 1fr); }
 }
+.mermaid-beauty-export-notice { display: flex; flex-direction: column; gap: 8px; }
+.mermaid-beauty-export-notice button { align-self: flex-start; }
+.mermaid-beauty-export-path { overflow-wrap: anywhere; font-size: var(--font-ui-smaller); opacity: .8; }

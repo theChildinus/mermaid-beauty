@@ -64,6 +64,9 @@ export class BeautySettingTab extends PluginSettingTab {
     }));
     return [
       { name: 'Mermaid Beauty', desc: t('All diagram types use enhanced rendering by default. Existing Mermaid blocks stay editable. Disable other Mermaid replacement plugins before enabling this one.') },
+      this.row('Getting started', 'Installation, Mermaid permissions, refreshing, and image export.', setting => {
+        setting.addButton(button => button.setButtonText(t('Open guide')).onClick(() => this.plugin.showGettingStarted()));
+      }),
       this.row('Language', 'Changes settings, commands, and notices. Diagram text stays unchanged.', setting => {
         setting.addDropdown(dropdown => dropdown.addOptions({ auto: t('Follow Obsidian'), zh: '中文', en: 'English' })
           .setValue(this.plugin.settings.language).onChange(async language => {

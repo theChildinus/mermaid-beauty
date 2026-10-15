@@ -1,6 +1,6 @@
 # Publishing Mermaid Beauty
 
-The release consists of the public source repository, a GitHub release, and an Obsidian community directory submission. Directory acceptance is a separate status from publishing a GitHub release.
+The release consists of the public source repository, a GitHub release, and the Obsidian community directory entry. The first release requires a directory submission; later versions update the existing entry. Directory acceptance and review are separate statuses from publishing a GitHub release.
 
 ## Prepare
 
@@ -9,6 +9,10 @@ The release consists of the public source repository, a GitHub release, and an O
 3. Run `npm run dev:preview`, open the local preview, and press **Run rendering checks**. Inspect the flowchart, other changed families, and the narrow preview.
 4. Run `npm run test:render` and `node scripts/package-release.mjs`.
 5. Test the three built files in Obsidian and check that notes remain unchanged.
+
+For onboarding and export changes, check first enablement, the native Mermaid permission, Reading view and Live Preview refresh, one and multiple diagrams, PNG clipboard denial, attachment naming, and plugin unload. Browser export tests use real SVG/PNG encoding and a small host stub for controls; unit tests mock clipboard and vault writes. They do not replace Obsidian or physical-device checks. Follow the mobile matrix in [usage.md](usage.md).
+
+To regenerate the showcase, click **Export README comparisons** in the preview. The three public sources are in `tests/browser/readme-sources.ts` and reproduced in [examples.md](examples.md). Keep both in sync. Then run `python3 scripts/make-demo.py` with Pillow installed to generate the 15-second GIF. Set `MERMAID_BEAUTY_PREVIEW_DIR` consistently if using a separate preview directory. Inspect the wide and stacked images, Chinese labels, and dark theme before committing them.
 
 The Mermaid version is pinned because the flowchart adapter uses its bundled ELK module. Checked build patches capture Mermaid’s parsed flowchart graph for automatic color grouping and measure label backgrounds before layout. Mermaid upgrades require reviewing `src/mermaid-internals.d.ts` and `scripts/mermaid-layout-patch.mjs`, then rerunning the complete browser suite.
 
@@ -23,6 +27,8 @@ Attach `main.js`, `manifest.json`, and `styles.css` from `dist/<version>/` to th
 Follow the [official submission guide](https://docs.obsidian.md/plugins/releasing/submit-plugin) and [account setup guide](https://docs.obsidian.md/community-directory/set-up-and-claim).
 
 Sign in at [Obsidian Community](https://community.obsidian.md/), link the GitHub owner profile, and add the public repository URL. Review the [developer policies](https://docs.obsidian.md/community-directory/developer-policies) and [plugin requirements](https://docs.obsidian.md/community-directory/submission-requirements-for-plugins) before accepting terms and submitting. Address review findings in a new release. Mark the plugin listed only after its published directory entry is visible.
+
+For an already listed plugin, publish the new GitHub release without resubmitting the entry. In the plugin's account page, use **Check for new releases** if the directory has not picked it up yet. Verify the displayed version and the review for its commit separately. See [Manage your plugin or theme](https://docs.obsidian.md/community-directory/manage-entry).
 
 ## Review fixes and provenance
 

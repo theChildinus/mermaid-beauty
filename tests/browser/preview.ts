@@ -11,6 +11,7 @@ import { checkReadability } from './readability-checks';
 import { checkZoom } from './zoom-checks';
 import { checkColorStyles } from './color-style-checks';
 import { checkFlowchartLayout } from './flowchart-layout-checks';
+import { checkExports } from './export-checks';
 
 declare const BUILD_HASH: string;
 const output = document.querySelector('#results')!;
@@ -29,7 +30,7 @@ async function exportExamples(): Promise<void> {
 const compact = document.querySelector<HTMLInputElement>('#compact')!;
 const dark = document.querySelector<HTMLInputElement>('#dark')!;
 const filter = document.querySelector<HTMLSelectElement>('#filter')!;
-for (const name of ['Coordinated colors', ...fixtures.map(fixture => fixture.name)]) {
+for (const name of ['Coordinated colors', 'Image export', ...fixtures.map(fixture => fixture.name)]) {
   const option = document.createElement('option'); option.value = name; option.textContent = name; filter.append(option);
 }
 filter.addEventListener('change', () => {
@@ -149,6 +150,7 @@ async function runChecks(): Promise<void> {
   await checkReadability(renderer, output, test);
   await checkColorStyles(renderer, output, test);
   await checkFlowchartLayout(renderer, output, test);
+  await checkExports(renderer, output, test);
   await test('Inherited settings ignore saved inactive custom options', async () => {
     const result = await renderer.render(`inherit-inactive-${++serial}`, fixtures[0]!.source,
       loadSettings({ types: { flowchart: { mode: 'inherit', config: '{ invalid JSON', palette: 'rose' } } }));
