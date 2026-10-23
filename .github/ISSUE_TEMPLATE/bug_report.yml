@@ -1,0 +1,100 @@
+name: Bug report
+description: Report a reproducible problem with Mermaid Beauty
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Mermaid Beauty.
+
+        **Privacy:** Reduce the problem to a public example. Do not include vault contents, proprietary diagrams, credentials, or other sensitive data.
+
+  - type: input
+    id: plugin-version
+    attributes:
+      label: Mermaid Beauty version
+      description: Find this under Settings → Community plugins.
+      placeholder: "1.5.0"
+    validations:
+      required: true
+
+  - type: input
+    id: obsidian-version
+    attributes:
+      label: Obsidian version
+      placeholder: "1.12.7"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - iOS
+        - Android
+    validations:
+      required: true
+
+  - type: input
+    id: theme-and-plugins
+    attributes:
+      label: Theme and related plugins
+      description: Name the active theme and any plugins that also change Mermaid rendering, if relevant.
+      placeholder: Default theme; Mermaid Zoom 1.2.3
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the visible problem and when it occurs.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Include the smallest sequence that consistently triggers the problem.
+      placeholder: |
+        1. Open a note in Reading view.
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: minimal-example
+    attributes:
+      label: Minimal public Mermaid source
+      description: If the problem is diagram-specific, paste the smallest non-sensitive source that reproduces it.
+      render: text
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Explain what you expected to see instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or additional context
+      description: Add screenshots, console errors, or other details that help isolate the problem. Remove sensitive information first.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched the existing issues for the same problem.
+          required: true
+        - label: I removed private or sensitive information from this report.
+          required: true

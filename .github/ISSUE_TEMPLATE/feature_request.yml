@@ -1,0 +1,57 @@
+name: Feature request
+description: Suggest an improvement to Mermaid Beauty
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing an idea. Describe the problem or workflow first so the proposed change can be evaluated in context.
+
+        **Privacy:** Use only public examples. Do not include vault contents, proprietary diagrams, credentials, or other sensitive data.
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: What problem would this solve?
+      description: Describe the workflow, limitation, or repeated task behind the request.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain what Mermaid Beauty should do and how you would use it.
+    validations:
+      required: true
+
+  - type: input
+    id: diagram-types
+    attributes:
+      label: Relevant diagram types
+      description: List the Mermaid diagram types involved, if any.
+      placeholder: Flowchart, sequence diagram
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Public example or mockup
+      description: Add a minimal public Mermaid example, screenshot, or sketch if it clarifies the request.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Current workaround
+      description: Describe how you handle this today, if applicable.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched the existing issues for a similar request.
+          required: true
+        - label: I removed private or sensitive information from this request.
+          required: true

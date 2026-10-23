@@ -2,7 +2,7 @@
 
 Clearer Mermaid diagrams in Obsidian. Works with your existing `mermaid` blocks, without editing the source.
 
-[中文说明](README.zh-CN.md)
+[中文说明](README.zh-CN.md) · [Feedback](#feedback)
 
 [![The same release workflow before and after: native Mermaid scatters stages across the canvas with long cross-group paths; Mermaid Beauty aligns Checks, Validation, and Release from left to right and routes feedback below.](docs/images/flowchart-comparison-stacked.png)](docs/images/flowchart-comparison-stacked.png)
 
@@ -68,6 +68,15 @@ Use the **Copy and export** icon in the bottom-left corner of an enhanced diagra
 - Diagrams containing external image resources cannot be exported. The export does not fetch or upload those resources.
 
 On touch screens the export button stays visible with a 44-pixel target. For dense diagrams, turn off **Fit to width** to keep text at its natural size and scroll horizontally.
+
+## Feedback
+
+Found a problem or have an idea? [Choose the matching issue form](https://github.com/theChildinus/mermaid-beauty/issues/new/choose):
+
+- [Report a reproducible bug](https://github.com/theChildinus/mermaid-beauty/issues/new?template=bug_report.yml)
+- [Suggest an improvement](https://github.com/theChildinus/mermaid-beauty/issues/new?template=feature_request.yml)
+
+Search [existing issues](https://github.com/theChildinus/mermaid-beauty/issues) first. Include the plugin and Obsidian versions, platform, reproduction steps, and the smallest relevant public Mermaid example. Never post vault contents, proprietary diagrams, credentials, or other sensitive data.
 
 ## Notes
 

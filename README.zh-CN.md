@@ -2,7 +2,7 @@
 
 让 Obsidian 中的 Mermaid 图更易读。启用插件即可美化已有的 `mermaid` 代码块，无需修改源码。
 
-[English](README.md)
+[English](README.md) · [反馈](#反馈)
 
 [![同一张发布流程的布局对比：原生渲染中分组散落、连线跨图绕行；插件将检查、验证、发布从左到右排列，反馈回路走底部。](docs/images/flowchart-comparison-stacked.png)](docs/images/flowchart-comparison-stacked.png)
 
@@ -68,6 +68,15 @@
 - 含有外部图片资源的图表暂不支持导出；导出过程不会下载或上传这些资源。
 
 触屏设备上的导出按钮常显，点击区域为 44 像素。复杂图缩得太小时，可关闭「适应宽度」，保留原始字号并横向滚动查看。
+
+## 反馈
+
+遇到问题或有改进建议时，请[选择对应的反馈模板](https://github.com/theChildinus/mermaid-beauty/issues/new/choose)：
+
+- [报告可复现的问题](https://github.com/theChildinus/mermaid-beauty/issues/new?template=bug_report.yml)
+- [提出改进建议](https://github.com/theChildinus/mermaid-beauty/issues/new?template=feature_request.yml)
+
+提交前请先搜索[已有反馈](https://github.com/theChildinus/mermaid-beauty/issues)，并附上插件版本、Obsidian 版本、操作系统、复现步骤，以及与问题相关的最小公开 Mermaid 示例。不要提交笔记库内容、内部图表、凭据或其他敏感信息。
 
 ## 使用说明
 
