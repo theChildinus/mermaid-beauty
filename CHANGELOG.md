@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.1
+
+- Keep small fit-to-width diagrams at their natural size in print and PDF exports while still shrinking diagrams wider than the page.
+
 ## 1.5.0
 
 - Add a one-time welcome notice and a bilingual getting-started guide, including Obsidian's native Mermaid permission and refresh steps.

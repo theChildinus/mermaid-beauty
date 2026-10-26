@@ -6,6 +6,7 @@ import { styleConnectorWidth } from './line-width';
 import { flowchartLayout } from './flowchart-layout';
 import { softenOrthogonalPath } from './rounded-path';
 import { styleFilledLabels } from './filled-labels';
+import { naturalSvgWidth } from './svg-size';
 
 /** Each render owns the configuration until its SVG is complete. */
 export class BeautyRenderer {
@@ -97,6 +98,9 @@ export class BeautyRenderer {
           const style = (svg as unknown as SVGSVGElement).style;
           style.setProperty('--mermaid-beauty-width', `${bounds[2]}px`);
           style.setProperty('--mermaid-beauty-height', `${bounds[3]}px`);
+          const scale = type === 'zenuml' ? appearance.fontSize / 16 : 1;
+          const naturalWidth = naturalSvgWidth(style.maxWidth, bounds[2]! * scale);
+          if (naturalWidth) style.setProperty('--mermaid-beauty-natural-width', naturalWidth);
         }
         if (!appearance.fitWidth) {
           (svg as unknown as SVGSVGElement).style.removeProperty('max-width');
